@@ -43,6 +43,7 @@ public class Editor extends JTabbedPane {
 		@Override public void setVisible(boolean arg0) { instance.setVisible(arg0); super.setVisible(arg0); };
 	};
 	
+	private static final CloseButton CLOSE_BUTTON = new CloseButton();
 	private static Editor instance;
 	
 	private List<VHDR> otevreneSoubory = new ArrayList<VHDR>();
@@ -91,7 +92,8 @@ public class Editor extends JTabbedPane {
 		// Zaviraci tlacitko
         
 		menuBar.add(Box.createHorizontalGlue());
-		menuBar.add(new CloseButton());
+		menuBar.add(CLOSE_BUTTON);
+		CLOSE_BUTTON.setEnabled(false);
 		
 		OKNO.pack();
 		
@@ -144,6 +146,7 @@ public class Editor extends JTabbedPane {
 			
 			if (otevreneSoubory.size() > 0) {
 				remove(HLAVNI_ZALOZKA);
+				CLOSE_BUTTON.setEnabled(true);
 			}	
 
 			if (soubory == null || nonReadable.size() < soubory.length)
@@ -189,6 +192,7 @@ public class Editor extends JTabbedPane {
 		
 		if (otevreneSoubory.size() == 0) {
 			add(HLAVNI_ZALOZKA);
+			CLOSE_BUTTON.setEnabled(false);
 		}
 
 		return zavritelne;
@@ -224,7 +228,7 @@ public class Editor extends JTabbedPane {
 
 class CloseButton extends JButton {
 	public CloseButton() {
-		super();
+		super("X");
 		addActionListener(new ActionListener() {
 			
 			@Override
@@ -232,28 +236,5 @@ class CloseButton extends JButton {
 				Aplikace.EDITOR.zavrit();
 			}
 		});
-	}
-	
-	@Override
-	public void paint(Graphics g) {
-		super.paint(g);
-		Line2D line1 = new Line2D.Float(5,5,15,15);
-		Line2D line2 = new Line2D.Float(5,15,15,5);
-		
-		Graphics2D g2 = (Graphics2D) g;
-		Stroke stroke = g2.getStroke();
-		
-		g2.setStroke(new BasicStroke(5, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
-		g2.setColor(Color.BLACK);
-		g2.draw(line1);
-		g2.draw(line2);
-
-		g2.setStroke(stroke);
-		if (isSelected())
-			g2.setColor(Color.GRAY);
-		else 
-			g2.setColor(Color.GRAY.brighter());
-		g2.draw(line1);
-		g2.draw(line2);
 	}
 }

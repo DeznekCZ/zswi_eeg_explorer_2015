@@ -102,33 +102,28 @@ public class Editor extends JTabbedPane {
 	
 	@Override
 	public void setVisible(boolean b) {
-		if (!b && Aplikace.ukoncujeSe()) {
-			boolean zavirat = Aplikace.ukoncujeSe();
+		if (!b && Aplikace.seUkoncuje()) {
+			boolean zavirat = Aplikace.seUkoncuje();
 			while (zavirat && otevreneSoubory.size() > 0) {
 				zavirat = zavrit();
 			}
 		}
 		
 		if (!b && OKNO.isVisible()) {
-			CONFIG.ed_fullscreen = OKNO.getExtendedState();
-			CONFIG.ed_posx = OKNO.getLocation().x;
-			CONFIG.ed_posy = OKNO.getLocation().y;
-			CONFIG.ed_width = OKNO.getWidth();
-			CONFIG.ed_height = OKNO.getHeight();
-			
+			ulozUmisteni();
 		} else if (b && !OKNO.isVisible()) {
 			nactiUmisteni();
 		}
 	}
-	
+
 	public void otevrit(boolean nove) {
 		List<File> nonReadable = new ArrayList<File>();
 		if (nove && Aplikace.oknoVyberu != null) {
 			File[] soubory = Aplikace.oknoVyberu.getSelectedFiles();
 			if (soubory != null) {
 				for (File file : soubory) {
-					VHDR vhdrSoubor = new VHDR(file.getAbsolutePath(), true);
-					if (!VHDR.isReadable(vhdrSoubor.file)) {
+					VHDR vhdrSoubor = new VHDR(file, true);
+					if (!vhdrSoubor.isReadable()) {
 						nonReadable.add(file);
 						continue;
 					}
@@ -153,8 +148,6 @@ public class Editor extends JTabbedPane {
 				OKNO.setVisible(true);
 			return;
 		}
-		
-		OKNO.pack();
 		
 		OKNO.setVisible(true);
 	}
@@ -198,7 +191,7 @@ public class Editor extends JTabbedPane {
 		return zavritelne;
 	}
 	
-	protected void nactiUmisteni() {
+	private void nactiUmisteni() {
 		OKNO.setPreferredSize(new Dimension(CONFIG.ed_width, CONFIG.ed_height));
 		if (CONFIG.isSet()) {
 			OKNO.setLocation(CONFIG.ed_posx, CONFIG.ed_posy);
@@ -209,6 +202,16 @@ public class Editor extends JTabbedPane {
 		} else {
 			OKNO.setLocationRelativeTo(null);
 		}
+		
+		OKNO.pack();
+	}
+	
+	private void ulozUmisteni() {
+		CONFIG.ed_fullscreen = OKNO.getExtendedState();
+		CONFIG.ed_posx = OKNO.getLocation().x;
+		CONFIG.ed_posy = OKNO.getLocation().y;
+		CONFIG.ed_width = OKNO.getWidth();
+		CONFIG.ed_height = OKNO.getHeight();
 	}
 	
 	@Override

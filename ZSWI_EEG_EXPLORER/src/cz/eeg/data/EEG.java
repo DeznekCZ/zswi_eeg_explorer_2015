@@ -4,8 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 
-import org.omg.CORBA.portable.ValueBase;
-
 public class EEG extends File{
 
 	/**pole reprezentujici data v danem souboru*/

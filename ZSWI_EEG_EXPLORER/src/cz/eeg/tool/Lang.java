@@ -8,7 +8,7 @@ import java.util.Scanner;
 
 /**
  * 
- * @author Zden�k Novotn�, Tereza Senjukov�
+ * @author IT Crowds
  *
  */
 public class Lang {

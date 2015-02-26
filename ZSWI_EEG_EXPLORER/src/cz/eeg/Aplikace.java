@@ -2,9 +2,7 @@ package cz.eeg;
 
 import java.awt.Dimension;
 import java.awt.Graphics;
-import java.awt.KeyEventDispatcher;
 import java.awt.KeyboardFocusManager;
-import java.awt.event.KeyEvent;
 
 import javax.swing.JFrame;
 
@@ -15,30 +13,50 @@ import cz.eeg.ui.Editor;
 import cz.eeg.ui.Prohlizec;
 import cz.eeg.ui.Vyber;
 
+/**
+ * Spouštěcí třída aplikace<br><br>
+ * aplikace nemá zatím žádné spouštěcí parametry
+ * 
+ * @author IT Crowds
+ */
 public class Aplikace extends JFrame {
 	
 	//TODO Inicializace nastavení
+	/** Konfigurační instance třídy {@link Config} */
 	public final static Config CONFIG = new Config();
+	/** Překladová instance třídy {@link Lang} */
 	public final static Lang LANG = new Lang(CONFIG.lang);
-	public final static String AUTHOR = "IT Crowds";
+	/** Konstanta s autorským podpisem */
+	public final static String AUTHOR = "IT Crowd "
+				+"(Zdeněk Novotný, Michal Sakáč, Vaclav Trykar, Václav Zoubek)";
 	
 	//TODO Hlavní okno
+	/** Hlavní okno aplikace */
 	public final static Aplikace OKNO = new Aplikace();
+	/** Dělený panel v oknu {@link Aplikace} */
 	public final static Prohlizec PROHLIZEC = new Prohlizec();
+	/** Okno editoru, pro správu {@code JFrame} je nutno volat Editor.OKNO */
 	public final static Editor EDITOR = new Editor();
+	/** API pro zjštění stisku klávesy */
+	public static KeyboardFocusManager manager =
+	         KeyboardFocusManager.getCurrentKeyboardFocusManager();
 	
 	//TODO Vybraný výběr
+	/** Aktuální používané okno pro výběr souboru */
 	public static Vyber oknoVyberu = null;
 
+	/** Promnná potřebná pro zjištění, zda se aplikace ukončuje*/
+	private static boolean ukoncovani;
+	
+	/** Hlavní metoda aplikace */
 	public static void main(String[] args) {
 		OKNO.spustit();
 
 		manager.addKeyEventDispatcher( new Ovladac() );
 	}
 
-	private static boolean ukoncovani;
-	
 	//TODO Okno aplikace
+	/** Zapíná samotné okno {@link Aplikace} */
 	public void spustit() {
 		pack();
 		
@@ -92,12 +110,11 @@ public class Aplikace extends JFrame {
 		super.setVisible(b);
 	}
 
-	public static boolean ukoncujeSe() {
+	/**
+	 * Metoda vrací stav vypínání, pokud je zavíráno okno prohlážeče
+	 * @return vrací stav vypínání
+	 */
+	public static boolean seUkoncuje() {
 		return ukoncovani;
 	}
-	
-	//Hijack the keyboard manager
-	static KeyboardFocusManager manager =
-	         KeyboardFocusManager.getCurrentKeyboardFocusManager();
-	public static boolean unlocked = true;
 }

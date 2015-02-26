@@ -34,12 +34,13 @@ public class VHDR extends JSplitPane {
 	
 	public VHDR(String cestaSouboru, boolean viditelnost) {
 		this(new File(cestaSouboru), viditelnost);
-		setName(file.getName());
 	}
 	
 	public VHDR(File soubor, boolean viditelnost) {
 		super(JSplitPane.HORIZONTAL_SPLIT);
+		
 		file = soubor;
+		setName(file.getName());
 		nazev = file.getName().replace(".hdr", "");
 		if (viditelnost) {
 			input = new JTextArea("");
@@ -93,7 +94,7 @@ public class VHDR extends JSplitPane {
 		return false;
 	}
 
-	private boolean isReadable() {
+	public boolean isReadable() {
 		return readable && data.exists() && marker.exists();
 	}
 

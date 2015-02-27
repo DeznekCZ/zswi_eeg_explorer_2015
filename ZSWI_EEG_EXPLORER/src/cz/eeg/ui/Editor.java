@@ -30,6 +30,7 @@ import cz.eeg.Aplikace;
 import cz.eeg.data.VHDR;
 import cz.eeg.tool.Config;
 import cz.eeg.tool.Lang;
+import cz.eeg.ui.editor.Ulozit;
 
 public class Editor extends JTabbedPane {
 
@@ -44,6 +45,7 @@ public class Editor extends JTabbedPane {
 	};
 	
 	private static final CloseButton CLOSE_BUTTON = new CloseButton();
+	private static JMenuItem MENU_ULOZIT;
 	private static Editor instance;
 	
 	private List<VHDR> otevreneSoubory = new ArrayList<VHDR>();
@@ -86,6 +88,19 @@ public class Editor extends JTabbedPane {
 					Aplikace.OKNO.requestFocus();
 				}
 			}); soubor.add(s1);
+			
+			// Uložení
+
+			MENU_ULOZIT = new JMenuItem() {
+				public void repaint() { setText(LANG.file_save); super.repaint(); };
+			}; MENU_ULOZIT.repaint();
+			
+			MENU_ULOZIT.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent event) {
+					new Ulozit(Ulozit.ULOZIT);
+				}
+			}); soubor.add(MENU_ULOZIT);
+			MENU_ULOZIT.setEnabled(false);
 		}
 		
 		
@@ -94,8 +109,6 @@ public class Editor extends JTabbedPane {
 		menuBar.add(Box.createHorizontalGlue());
 		menuBar.add(CLOSE_BUTTON);
 		CLOSE_BUTTON.setEnabled(false);
-		
-		OKNO.pack();
 		
 		nactiUmisteni();
 	}
@@ -142,6 +155,7 @@ public class Editor extends JTabbedPane {
 			if (otevreneSoubory.size() > 0) {
 				remove(HLAVNI_ZALOZKA);
 				CLOSE_BUTTON.setEnabled(true);
+				MENU_ULOZIT.setEnabled(true);
 			}	
 
 			if (soubory == null || nonReadable.size() < soubory.length)
@@ -186,6 +200,7 @@ public class Editor extends JTabbedPane {
 		if (otevreneSoubory.size() == 0) {
 			add(HLAVNI_ZALOZKA);
 			CLOSE_BUTTON.setEnabled(false);
+			MENU_ULOZIT.setEnabled(false);
 		}
 
 		return zavritelne;
@@ -226,6 +241,12 @@ public class Editor extends JTabbedPane {
 
 	public boolean jsouOtevreneSoubory() {
 		return otevreneSoubory.size() > 0;
+	}
+
+	public void ulozitSoubor(String nazev) {
+		int index = getSelectedIndex();
+		VHDR soubor = otevreneSoubory.get(index);
+		soubor.ulozit(nazev);
 	}
 }
 

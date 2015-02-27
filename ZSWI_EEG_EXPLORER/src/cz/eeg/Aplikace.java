@@ -17,7 +17,7 @@ import cz.eeg.ui.Vyber;
  * Spouštěcí třída aplikace<br><br>
  * aplikace nemá zatím žádné spouštěcí parametry
  * 
- * @author IT Crowds
+ * @author IT Crowd
  */
 public class Aplikace extends JFrame {
 	
@@ -27,8 +27,8 @@ public class Aplikace extends JFrame {
 	/** Překladová instance třídy {@link Lang} */
 	public final static Lang LANG = new Lang(CONFIG.lang);
 	/** Konstanta s autorským podpisem */
-	public final static String AUTHOR = "IT Crowd "
-				+"(Zdeněk Novotný, Michal Sakáč, Vaclav Trykar, Václav Zoubek)";
+	public final static String AUTHOR = "\n\nIT Crowd\n"
+				+"Zdeněk Novotný, Michal Sakáč, Vaclav Trykar, Václav Zoubek";
 	
 	//TODO Hlavní okno
 	/** Hlavní okno aplikace */
@@ -58,7 +58,6 @@ public class Aplikace extends JFrame {
 	//TODO Okno aplikace
 	/** Zapíná samotné okno {@link Aplikace} */
 	public void spustit() {
-		pack();
 		
 		setSize(new Dimension(CONFIG.ex_width, CONFIG.ex_height));
 		if (CONFIG.isSet()) {
@@ -70,6 +69,8 @@ public class Aplikace extends JFrame {
 		} else {
 			setLocationRelativeTo(null);
 		}
+
+		pack();
 		
 		setVisible(true);
 	}

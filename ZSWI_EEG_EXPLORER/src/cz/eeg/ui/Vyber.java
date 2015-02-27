@@ -47,14 +47,12 @@ public class Vyber extends JFileChooser {
 	public static Vyber VSTUPNI_VYBER = new Vyber(new File("input"), Vyber.INPUT);
 	public static Vyber VYSTUPNI_VYBER = new Vyber(new File("output"), Vyber.OUTPUT);
 	
-	private final int type;
-	
 	public Vyber(File slozka, final int type) {
 		super(slozka);
-		this.type = type;
 		
 		setControlButtonsAreShown(false);
 		
+		setAcceptAllFileFilterUsed(false);
 		setFileFilter(new FileNameExtensionFilter(LANG.file_type, new String[] {"vhdr"}));
 		setFileView(new FileView() {
 			@Override
@@ -159,11 +157,5 @@ class BlockedIcon implements Icon {
 	@Override
 	public int getIconHeight() {
 		return 16;
-	}
-}
-
-class Nastaveni extends Properties {
-	public Nastaveni(File path) {
-		setProperty("home", path.getAbsolutePath());
 	}
 }

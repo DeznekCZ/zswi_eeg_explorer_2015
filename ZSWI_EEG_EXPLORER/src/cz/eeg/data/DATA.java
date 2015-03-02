@@ -4,12 +4,12 @@ import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 
-public class EEG extends File{
+public class DATA extends File{
 
 	/**pole reprezentujici data v danem souboru*/
 	private static byte [] dat;
 	
-	public EEG(String name) {
+	public DATA(String name) {
 		super(name);
 		ctiByte(name);
 	}

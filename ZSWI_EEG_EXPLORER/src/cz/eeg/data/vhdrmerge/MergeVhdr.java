@@ -8,6 +8,7 @@ import java.io.PrintWriter;
 
 /**
  * Třída pro spojení 2 VHDR souborů
+ * vstupem vždy dva soubory + název nového vhdr + nový datafile(název) + nový marker file(název)
  * */
 public class MergeVhdr {
 

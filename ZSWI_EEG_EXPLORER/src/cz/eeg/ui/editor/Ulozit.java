@@ -68,7 +68,7 @@ public class Ulozit {
 			    	//System.out.println(LANG.format_age + ": " + age);
 			    	//System.out.println(year+"-"+month+"-"+day+"-"+gender+"-"+age+".vhdr");
 			    	
-			    	Aplikace.EDITOR.ulozitSoubor(year+"-"+month+"-"+day+"-"+gender+"-"+age);
+			    	Aplikace.EDITOR.ulozitSoubor(year+"_"+month+"_"+day+"_"+gender+"_"+age);
 			    	
 			    	break;
 			    } else {

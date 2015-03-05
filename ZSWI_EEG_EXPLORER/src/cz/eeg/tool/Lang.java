@@ -47,13 +47,15 @@ public class Lang {
 		editor_save = "Select saving name: ",
 		editor_overwrite = "Do you want overwrite a file?",
 		editor_file_exists = "File exists",
+		editor_no_file = "No file opened",
 		exit = "Exit",
 		error = "Error",
 		credits = "Help",
 		credits_about = "About",
 		credits_info = "About",
 		window_name = "EEG file manager",
-		editor_no_file = "No file opened"
+		
+		vhdr_Codepage = "Codepage"
 	;
 	
 	/**
@@ -182,6 +184,17 @@ public class Lang {
 		else {
 			newString += string.substring(j,string.length());
 			return newString;
+		}
+	}
+	
+	public String get(String label) {
+		try {
+			return (String) getClass().getField(label).get(this);
+		}
+		catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e) {
+			//TODO Log
+			System.out.format("Create field \"%s\" in class Lang\n", label);
+			return "<" + label + ">";
 		}
 	}
 }

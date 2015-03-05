@@ -7,13 +7,17 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Scanner;
 
+import javax.swing.BoxLayout;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 
 import cz.eeg.Aplikace;
 import cz.eeg.data.DATA;
 import cz.eeg.data.VMRK;
+import cz.eeg.ui.editor.EditableField;
 
 
 public class Vhdr extends JSplitPane {
@@ -26,7 +30,7 @@ public class Vhdr extends JSplitPane {
 	private String binaryFormat;
 	private String dataFile;
 	private String markerFile;
-	private String codePage;
+	private EditableField codePage;
 	private String channelInfo=null;
 	private String dator=null;
 	private String sampling=null;
@@ -35,7 +39,7 @@ public class Vhdr extends JSplitPane {
 	private boolean readable = true;
 	//TODO editovany
 
-	private JTextArea input;
+	private JPanel input;
 	private JTextArea markerTable;
 	
 	public Vhdr(File inputF, boolean viewable){
@@ -43,13 +47,22 @@ public class Vhdr extends JSplitPane {
 		setName(inputF.getName());
 		
 		if (viewable) {
+			input = new JPanel();
+			input.setLayout(new BoxLayout(input, BoxLayout.Y_AXIS));
+			
 			openFile(inputF);
-			input = new JTextArea(vhdr());
+			
+			JTextArea p = new JTextArea();
+			input.add(p);
+			
 			JScrollPane jspi = new JScrollPane(input);
 			add(jspi);
 			markerTable = new JTextArea("");
 			JScrollPane jspm = new JScrollPane(markerTable);
 			add(jspm);
+			
+			p.setText(vhdr());
+			
 			setDividerLocation(Aplikace.EDITOR.getSize().width * 2 / 3);
 		}else {
 			viewFile(inputF);
@@ -59,9 +72,11 @@ public class Vhdr extends JSplitPane {
 	}
 	
 	private String channelsToString(){
+		if (channel == null) return ";no channel\n";
 		String s="";
 		for(int i=0;i<numberOfChannels;i++){
-			s+=channel[i].toString()+"\n";
+			if (channel[i] != null)
+				s+=channel[i].toString()+"\n";
 		}
 		return s;
 	}
@@ -69,7 +84,7 @@ public class Vhdr extends JSplitPane {
 	private String vhdr(){
 		return new StringBuilder()
 					.append("[Common Infos]\n")
-					.append("Codepage="+getCodePage()+"\n")
+					.append("Codepage="+codePage.getValue()+"\n")
 					.append("DataFile="+dataFile+"\n")
 					.append("MarkerFile="+markerFile+"\n")
 					.append("DataFormat="+dataFormat+"\n")
@@ -128,8 +143,9 @@ public class Vhdr extends JSplitPane {
 			String line;
 			while (s.hasNextLine()){
 				line=s.nextLine();
-				if(line.equals("[Common Infos]")){
-					codePage=s.nextLine().split("=")[1];
+				if(line.equals("[Common Infos]")){/* codePage=s.nextLine().split("=")[1]; */
+					codePage = new EditableField(s.nextLine(), 20);
+					input.add(codePage);
 					dataFile=s.nextLine().split("=")[1];
 					markerFile=s.nextLine().split("=")[1];
 					dataFormat=s.nextLine().split("=")[1];
@@ -208,7 +224,7 @@ public class Vhdr extends JSplitPane {
 
 
 	public String getCodePage() {
-		return codePage;
+		return codePage.getValue();
 	}
 
 

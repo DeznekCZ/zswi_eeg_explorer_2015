@@ -59,7 +59,7 @@ public class Vyber extends JFileChooser {
 			@Override
 			public Icon getIcon(File f) {
 				Icon ikona = FileSystemView.getFileSystemView().getSystemIcon(f);
-				if (!f.isDirectory() && !new Vhdr(f, false).isReadAble()) {
+				if (!f.isDirectory() && !new Vhdr(f, false).isReadable()) {
 					return new BlockedIcon(this, ikona);
 				} else if (f.isDirectory() && type == OUTPUT
 						&& f.equals(VSTUPNI_VYBER.getCurrentDirectory())) {

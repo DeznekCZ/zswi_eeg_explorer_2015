@@ -137,7 +137,7 @@ public class Editor extends JTabbedPane {
 			if (soubory != null) {
 				for (File file : soubory) {
 					Vhdr vhdrSoubor = new Vhdr(file, true);
-					if (!vhdrSoubor.isReadAble()) {
+					if (!vhdrSoubor.isReadable()) {
 						nonReadable.add(file);
 						continue;
 					}

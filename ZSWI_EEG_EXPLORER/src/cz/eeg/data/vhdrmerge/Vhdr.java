@@ -1,6 +1,10 @@
 package cz.eeg.data.vhdrmerge;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Scanner;
 
 import javax.swing.JScrollPane;
@@ -8,6 +12,8 @@ import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
 
 import cz.eeg.Aplikace;
+import cz.eeg.data.DATA;
+import cz.eeg.data.VMRK;
 
 
 public class Vhdr extends JSplitPane {

@@ -17,8 +17,8 @@ public class MergeVhdr {
 	private String newFile,dataFile,markerFile;
 	
 	public MergeVhdr(String file1,String file2,String newFile,String dataFile,String markerFile){
-		 v1=new Vhdr(file1);
-		 v2=new Vhdr(file2);
+		 //v1=new Vhdr(file1);
+		 //v2=new Vhdr(file2);
 		 this.newFile=newFile;
 		 this.dataFile=dataFile;
 		 this.markerFile=markerFile;

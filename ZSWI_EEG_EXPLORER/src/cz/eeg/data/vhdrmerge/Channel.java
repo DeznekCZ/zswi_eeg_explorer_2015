@@ -20,7 +20,7 @@ public class Channel {
 	
 	@Override
 	public String toString() {
-		return channelNumber + "=" + name+ ",," + resolutionInUnit + "," + unit;
+		return (channelNumber + "=" + name+ ",," + resolutionInUnit + "," + unit);
 		
 	}
 

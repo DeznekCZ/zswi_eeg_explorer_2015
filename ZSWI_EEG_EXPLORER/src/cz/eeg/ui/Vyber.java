@@ -35,6 +35,7 @@ import javax.swing.text.IconView;
 
 import cz.eeg.Aplikace;
 import cz.eeg.data.VHDR;
+import cz.eeg.data.vhdrmerge.Vhdr;
 import cz.eeg.tool.Config;
 import cz.eeg.tool.Lang;
 
@@ -58,7 +59,7 @@ public class Vyber extends JFileChooser {
 			@Override
 			public Icon getIcon(File f) {
 				Icon ikona = FileSystemView.getFileSystemView().getSystemIcon(f);
-				if (!f.isDirectory() && !VHDR.isReadable(f)) {
+				if (!f.isDirectory() && !new Vhdr(f, false).isCitelny()) {
 					return new BlockedIcon(this, ikona);
 				} else if (f.isDirectory() && type == OUTPUT
 						&& f.equals(VSTUPNI_VYBER.getCurrentDirectory())) {

@@ -1,12 +1,19 @@
 package cz.eeg.data.vhdrmerge;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Scanner;
 
+import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
+
+import cz.eeg.Aplikace;
+import cz.eeg.data.DATA;
+import cz.eeg.data.VMRK;
 
 
 public class Vhdr extends JSplitPane {
@@ -25,13 +32,20 @@ public class Vhdr extends JSplitPane {
 	private String popis3=null;
 	private Channel[] kanaly;
 
+	private boolean citelny = true;
+	//TODO editovany
+
+	public boolean isCitelny() {
+		return citelny;
+	}
+
 
 	private JTextArea input;
 	private JTextArea markerTable;
 	
 	private String projdiKanaly(){
 		String s="";
-		for(int i=0;i<kanaly.length;i++){
+		for(int i=0;i<numberOfChannels;i++){
 			s+=kanaly[i].toString()+"\n";
 		}
 		return s;
@@ -55,7 +69,7 @@ public class Vhdr extends JSplitPane {
 					.append("\n")
 					.append("[Channel Infos]\n")
 					.append(popis2)
-					.append(projdiKanaly())
+					//.append(projdiKanaly())
 				.toString();
 	}
 
@@ -119,49 +133,102 @@ public class Vhdr extends JSplitPane {
 	}
 
 
-	public Vhdr(String vstup){
-		cti(vstup);
+	public Vhdr(File vstup, boolean viditelnost){
+		super(JSplitPane.HORIZONTAL_SPLIT);
+		setName(vstup.getName());
+		
+		if (viditelnost) {
+			cti(vstup);
+			input = new JTextArea(vhdr());
+			JScrollPane jspi = new JScrollPane(input);
+			add(jspi);
+			markerTable = new JTextArea("");
+			JScrollPane jspm = new JScrollPane(markerTable);
+			add(jspm);
+			setDividerLocation(Aplikace.EDITOR.getSize().width * 2 / 3);
+		}else {
+			ctiRychle(vstup);
+		}
+		
+		
+	}
+	
+	private void ctiRychle(File soubor){
+		
+		
+		try {
+			Scanner s = new Scanner(soubor);
+			while(s.hasNext()) {
+				String line = s.nextLine();
+				String[] split = line.split("=");
+				
+				//TODO Získání adresy datového souboru
+				if (split.length == 2 && split[0].equals("DataFile")) {
+					dataFile=split[1];
+				} else
+				//TODO Získání adresy markerového souboru
+					if (split.length == 2 && split[0].equals("MarkerFile")) {
+					markerFile=split[1];
+				}
+				
+				//TODO Přepsání řádku na obrazovku, pokud se bude kreslit
+				
+			}
+			s.close();
+		} catch (Exception e) {
+			//TODO V případě nečitelnosti se nastaví jako nečitelný Header
+			citelny = false;
+		}
+
 	}
 	
 
-	public void cti(String file){
+	private void cti(File file){
 		try{
-			InputStream ips=new FileInputStream(file); 
-			InputStreamReader ipsr=new InputStreamReader(ips);
-			BufferedReader br=new BufferedReader(ipsr);
+			//InputStream ips=new FileInputStream(file); 
+			//InputStreamReader ipsr=new InputStreamReader(ips);
+			//BufferedReader br=new BufferedReader(ipsr);
+	
+			Scanner s = new Scanner(file);
 			String line;
-			while ((line=br.readLine())!=null){
+			while (s.hasNextLine()){
+				line=s.nextLine();
 				if(line.equals("[Common Infos]")){
-					codePage=br.readLine().split("=")[1];
-					dataFile=br.readLine().split("=")[1];
-					markerFile=br.readLine().split("=")[1];
-					dataFormat=br.readLine().split("=")[1];
-					popis1=br.readLine();
-					dataOrient=br.readLine().split("=")[1];
-					numberOfChannels=Integer.parseInt(br.readLine().split("=")[1]);
-					popis3=br.readLine();
-					samplingInterval=Integer.parseInt(br.readLine().split("=")[1]);
+					codePage=s.nextLine().split("=")[1];
+					dataFile=s.nextLine().split("=")[1];
+					markerFile=s.nextLine().split("=")[1];
+					dataFormat=s.nextLine().split("=")[1];
+					popis1=s.nextLine();
+					dataOrient=s.nextLine().split("=")[1];
+					numberOfChannels=Integer.parseInt(s.nextLine().split("=")[1]);
+					popis3=s.nextLine();
+					samplingInterval=Integer.parseInt(s.nextLine().split("=")[1]);
 				}
 				if(line.equals("[Binary Infos]")){
-					binaryFormat=br.readLine().split("=")[1];
+					binaryFormat=s.nextLine().split("=")[1];
 				}
 				if(line.equals("[Channel Infos]")){
-					line=br.readLine();
-					while(line.startsWith(";")==true){
-						popis2+=br.readLine()+"\n";
+					line=s.nextLine();
+					while(line.startsWith(";")){
+						popis2+=line+"\n";
+						line=s.nextLine();
+						
 					}
 					kanaly=new Channel[numberOfChannels];
 					for(int j=0;j<numberOfChannels;j++){
-						kanaly[j]=new Channel(br.readLine());
+						kanaly[j]=new Channel(line);
+						line = s.nextLine();
 					}
+					break;
 				}
 
 			}
-			br.close();
+			s.close();
+			//br.close();
 	
 		}       
 		catch (Exception e){
-			System.out.println(e.toString());
+			citelny=false;
 		}
 
 	}

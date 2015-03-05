@@ -28,6 +28,7 @@ import javax.swing.JTabbedPane;
 
 import cz.eeg.Aplikace;
 import cz.eeg.data.VHDR;
+import cz.eeg.data.vhdrmerge.Vhdr;
 import cz.eeg.tool.Config;
 import cz.eeg.tool.Lang;
 import cz.eeg.ui.editor.Ulozit;
@@ -48,7 +49,7 @@ public class Editor extends JTabbedPane {
 	private static JMenuItem MENU_ULOZIT;
 	private static Editor instance;
 	
-	private List<VHDR> otevreneSoubory = new ArrayList<VHDR>();
+	private List<Vhdr> otevreneSoubory = new ArrayList<Vhdr>();
 	
 	public Editor() {
 		
@@ -135,8 +136,8 @@ public class Editor extends JTabbedPane {
 			File[] soubory = Aplikace.oknoVyberu.getSelectedFiles();
 			if (soubory != null) {
 				for (File file : soubory) {
-					VHDR vhdrSoubor = new VHDR(file, true);
-					if (!vhdrSoubor.isReadable()) {
+					Vhdr vhdrSoubor = new Vhdr(file, true);
+					if (!vhdrSoubor.isCitelny()) {
 						nonReadable.add(file);
 						continue;
 					}
@@ -184,7 +185,7 @@ public class Editor extends JTabbedPane {
 		if (jsouOtevreneSoubory()) {
 			OKNO.setVisible(true);
 			int index = getSelectedIndex();
-			VHDR soubor = otevreneSoubory.get(index);
+			Vhdr soubor = otevreneSoubory.get(index);
 			
 			int option = JOptionPane.showConfirmDialog(null, 
 					LANG.file_close + soubor.getName() + "?", LANG.file, JOptionPane.OK_CANCEL_OPTION);
@@ -245,8 +246,8 @@ public class Editor extends JTabbedPane {
 
 	public void ulozitSoubor(String nazev) {
 		int index = getSelectedIndex();
-		VHDR soubor = otevreneSoubory.get(index);
-		soubor.ulozit(nazev);
+		Vhdr soubor = otevreneSoubory.get(index);
+		//soubor.ulozit(nazev);
 	}
 }
 

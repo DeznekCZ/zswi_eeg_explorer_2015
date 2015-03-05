@@ -35,7 +35,7 @@ public class Vhdr extends JSplitPane {
 	private boolean readable = true;
 	//TODO editovany
 
-	public boolean isReadAble() {
+	public boolean isReadable() {
 		return readable;
 	}
 

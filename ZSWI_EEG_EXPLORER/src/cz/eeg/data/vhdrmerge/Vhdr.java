@@ -27,26 +27,26 @@ public class Vhdr extends JSplitPane {
 	private String dataFile;
 	private String markerFile;
 	private String codePage;
-	private String popis2=null;
-	private String popis1=null;
-	private String popis3=null;
-	private Channel[] kanaly;
+	private String channelInfo=null;
+	private String dator=null;
+	private String sampling=null;
+	private Channel[] channel;
 
-	private boolean citelny = true;
+	private boolean readable = true;
 	//TODO editovany
 
-	public boolean isCitelny() {
-		return citelny;
+	public boolean isReadAble() {
+		return readable;
 	}
 
 
 	private JTextArea input;
 	private JTextArea markerTable;
 	
-	private String projdiKanaly(){
+	private String allChannels(){
 		String s="";
 		for(int i=0;i<numberOfChannels;i++){
-			s+=kanaly[i].toString()+"\n";
+			s+=channel[i].toString()+"\n";
 		}
 		return s;
 	}
@@ -58,17 +58,17 @@ public class Vhdr extends JSplitPane {
 					.append("DataFile="+dataFile+"\n")
 					.append("MarkerFile="+markerFile+"\n")
 					.append("DataFormat="+dataFormat+"\n")
-					.append(popis1+"\n")
+					.append(dator+"\n")
 					.append("DataOrientation="+dataOrient+"\n")
 					.append("NumberOfChannels="+numberOfChannels+"\n")
-					.append(popis3+"\n")
+					.append(sampling+"\n")
 					.append("SamplingInterval="+samplingInterval+"\n")
 					.append("\n")
 					.append("[Binary Infos]\n")
 					.append("BinaryFormat="+binaryFormat+"\n")
 					.append("\n")
 					.append("[Channel Infos]\n")
-					.append(popis2)
+					.append(channelInfo)
 					//.append(projdiKanaly())
 				.toString();
 	}
@@ -113,32 +113,32 @@ public class Vhdr extends JSplitPane {
 	}
 
 
-	public String getPopis2() {
-		return popis2;
+	public String getChannelInfo() {
+		return channelInfo;
 	}
 
 
-	public String getPopis1() {
-		return popis1;
+	public String getDator() {
+		return dator;
 	}
 
 
-	public String getPopis3() {
-		return popis3;
+	public String getSampling() {
+		return sampling;
 	}
 
 
-	public Channel[] getKanaly() {
-		return kanaly;
+	public Channel[] getChannel() {
+		return channel;
 	}
 
 
-	public Vhdr(File vstup, boolean viditelnost){
+	public Vhdr(File inputF, boolean viewable){
 		super(JSplitPane.HORIZONTAL_SPLIT);
-		setName(vstup.getName());
+		setName(inputF.getName());
 		
-		if (viditelnost) {
-			cti(vstup);
+		if (viewable) {
+			openFile(inputF);
 			input = new JTextArea(vhdr());
 			JScrollPane jspi = new JScrollPane(input);
 			add(jspi);
@@ -147,17 +147,17 @@ public class Vhdr extends JSplitPane {
 			add(jspm);
 			setDividerLocation(Aplikace.EDITOR.getSize().width * 2 / 3);
 		}else {
-			ctiRychle(vstup);
+			viewFile(inputF);
 		}
 		
 		
 	}
 	
-	private void ctiRychle(File soubor){
+	private void viewFile(File iFile){
 		
 		
 		try {
-			Scanner s = new Scanner(soubor);
+			Scanner s = new Scanner(iFile);
 			while(s.hasNext()) {
 				String line = s.nextLine();
 				String[] split = line.split("=");
@@ -177,13 +177,13 @@ public class Vhdr extends JSplitPane {
 			s.close();
 		} catch (Exception e) {
 			//TODO V případě nečitelnosti se nastaví jako nečitelný Header
-			citelny = false;
+			readable = false;
 		}
 
 	}
 	
 
-	private void cti(File file){
+	private void openFile(File file){
 		try{
 			//InputStream ips=new FileInputStream(file); 
 			//InputStreamReader ipsr=new InputStreamReader(ips);
@@ -198,10 +198,10 @@ public class Vhdr extends JSplitPane {
 					dataFile=s.nextLine().split("=")[1];
 					markerFile=s.nextLine().split("=")[1];
 					dataFormat=s.nextLine().split("=")[1];
-					popis1=s.nextLine();
+					dator=s.nextLine();
 					dataOrient=s.nextLine().split("=")[1];
 					numberOfChannels=Integer.parseInt(s.nextLine().split("=")[1]);
-					popis3=s.nextLine();
+					sampling=s.nextLine();
 					samplingInterval=Integer.parseInt(s.nextLine().split("=")[1]);
 				}
 				if(line.equals("[Binary Infos]")){
@@ -210,13 +210,13 @@ public class Vhdr extends JSplitPane {
 				if(line.equals("[Channel Infos]")){
 					line=s.nextLine();
 					while(line.startsWith(";")){
-						popis2+=line+"\n";
+						channelInfo+=line+"\n";
 						line=s.nextLine();
 						
 					}
-					kanaly=new Channel[numberOfChannels];
+					channel=new Channel[numberOfChannels];
 					for(int j=0;j<numberOfChannels;j++){
-						kanaly[j]=new Channel(line);
+						channel[j]=new Channel(line);
 						line = s.nextLine();
 					}
 					break;
@@ -228,7 +228,7 @@ public class Vhdr extends JSplitPane {
 	
 		}       
 		catch (Exception e){
-			citelny=false;
+			readable=false;
 		}
 
 	}

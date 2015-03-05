@@ -40,15 +40,15 @@ public class MergeVhdr {
 			pw.write("DataFile="+dataFile+"\n");
 			pw.write("MarkerFile="+markerFile+"\n");
 			pw.write("DataFormat="+v1.getDataFormat()+"\n");
-			pw.write(v1.getPopis1()+"\n");
+			pw.write(v1.getDator()+"\n");
 			pw.write("DataOrientation="+v1.getDataOrient()+"\n");
 			pw.write("NumberOfChannels="+v1.getNumberOfChannels()+"\n");
-			pw.write(v1.getPopis2()+"\n");
+			pw.write(v1.getChannelInfo()+"\n");
 			pw.write("[Binary Infos]\n");
 			pw.write("BinaryFormat="+v1.getBinaryFormat()+"\n");
 			pw.write("[Channel Infos]\n");
-			pw.write(v1.getPopis3()+"\n");
-			Channel [] kanaly=v1.getKanaly();
+			pw.write(v1.getSampling()+"\n");
+			Channel [] kanaly=v1.getChannel();
 			for(int i=0;i<v1.getNumberOfChannels();i++){
 				pw.write(kanaly[i].toString());
 			}

@@ -35,104 +35,9 @@ public class Vhdr extends JSplitPane {
 	private boolean readable = true;
 	//TODO editovany
 
-	public boolean isReadable() {
-		return readable;
-	}
-
-
 	private JTextArea input;
 	private JTextArea markerTable;
 	
-	private String allChannels(){
-		String s="";
-		for(int i=0;i<numberOfChannels;i++){
-			s+=channel[i].toString()+"\n";
-		}
-		return s;
-	}
-	
-	public String vhdr(){
-		return new StringBuilder()
-					.append("[Common Infos]\n")
-					.append("Codepage="+getCodePage()+"\n")
-					.append("DataFile="+dataFile+"\n")
-					.append("MarkerFile="+markerFile+"\n")
-					.append("DataFormat="+dataFormat+"\n")
-					.append(dator+"\n")
-					.append("DataOrientation="+dataOrient+"\n")
-					.append("NumberOfChannels="+numberOfChannels+"\n")
-					.append(sampling+"\n")
-					.append("SamplingInterval="+samplingInterval+"\n")
-					.append("\n")
-					.append("[Binary Infos]\n")
-					.append("BinaryFormat="+binaryFormat+"\n")
-					.append("\n")
-					.append("[Channel Infos]\n")
-					.append(channelInfo)
-					//.append(projdiKanaly())
-				.toString();
-	}
-
-	public String getDataFormat() {
-		return dataFormat;
-	}
-
-
-	public String getDataOrient() {
-		return dataOrient;
-	}
-
-
-	public int getNumberOfChannels() {
-		return numberOfChannels;
-	}
-
-
-	public int getSamplingInterval() {
-		return samplingInterval;
-	}
-
-
-	public String getBinaryFormat() {
-		return binaryFormat;
-	}
-
-
-	public String getDataFile() {
-		return dataFile;
-	}
-
-
-	public String getMarkerFile() {
-		return markerFile;
-	}
-
-
-	public String getCodePage() {
-		return codePage;
-	}
-
-
-	public String getChannelInfo() {
-		return channelInfo;
-	}
-
-
-	public String getDator() {
-		return dator;
-	}
-
-
-	public String getSampling() {
-		return sampling;
-	}
-
-
-	public Channel[] getChannel() {
-		return channel;
-	}
-
-
 	public Vhdr(File inputF, boolean viewable){
 		super(JSplitPane.HORIZONTAL_SPLIT);
 		setName(inputF.getName());
@@ -151,6 +56,36 @@ public class Vhdr extends JSplitPane {
 		}
 		
 		
+	}
+	
+	private String channelsToString(){
+		String s="";
+		for(int i=0;i<numberOfChannels;i++){
+			s+=channel[i].toString()+"\n";
+		}
+		return s;
+	}
+	
+	private String vhdr(){
+		return new StringBuilder()
+					.append("[Common Infos]\n")
+					.append("Codepage="+getCodePage()+"\n")
+					.append("DataFile="+dataFile+"\n")
+					.append("MarkerFile="+markerFile+"\n")
+					.append("DataFormat="+dataFormat+"\n")
+					.append(dator+"\n")
+					.append("DataOrientation="+dataOrient+"\n")
+					.append("NumberOfChannels="+numberOfChannels+"\n")
+					.append(sampling+"\n")
+					.append("SamplingInterval="+samplingInterval+"\n")
+					.append("\n")
+					.append("[Binary Infos]\n")
+					.append("BinaryFormat="+binaryFormat+"\n")
+					.append("\n")
+					.append("[Channel Infos]\n")
+					.append(channelInfo)
+					.append(channelsToString())
+				.toString();
 	}
 	
 	private void viewFile(File iFile){
@@ -232,4 +167,68 @@ public class Vhdr extends JSplitPane {
 		}
 
 	}
+
+	public boolean isReadable() {
+		return readable;
+	}
+
+	public String getDataFormat() {
+		return dataFormat;
+	}
+
+
+	public String getDataOrient() {
+		return dataOrient;
+	}
+
+
+	public int getNumberOfChannels() {
+		return numberOfChannels;
+	}
+
+
+	public int getSamplingInterval() {
+		return samplingInterval;
+	}
+
+
+	public String getBinaryFormat() {
+		return binaryFormat;
+	}
+
+
+	public String getDataFile() {
+		return dataFile;
+	}
+
+
+	public String getMarkerFile() {
+		return markerFile;
+	}
+
+
+	public String getCodePage() {
+		return codePage;
+	}
+
+
+	public String getChannelInfo() {
+		return channelInfo;
+	}
+
+
+	public String getDator() {
+		return dator;
+	}
+
+
+	public String getSampling() {
+		return sampling;
+	}
+
+
+	public Channel[] getChannel() {
+		return channel;
+	}
+
 }

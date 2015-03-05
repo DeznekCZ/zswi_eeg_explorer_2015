@@ -1,18 +1,11 @@
 package cz.eeg.ui;
 
-import java.awt.BasicStroke;
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Stroke;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.geom.Line2D;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -27,7 +20,6 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
 import cz.eeg.Aplikace;
-import cz.eeg.data.VHDR;
 import cz.eeg.data.vhdrmerge.Vhdr;
 import cz.eeg.tool.Config;
 import cz.eeg.tool.Lang;
@@ -137,7 +129,7 @@ public class Editor extends JTabbedPane {
 			if (soubory != null) {
 				for (File file : soubory) {
 					Vhdr vhdrSoubor = new Vhdr(file, true);
-					if (!vhdrSoubor.isReadAble()) {
+					if (!vhdrSoubor.isReadable()) {
 						nonReadable.add(file);
 						continue;
 					}

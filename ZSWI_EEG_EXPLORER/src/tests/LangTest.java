@@ -1,3 +1,5 @@
+package tests;
+
 import static cz.deznekcz.tool.Lang.*;
 import static org.junit.Assert.*;
 

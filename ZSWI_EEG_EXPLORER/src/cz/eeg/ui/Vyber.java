@@ -1,5 +1,6 @@
 package cz.eeg.ui;
 
+import static cz.deznekcz.tool.Lang.*;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Component;
@@ -25,7 +26,6 @@ import cz.eeg.tool.Lang;
 
 public class Vyber extends JFileChooser {
 	
-	public final static Lang LANG = Aplikace.LANG;
 	public final static Config CONFIG = Aplikace.CONFIG;
 	public static final int INPUT = 1;
 	public static final int OUTPUT = 2;
@@ -38,7 +38,7 @@ public class Vyber extends JFileChooser {
 		setControlButtonsAreShown(false);
 		
 		setAcceptAllFileFilterUsed(false);
-		setFileFilter(new FileNameExtensionFilter(LANG.file_type, new String[] {"vhdr"}));
+		setFileFilter(new FileNameExtensionFilter(LANG("file_type"), new String[] {"vhdr"}));
 		setFileView(new FileView() {
 			@Override
 			public Icon getIcon(File f) {

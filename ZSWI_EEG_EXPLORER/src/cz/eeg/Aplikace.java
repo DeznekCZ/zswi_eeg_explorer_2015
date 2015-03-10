@@ -1,5 +1,7 @@
 package cz.eeg;
 
+import static cz.deznekcz.tool.Lang.*;
+
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.KeyboardFocusManager;
@@ -7,7 +9,7 @@ import java.awt.KeyboardFocusManager;
 import javax.swing.JFrame;
 
 import cz.eeg.tool.Config;
-import cz.eeg.tool.Lang;
+//import cz.eeg.tool.Lang;
 import cz.eeg.tool.Ovladac;
 import cz.eeg.ui.Editor;
 import cz.eeg.ui.Prohlizec;
@@ -24,8 +26,11 @@ public class Aplikace extends JFrame {
 	//TODO Inicializace nastavení
 	/** Konfigurační instance třídy {@link Config} */
 	public final static Config CONFIG = new Config();
-	/** Překladová instance třídy {@link Lang} */
-	public final static Lang LANG = new Lang(CONFIG.lang);
+	
+	static {
+		LANGload(CONFIG.lang);
+	}
+	
 	/** Konstanta s autorským podpisem */
 	public final static String AUTHOR = "\n\nIT Crowd\n"
 				+"Zdeněk Novotný, Michal Sakáč, Vaclav Trykar, Václav Zoubek";
@@ -77,7 +82,7 @@ public class Aplikace extends JFrame {
 
 	@Override
 	public void paint(Graphics g) {
-		setTitle(LANG.window_name);
+		setTitle(LANG("window_name"));
 		super.paint(g);
 	};
 
@@ -102,10 +107,12 @@ public class Aplikace extends JFrame {
 			CONFIG.ex_posy = getLocation().y;
 			CONFIG.ex_width = getWidth();
 			CONFIG.ex_height = getHeight();
-			CONFIG.lang = LANG.lang_short;
+			CONFIG.lang = LANG("lang_short");
 			CONFIG.folder_input = PROHLIZEC.getVstupniSoubor();
 			CONFIG.folder_output = PROHLIZEC.getVystupniSoubor();
 			CONFIG.save();
+			
+			LANGgererate(CONFIG.lang);
 			System.exit(0);
 		}
 		super.setVisible(b);

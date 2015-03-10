@@ -1,5 +1,6 @@
 package cz.eeg.ui;
 
+import static cz.deznekcz.tool.Lang.*;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dimension;
@@ -18,7 +19,7 @@ import cz.eeg.tool.Lang;
 public class Prohlizec extends JPanel {
 
 	public final static Config CONFIG = Aplikace.CONFIG;
-	public final static Lang LANG = Aplikace.LANG;
+	//public final static Lang LANG = Aplikace.LANG;
 	
 	private final static JSplitPane SPLIT = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
 	
@@ -36,7 +37,7 @@ public class Prohlizec extends JPanel {
 			//TODO Menu soubor
 			final JMenu soubor = new JMenu() {
 				public void repaint() {
-					setText(LANG.file);
+					setText(LANG("file"));
 					super.repaint();
 				};
 			};
@@ -48,7 +49,7 @@ public class Prohlizec extends JPanel {
 
 				final JMenuItem editor = new JMenuItem() {
 					public void repaint() {
-						setText(LANG.file_editor);
+						setText(LANG("file_editor"));
 						super.repaint();
 					};
 				};
@@ -67,7 +68,7 @@ public class Prohlizec extends JPanel {
 
 				final JMenuItem exit = new JMenuItem() {
 					public void repaint() {
-						setText(LANG.exit);
+						setText(LANG("exit"));
 						super.repaint();
 					};
 				};
@@ -86,7 +87,7 @@ public class Prohlizec extends JPanel {
 
 			final JMenu help = new JMenu() {
 				public void repaint() {
-					setText(LANG.credits);
+					setText(LANG("credits"));
 					super.repaint();
 				};
 			};
@@ -97,7 +98,7 @@ public class Prohlizec extends JPanel {
 
 				final JMenu jazyk = new JMenu() {
 					public void repaint() {
-						setText(LANG.lang);
+						setText(LANG("lang"));
 						super.repaint();
 					};
 				};
@@ -117,7 +118,7 @@ public class Prohlizec extends JPanel {
 
 				final JMenuItem about = new JMenuItem() {
 					public void repaint() {
-						setText(LANG.credits_about);
+						setText(LANG("credits_about"));
 						super.repaint();
 					};
 				};
@@ -126,7 +127,7 @@ public class Prohlizec extends JPanel {
 				about.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent event) {
 						final JTextArea area = new JTextArea();
-						area.setText(LANG.credits_info+Aplikace.AUTHOR);
+						area.setText(LANG("credits_info")+Aplikace.AUTHOR);
 						area.setEditable(false);
 						area.setWrapStyleWord(true);
 						area.setLineWrap(true);
@@ -134,7 +135,7 @@ public class Prohlizec extends JPanel {
 						final JDialog aboutFrame = new JDialog();
 		                aboutFrame.setSize(new Dimension(300, 300));
 		                aboutFrame.add(area);
-		                aboutFrame.setTitle(LANG.credits_about);
+		                aboutFrame.setTitle(LANG("credits_about"));
 		                aboutFrame.setVisible(true);
 		                aboutFrame.setLocationRelativeTo(null);
 					}
@@ -179,7 +180,7 @@ public class Prohlizec extends JPanel {
         item.addActionListener(new ActionListener() {
         	private String language = nazevJazyka;
             public void actionPerformed(ActionEvent event) {
-                Aplikace.LANG.load(language);
+                LANGload(language);
                	Aplikace.OKNO.pack();
                	Aplikace.EDITOR.repaint();
             }

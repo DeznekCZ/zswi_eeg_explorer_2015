@@ -1,5 +1,6 @@
 package cz.eeg.ui;
 
+import static cz.deznekcz.tool.Lang.*;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -28,10 +29,10 @@ import cz.eeg.ui.editor.Ulozit;
 public class Editor extends JTabbedPane {
 
 	public final static Config CONFIG = Aplikace.CONFIG;
-	public final static Lang LANG = Aplikace.LANG;
+	//public final static Lang LANG = Aplikace.LANG;
 	public final static JPanel PANEL_TLACITEK = new JPanel();
 	public final static JPanel HLAVNI_ZALOZKA = new JPanel() { 
-		public void repaint() {setName(LANG.editor_no_file); super.repaint();};};
+		public void repaint() {setName(LANG("editor_no_file")); super.repaint();};};
 		
 	public final static JFrame OKNO = new JFrame(){
 		@Override public void setVisible(boolean arg0) { instance.setVisible(arg0); super.setVisible(arg0); };
@@ -66,14 +67,14 @@ public class Editor extends JTabbedPane {
 		// Soubor menu
 
 		final JMenu soubor = new JMenu() {
-			public void repaint() { setText(LANG.file); super.repaint(); };
+			public void repaint() { setText(LANG("file")); super.repaint(); };
 		}; soubor.repaint();
 		menuBar.add(soubor);
 		{
 			// Soubor item
 
 			final JMenuItem s1 = new JMenuItem() {
-				public void repaint() { setText(LANG.file_open); super.repaint(); };
+				public void repaint() { setText(LANG("file_open")); super.repaint(); };
 			}; s1.repaint();
 			
 			s1.addActionListener(new ActionListener() {
@@ -85,7 +86,7 @@ public class Editor extends JTabbedPane {
 			// Uložení
 
 			MENU_ULOZIT = new JMenuItem() {
-				public void repaint() { setText(LANG.file_save); super.repaint(); };
+				public void repaint() { setText(LANG("file_save")); super.repaint(); };
 			}; MENU_ULOZIT.repaint();
 			
 			MENU_ULOZIT.addActionListener(new ActionListener() {
@@ -141,8 +142,8 @@ public class Editor extends JTabbedPane {
 			
 			if (nonReadable.size() > 0) {
 				JOptionPane.showMessageDialog(null,
-						LANG.file_wrong + list(nonReadable), 
-						LANG.error, JOptionPane.ERROR_MESSAGE);
+						LANG("file_wrong") + list(nonReadable), 
+						LANG("error"), JOptionPane.ERROR_MESSAGE);
 			}
 			
 			if (otevreneSoubory.size() > 0) {
@@ -180,7 +181,7 @@ public class Editor extends JTabbedPane {
 			Vhdr soubor = otevreneSoubory.get(index);
 			
 			int option = JOptionPane.showConfirmDialog(null, 
-					LANG.file_close + soubor.getName() + "?", LANG.file, JOptionPane.OK_CANCEL_OPTION);
+					LANG("file_close", soubor.getName()), LANG("file"), JOptionPane.OK_CANCEL_OPTION);
 			
 			if (option == JOptionPane.OK_OPTION) {
 				otevreneSoubory.remove(index);
@@ -226,9 +227,9 @@ public class Editor extends JTabbedPane {
 	public void setSelectedIndex(int index) {
 		super.setSelectedIndex(index);
 		if (otevreneSoubory.size() == 0) {
-			OKNO.setTitle(LANG.editor_title);
+			OKNO.setTitle(LANG("editor_title"));
 		} else {
-			OKNO.setTitle(LANG.file + ": " + getTitleAt(index));
+			OKNO.setTitle(LANG("file") + ": " + getTitleAt(index));
 		}
 	}
 

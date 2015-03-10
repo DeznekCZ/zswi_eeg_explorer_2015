@@ -1,8 +1,10 @@
 package cz.eeg.data.vhdrmerge;
 
+import java.awt.Toolkit;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Scanner;
@@ -16,23 +18,22 @@ import javax.swing.JTextField;
 
 import cz.eeg.Aplikace;
 import cz.eeg.data.DATA;
-import cz.eeg.data.VMRK;
 import cz.eeg.ui.editor.EditableField;
 
 
 public class Vhdr extends JSplitPane {
 	
 
-	private String dataFormat;
-	private String dataOrient;
+	private EditableField dataFormat;
+	private EditableField dataOrient;
 	private int numberOfChannels;
 	private int samplingInterval;
-	private String binaryFormat;
-	private String dataFile;
-	private String markerFile;
+	private EditableField binaryFormat;
+	private EditableField dataFile;
+	private EditableField markerFile;
 	private EditableField codePage;
-	private String channelInfo=null;
-	private String dator=null;
+	private EditableField channelInfo=null;
+	private EditableField dator=null;
 	private String sampling=null;
 	private Channel[] channel;
 
@@ -85,17 +86,17 @@ public class Vhdr extends JSplitPane {
 		return new StringBuilder()
 					.append("[Common Infos]\n")
 					.append("Codepage="+codePage.getValue()+"\n")
-					.append("DataFile="+dataFile+"\n")
-					.append("MarkerFile="+markerFile+"\n")
-					.append("DataFormat="+dataFormat+"\n")
-					.append(dator+"\n")
-					.append("DataOrientation="+dataOrient+"\n")
+					.append("DataFile="+dataFile.getValue()+"\n")
+					.append("MarkerFile="+markerFile.getValue()+"\n")
+					.append("DataFormat="+dataFormat.getValue()+"\n")
+					.append(dator.getValue()+"\n")
+					.append("DataOrientation="+dataOrient.getValue()+"\n")
 					.append("NumberOfChannels="+numberOfChannels+"\n")
 					.append(sampling+"\n")
 					.append("SamplingInterval="+samplingInterval+"\n")
 					.append("\n")
 					.append("[Binary Infos]\n")
-					.append("BinaryFormat="+binaryFormat+"\n")
+					.append("BinaryFormat="+binaryFormat.getValue()+"\n")
 					.append("\n")
 					.append("[Channel Infos]\n")
 					.append(channelInfo)
@@ -114,11 +115,17 @@ public class Vhdr extends JSplitPane {
 				
 				//TODO Získání adresy datového souboru
 				if (split.length == 2 && split[0].equals("DataFile")) {
-					dataFile=split[1];
+					String newPath = iFile.getParentFile().getAbsolutePath()
+							+ "/" + split[1];
+					if (!new File(newPath).exists())
+						throw new FileNotFoundException();
 				} else
 				//TODO Získání adresy markerového souboru
-					if (split.length == 2 && split[0].equals("MarkerFile")) {
-					markerFile=split[1];
+				if (split.length == 2 && split[0].equals("MarkerFile")) {
+					String newPath = iFile.getParentFile().getAbsolutePath()
+							+ "/" + split[1];
+					if (!new File(newPath).exists())
+						throw new FileNotFoundException();
 				}
 				
 				//TODO Přepsání řádku na obrazovku, pokud se bude kreslit
@@ -144,24 +151,24 @@ public class Vhdr extends JSplitPane {
 			while (s.hasNextLine()){
 				line=s.nextLine();
 				if(line.equals("[Common Infos]")){/* codePage=s.nextLine().split("=")[1]; */
-					codePage = new EditableField(s.nextLine(), 20);
-					input.add(codePage);
-					dataFile=s.nextLine().split("=")[1];
-					markerFile=s.nextLine().split("=")[1];
-					dataFormat=s.nextLine().split("=")[1];
-					dator=s.nextLine();
-					dataOrient=s.nextLine().split("=")[1];
+					codePage = new EditableField(s.nextLine(), 20).editable();
+					dataFile = new EditableField(s.nextLine(), 20).editable();
+					markerFile = new EditableField(s.nextLine(), 20).editable();
+					dataFormat = new EditableField(s.nextLine(), 20).editable();
+					dator = new EditableField(s.nextLine(), 20).plain();
+					dataOrient = new EditableField(s.nextLine(), 20).editable();
 					numberOfChannels=Integer.parseInt(s.nextLine().split("=")[1]);
 					sampling=s.nextLine();
 					samplingInterval=Integer.parseInt(s.nextLine().split("=")[1]);
 				}
 				if(line.equals("[Binary Infos]")){
-					binaryFormat=s.nextLine().split("=")[1];
+					binaryFormat=new EditableField(s.nextLine(), 20).editable();
 				}
 				if(line.equals("[Channel Infos]")){
 					line=s.nextLine();
+					String channelInfoText = "";
 					while(line.startsWith(";")){
-						channelInfo+=line+"\n";
+						channelInfoText+=line+"\n";
 						line=s.nextLine();
 						
 					}
@@ -176,6 +183,16 @@ public class Vhdr extends JSplitPane {
 			}
 			s.close();
 			//br.close();
+			
+			//SEGMENT adding to JPanel
+			input.add(codePage);
+			input.add(dataFile);
+			input.add(markerFile);
+			input.add(dataFormat);
+			input.add(dator);
+			input.add(dataOrient);
+			input.add(binaryFormat);
+			//input.add(channelInfo);
 	
 		}       
 		catch (Exception e){
@@ -189,12 +206,12 @@ public class Vhdr extends JSplitPane {
 	}
 
 	public String getDataFormat() {
-		return dataFormat;
+		return dataFormat.getValue();
 	}
 
 
 	public String getDataOrient() {
-		return dataOrient;
+		return dataOrient.getValue();
 	}
 
 
@@ -209,17 +226,17 @@ public class Vhdr extends JSplitPane {
 
 
 	public String getBinaryFormat() {
-		return binaryFormat;
+		return binaryFormat.getValue();
 	}
 
 
 	public String getDataFile() {
-		return dataFile;
+		return dataFile.getValue();
 	}
 
 
 	public String getMarkerFile() {
-		return markerFile;
+		return markerFile.getValue();
 	}
 
 
@@ -229,12 +246,12 @@ public class Vhdr extends JSplitPane {
 
 
 	public String getChannelInfo() {
-		return channelInfo;
+		return channelInfo.getValue();
 	}
 
 
 	public String getDator() {
-		return dator;
+		return dator.getValue();
 	}
 
 

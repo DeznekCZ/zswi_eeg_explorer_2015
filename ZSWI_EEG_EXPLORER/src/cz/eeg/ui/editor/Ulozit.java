@@ -1,5 +1,7 @@
 package cz.eeg.ui.editor;
 
+import static cz.deznekcz.tool.Lang.*;
+
 import javax.swing.Box;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -12,7 +14,7 @@ import cz.eeg.ui.Editor;
 
 public class Ulozit {
 	
-	public final static Lang LANG = Aplikace.LANG;
+	//public final static Lang LANG = Aplikace.LANG;
 	
 	public final static int ULOZIT = 1;
 	
@@ -26,32 +28,32 @@ public class Ulozit {
 		    JTextField ageField = new JTextField(3);
 		
 		    JPanel myPanel = new JPanel();
-		    myPanel.add(new JLabel(LANG.format_year + ":"));
+		    myPanel.add(new JLabel(LANG("format_year") + ":"));
 		    myPanel.add(yearField);
 		    myPanel.add(Box.createVerticalStrut(1)); // a spacer
-		    myPanel.add(new JLabel(LANG.format_month + ":"));
+		    myPanel.add(new JLabel(LANG("format_month") + ":"));
 		    myPanel.add(monthField);
 		    myPanel.add(Box.createVerticalStrut(1)); // a spacer
-		    myPanel.add(new JLabel(LANG.format_day + ":"));
+		    myPanel.add(new JLabel(LANG("format_day") + ":"));
 		    myPanel.add(dayField);
 		    myPanel.add(Box.createVerticalStrut(1)); // a spacer
-		    myPanel.add(new JLabel(LANG.format_gender + ":"));
+		    myPanel.add(new JLabel(LANG("format_gender") + ":"));
 		    myPanel.add(genderField);
 		    myPanel.add(Box.createVerticalStrut(1)); // a spacer
-		    myPanel.add(new JLabel(LANG.format_age + ":"));
+		    myPanel.add(new JLabel(LANG("format_age") + ":"));
 		    myPanel.add(ageField);
 		
 		    String wrongMessage = "";
 		    
 		    while (true) {
 			    int result = JOptionPane.showConfirmDialog(null, myPanel, 
-			               LANG.editor_save, JOptionPane.OK_CANCEL_OPTION);
+			               LANG("editor_save"), JOptionPane.OK_CANCEL_OPTION);
 			    if (result == JOptionPane.OK_OPTION) {
 			    	
 			    	if (testYear(yearField.getText()) && testMonth(monthField.getText())
 			    			&& testDay(dayField.getText(), monthField.getText())
 			    			&& testGender(genderField.getText()) && testAge(ageField.getText())) {
-			    		wrongMessage = LANG.format_wrong;
+			    		wrongMessage = LANG("format_wrong");
 			    		continue;
 			    	}
 			    	

@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.sql.Time;
 import java.util.Scanner;
 
 import org.junit.Before;
@@ -17,7 +18,7 @@ import org.junit.Test;
 /**
  * Tests for <b>cz.deznekcz.tool.Lang</b>
  * @author Zdeněk Novotný (DeznekCZ)
- * @version 2.0
+ * @version 2.1
  */
 public class LangTest {
 
@@ -66,6 +67,12 @@ public class LangTest {
 				LANG("data_2", data2int, data2double));
 		
 		System.out.print(LANGlist());
+	}
+	
+	@Test
+	public void testBetterSetting() {
+		LANG("data_4", new Time(0));
+		assertEquals("<data_4,java.sql.Time>", LANG("data_4"));
 	}
 
 	private String loadFile(String path) throws FileNotFoundException {

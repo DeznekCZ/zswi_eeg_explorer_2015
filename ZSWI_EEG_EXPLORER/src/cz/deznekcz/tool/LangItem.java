@@ -5,20 +5,29 @@ package cz.deznekcz.tool;
  * value of an {@link Lang} item defined by specific symbol 
  * 
  * @author Zdeněk Novotný (DeznekCZ)
- * @version 2.0
+ * @version 2.1
  */
-public class LangItem {
+public class LangItem implements Comparable<LangItem>{
 	private final String symbol;
 	private String value;
 	
 	/**
 	 * Constructor that creates a new instance of {@link LangItem}.
-	 * Sets symbol by param and sets value to "&#60symbol&#62"
-	 * @param symbol
+	 * Sets symbol by param and sets value to: <br>
+	 * "&#60symbol,java.lang.Object,java.lang.Integer,...&#62"
+	 * @param symbol {@link String} value
+	 * @param args values to be formated
 	 */
-	public LangItem(String symbol) {
+	public LangItem(String symbol, Object... args) {
 		this.symbol = symbol;
-		this.setValue("<"+symbol+">");
+
+		String classes = "<" + symbol;
+		for (int i = 0; i < args.length; i++) {
+			classes += "," + args[i].getClass().getName();
+		}
+		classes += ">";
+		
+		this.setValue(classes);
 	}
 
 	/**
@@ -54,5 +63,10 @@ public class LangItem {
 		return obj != null 
 				&& obj instanceof LangItem
 				&& ((LangItem) obj).getSymbol().equals(this.getSymbol());
+	}
+
+	@Override
+	public int compareTo(LangItem o) {
+		return getSymbol().compareTo(o.getSymbol());
 	}
 }

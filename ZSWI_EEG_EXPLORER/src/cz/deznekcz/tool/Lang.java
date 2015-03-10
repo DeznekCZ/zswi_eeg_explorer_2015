@@ -4,6 +4,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.FormatFlagsConversionMismatchException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Scanner;
@@ -25,21 +28,21 @@ import java.util.Scanner;
  * <br>- LANGgenerate("language_fileName"); //on close aplication
  * 
  * <br><br>GUI commands:<br>
- * <br>- LANGset("language_fileName");
+ * <br>- LANGset("cus-TOM_5ym bol", "value %d");
  * 
  * @author Zdeněk Novotný (DeznekCZ)
- * @version 2.0
+ * @version 2.1
  */
 public class Lang {
 	
 	/** Singleton instance */
-	private static Lang instance;
-	
-	/** Load default language */
-	static { LANGload("english"); }
+	private static Lang instance = null;
 	
 	/** List of used symbols */
 	private final static List<LangItem> SYMBOLS = new ArrayList<LangItem>();
+	/** Load default language */
+	static { LANGload("english"); }
+	
 	/** Current used language */
 	private String langName;
 
@@ -56,12 +59,15 @@ public class Lang {
 	 */
 	public static void LANGload(String langName) {
 		try {
+			if (instance != null) {
+				LANGgererate(langName);
+			}
 			instance = new Lang(langName);
 			Scanner scanner = new Scanner(new File("lang/"+langName+".lng"));
 			
 			String[] line;
 			while (scanner.hasNextLine()) {
-				line = scanner.nextLine().split("=", 1);
+				line = scanner.nextLine().split("=", 2);
 				if (line.length == 2) {
 					LANGset(line[0], line[1]);
 				}
@@ -109,13 +115,17 @@ public class Lang {
 	 * @see String#format(String, Object...)
 	 */
 	public static String LANG(String symbol, Object... args) {
-		LangItem langItem = LANGgetItem(symbol);
+		LangItem langItem = LANGgetItem(symbol, args);
 		
 		if (args == null || args.length == 0) {
 			return langItem.getValue();
 		}
 		
-		return String.format(langItem.getValue(), args);
+		try {
+			return String.format(langItem.getValue(), args);
+		} catch (FormatFlagsConversionMismatchException e) {
+			return langItem.getValue();
+		}
 	}
 	
 	/**
@@ -125,6 +135,8 @@ public class Lang {
 	 */
 	public static String LANGlist() {
 		String out = "";
+		
+		Collections.sort(SYMBOLS);
 		
 		for (Iterator<LangItem> iterator = SYMBOLS.iterator(); iterator.hasNext();) {
 			LangItem langItem = iterator.next();
@@ -149,11 +161,12 @@ public class Lang {
 	 * Method returns an instance {@link LangItem} by specific symbol.
 	 * <br><font color="red">WARNING!</font>
 	 *  - if NOT exists, create that symbol
-	 * @param symbol {@link Scanner} value
+	 * @param symbol {@link String} value
+	 * @param args values to be formated
 	 * @return instance of {@link LangItem} 
 	 */
-	private static LangItem LANGgetItem(String symbol) {
-		LangItem langItem = new LangItem(symbol);
+	private static LangItem LANGgetItem(String symbol, Object... args) {
+		LangItem langItem = new LangItem(symbol, args);
 		
 		int index = SYMBOLS.indexOf(langItem);
 		 

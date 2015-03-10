@@ -12,13 +12,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * 
- */
-
-/**
  * Tests for <b>cz.deznekcz.tool.Lang</b>
  * @author Zdeněk Novotný (DeznekCZ)
- * @version 2.1
+ * @version 2.1.1
  */
 public class LangTest {
 
@@ -73,6 +69,10 @@ public class LangTest {
 	public void testBetterSetting() {
 		LANG("data_4", new Time(0));
 		assertEquals("<data_4,java.sql.Time>", LANG("data_4"));
+		LANG("data_5", 5.0f, 6.0f);
+		assertEquals("<data_5,java.lang.Float,java.lang.Float>", LANG("data_5"));
+		LANG("data_6", 5 + 7);
+		assertEquals("<data_6,java.lang.Integer>", LANG("data_6"));
 	}
 
 	private String loadFile(String path) throws FileNotFoundException {

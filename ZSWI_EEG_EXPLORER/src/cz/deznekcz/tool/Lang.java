@@ -31,7 +31,7 @@ import java.util.Scanner;
  * <br>- LANGset("cus-TOM_5ym bol", "value %d");
  * 
  * @author Zdeněk Novotný (DeznekCZ)
- * @version 2.1
+ * @version 2.1.1
  */
 public class Lang {
 	
@@ -61,6 +61,7 @@ public class Lang {
 		try {
 			if (instance != null) {
 				LANGgererate(langName);
+				SYMBOLS.clear();
 			}
 			instance = new Lang(langName);
 			Scanner scanner = new Scanner(new File("lang/"+langName+".lng"));

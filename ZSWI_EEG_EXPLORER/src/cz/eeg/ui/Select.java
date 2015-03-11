@@ -19,20 +19,19 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.filechooser.FileSystemView;
 import javax.swing.filechooser.FileView;
 
-import cz.eeg.Aplikace;
+import cz.eeg.Appliacion;
 import cz.eeg.data.vhdrmerge.Vhdr;
 import cz.eeg.tool.Config;
-import cz.eeg.tool.Lang;
 
-public class Vyber extends JFileChooser {
+public class Select extends JFileChooser {
 	
-	public final static Config CONFIG = Aplikace.CONFIG;
+	public final static Config CONFIG = Appliacion.CONFIG;
 	public static final int INPUT = 1;
 	public static final int OUTPUT = 2;
-	public static Vyber VSTUPNI_VYBER = new Vyber(new File("input"), Vyber.INPUT);
-	public static Vyber VYSTUPNI_VYBER = new Vyber(new File("output"), Vyber.OUTPUT);
+	public static final Select INPUT_SELECT = new Select(new File("input"), Select.INPUT);
+	public static final Select OUTPUT_SELECT = new Select(new File("output"), Select.OUTPUT);
 	
-	public Vyber(File slozka, final int type) {
+	public Select(File slozka, final int type) {
 		super(slozka);
 		
 		setControlButtonsAreShown(false);
@@ -46,7 +45,7 @@ public class Vyber extends JFileChooser {
 				if (!f.isDirectory() && !new Vhdr(f, false).isReadable()) {
 					return new BlockedIcon(this, ikona);
 				} else if (f.isDirectory() && type == OUTPUT
-						&& f.equals(VSTUPNI_VYBER.getCurrentDirectory())) {
+						&& f.equals(INPUT_SELECT.getCurrentDirectory())) {
 					return new BlockedIcon(this, ikona);
 				} else {
 					return ikona;
@@ -57,21 +56,21 @@ public class Vyber extends JFileChooser {
 		    public Boolean isTraversable(File f) {
 				if (type == OUTPUT)
 					return (f.isDirectory()
-		        		&& !f.equals(VSTUPNI_VYBER.getCurrentDirectory())); 
+		        		&& !f.equals(INPUT_SELECT.getCurrentDirectory())); 
 				else return super.isTraversable(f);
 		    }
 		});
 		setFileSelectionMode(FILES_ONLY);
 		setMultiSelectionEnabled(true);
 		
-		final Vyber vyber = this;
+		final Select vyber = this;
 		
 		final ActionListener actionListener = new ActionListener() {
 			public void actionPerformed(ActionEvent actionEvent) {
 				String command = actionEvent.getActionCommand();
 				if (command.equals(JFileChooser.APPROVE_SELECTION)) {
 					if (getSelectedFiles().length != 0) {
-						Aplikace.EDITOR.otevrit(true);
+						Appliacion.EDITOR.open(true);
 					}
 				}
 			}
@@ -97,7 +96,7 @@ public class Vyber extends JFileChooser {
 		        //We are interested in both event types
 		        if(propertyName.equals(JFileChooser.SELECTED_FILE_CHANGED_PROPERTY) ||
 		           propertyName.equals(JFileChooser.DIRECTORY_CHANGED_PROPERTY)){
-		        	Aplikace.oknoVyberu = vyber;
+		        	Appliacion.selectionFrame = vyber;
 		        }
 
 		 //Allow new events to be processed now

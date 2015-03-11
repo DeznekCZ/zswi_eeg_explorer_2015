@@ -16,7 +16,7 @@ import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
-import cz.eeg.Aplikace;
+import cz.eeg.Appliacion;
 import cz.eeg.data.DATA;
 import cz.eeg.ui.editor.EditableField;
 
@@ -64,7 +64,7 @@ public class Vhdr extends JSplitPane {
 			
 			p.setText(vhdr());
 			
-			setDividerLocation(Aplikace.EDITOR.getSize().width * 2 / 3);
+			setDividerLocation(Appliacion.EDITOR.getSize().width * 2 / 3);
 		}else {
 			viewFile(inputF);
 		}

@@ -20,81 +20,84 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
-import cz.eeg.Aplikace;
+import cz.eeg.Appliacion;
 import cz.eeg.data.vhdrmerge.Vhdr;
 import cz.eeg.tool.Config;
-import cz.eeg.tool.Lang;
-import cz.eeg.ui.editor.Ulozit;
+import cz.eeg.ui.editor.Dialog;
 
 public class Editor extends JTabbedPane {
 
-	public final static Config CONFIG = Aplikace.CONFIG;
-	//public final static Lang LANG = Aplikace.LANG;
-	public final static JPanel PANEL_TLACITEK = new JPanel();
-	public final static JPanel HLAVNI_ZALOZKA = new JPanel() { 
-		public void repaint() {setName(LANG("editor_no_file")); super.repaint();};};
+	public final static Config CONFIG = Appliacion.CONFIG;
+	/** Menu panel */
+	public final static JPanel MENU_PANEL = new JPanel();
+	/** Void tab for editor */
+	public final static JPanel VOID_TAB = new JPanel();
 		
-	public final static JFrame OKNO = new JFrame(){
+	/** Window frame */
+	public final static JFrame WINDOW = new JFrame(){
+		private static final long serialVersionUID = 1L;
+
 		@Override public void setVisible(boolean arg0) { instance.setVisible(arg0); super.setVisible(arg0); };
 	};
 	
 	private static final CloseButton CLOSE_BUTTON = new CloseButton();
-	private static JMenuItem MENU_ULOZIT;
+	/** Menu item: SAVE_AS */
+	private static JMenuItem MENU_SA;
+	/** Intenal instace of {@link Editor}, is needed for visibility control */
 	private static Editor instance;
 	
-	private List<Vhdr> otevreneSoubory = new ArrayList<Vhdr>();
+	/** List of openned files */
+	private List<Vhdr> openedFiles = new ArrayList<Vhdr>();
 	
+	/**
+	 * Default constructor of instaces of class {@link Editor}
+	 */
 	public Editor() {
 		
 		instance = this;
 		
-		HLAVNI_ZALOZKA.repaint();
-		HLAVNI_ZALOZKA.setEnabled(false);
-		add(HLAVNI_ZALOZKA);
+		VOID_TAB.setName(LANG("editor_no_file"));
+		VOID_TAB.repaint();
+		VOID_TAB.setEnabled(false);
+		add(VOID_TAB);
 		
-		OKNO.setLayout(new BorderLayout());
-		OKNO.add(PANEL_TLACITEK, BorderLayout.NORTH);
-		OKNO.add(this, BorderLayout.CENTER);
+		WINDOW.setLayout(new BorderLayout());
+		WINDOW.add(MENU_PANEL, BorderLayout.NORTH);
+		WINDOW.add(this, BorderLayout.CENTER);
 		
-		PANEL_TLACITEK.setLayout(new BorderLayout());
+		MENU_PANEL.setLayout(new BorderLayout());
 		//PANEL_TLACITEK.add(new CloseButton(), BorderLayout.EAST);
 		
 		// Soubor menu
 
 		final JMenuBar menuBar = new JMenuBar();
-		PANEL_TLACITEK.add(menuBar, BorderLayout.NORTH);
+		MENU_PANEL.add(menuBar, BorderLayout.NORTH);
 		
 		// Soubor menu
 
-		final JMenu soubor = new JMenu() {
-			public void repaint() { setText(LANG("file")); super.repaint(); };
-		}; soubor.repaint();
-		menuBar.add(soubor);
+		final JMenu file = new JMenu(LANG("file"));
+		menuBar.add(file);
 		{
 			// Soubor item
 
-			final JMenuItem s1 = new JMenuItem() {
-				public void repaint() { setText(LANG("file_open")); super.repaint(); };
-			}; s1.repaint();
+			final JMenuItem s1 = new JMenuItem(LANG("file_open"));
 			
 			s1.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent event) {
-					Aplikace.OKNO.requestFocus();
+					Appliacion.WINDOW.requestFocus();
 				}
-			}); soubor.add(s1);
+			}); file.add(s1);
 			
 			// Uložení
 
-			MENU_ULOZIT = new JMenuItem() {
-				public void repaint() { setText(LANG("file_save")); super.repaint(); };
-			}; MENU_ULOZIT.repaint();
+			MENU_SA = new JMenuItem(LANG("file_save_as"));
 			
-			MENU_ULOZIT.addActionListener(new ActionListener() {
+			MENU_SA.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent event) {
-					new Ulozit(Ulozit.ULOZIT);
+					new Dialog(Dialog.SAVE_AS);
 				}
-			}); soubor.add(MENU_ULOZIT);
-			MENU_ULOZIT.setEnabled(false);
+			}); file.add(MENU_SA);
+			MENU_SA.setEnabled(false);
 		}
 		
 		
@@ -104,37 +107,36 @@ public class Editor extends JTabbedPane {
 		menuBar.add(CLOSE_BUTTON);
 		CLOSE_BUTTON.setEnabled(false);
 		
-		nactiUmisteni();
+		loadWindowLocation();
 	}
 	
 	@Override
 	public void setVisible(boolean b) {
-		if (!b && Aplikace.seUkoncuje()) {
-			boolean zavirat = Aplikace.seUkoncuje();
-			while (zavirat && otevreneSoubory.size() > 0) {
-				zavirat = zavrit();
-			}
-		}
 		
-		if (!b && OKNO.isVisible()) {
-			ulozUmisteni();
-		} else if (b && !OKNO.isVisible()) {
-			nactiUmisteni();
+		if (!b && WINDOW.isVisible()) {
+			saveWindowLocation();
+		} else if (b && !WINDOW.isVisible()) {
+			loadWindowLocation();
 		}
 	}
 
-	public void otevrit(boolean nove) {
+	/**
+	 * Method open the {@link Editor}. Opens new files if is selected
+	 * in focused selection frame.
+	 * @param isSelectedFiles
+	 */
+	public void open(boolean isSelectedFiles) {
 		List<File> nonReadable = new ArrayList<File>();
-		if (nove && Aplikace.oknoVyberu != null) {
-			File[] soubory = Aplikace.oknoVyberu.getSelectedFiles();
-			if (soubory != null) {
-				for (File file : soubory) {
+		if (isSelectedFiles && Appliacion.selectionFrame != null) {
+			File[] files = Appliacion.selectionFrame.getSelectedFiles();
+			if (files != null) {
+				for (File file : files) {
 					Vhdr vhdrSoubor = new Vhdr(file, true);
 					if (!vhdrSoubor.isReadable()) {
 						nonReadable.add(file);
 						continue;
 					}
-					otevreneSoubory.add(vhdrSoubor);
+					openedFiles.add(vhdrSoubor);
 					addTab(vhdrSoubor.getName(), vhdrSoubor);
 					setSelectedIndex(getTabCount()-1);
 				}
@@ -146,20 +148,26 @@ public class Editor extends JTabbedPane {
 						LANG("error"), JOptionPane.ERROR_MESSAGE);
 			}
 			
-			if (otevreneSoubory.size() > 0) {
-				remove(HLAVNI_ZALOZKA);
+			if (openedFiles.size() > 0) {
+				remove(VOID_TAB);
 				CLOSE_BUTTON.setEnabled(true);
-				MENU_ULOZIT.setEnabled(true);
+				MENU_SA.setEnabled(true);
 			}	
 
-			if (soubory == null || nonReadable.size() < soubory.length)
-				OKNO.setVisible(true);
+			if (files == null || nonReadable.size() < files.length)
+				WINDOW.setVisible(true);
 			return;
 		}
 		
-		OKNO.setVisible(true);
+		WINDOW.setVisible(true);
 	}
 	
+	/**
+	 * Method makes a lined {@link String} list of unreadable files
+	 * from {@link List<File>}
+	 * @param nonReadable {@link List} of files
+	 * @return formate {@link String}
+	 */
 	private String list(List<File> nonReadable) {
 		String out = "\n" + nonReadable.get(0).getName();
 		Iterator<File> i = nonReadable.iterator();
@@ -172,78 +180,109 @@ public class Editor extends JTabbedPane {
 		return out;
 	}
 
-	public boolean zavrit() {
-		boolean zavritelne = true;
+	/**
+	 * Method closes actual selected file
+	 * @return 	true - file is succesfully closed<br>
+	 * 			false - file is not closed
+	 */
+	public boolean close() {
+		boolean closeAble = true;
 		
-		if (jsouOtevreneSoubory()) {
-			OKNO.setVisible(true);
+		if (isOpenedFiles()) {
+			WINDOW.setVisible(true);
 			int index = getSelectedIndex();
-			Vhdr soubor = otevreneSoubory.get(index);
+			Vhdr soubor = openedFiles.get(index);
 			
 			int option = JOptionPane.showConfirmDialog(null, 
 					LANG("file_close", soubor.getName()), LANG("file"), JOptionPane.OK_CANCEL_OPTION);
 			
 			if (option == JOptionPane.OK_OPTION) {
-				otevreneSoubory.remove(index);
+				openedFiles.remove(index);
 				remove(index);
 			} else {
-				zavritelne = false;
+				closeAble = false;
 			}
 		}
 		
-		if (otevreneSoubory.size() == 0) {
-			add(HLAVNI_ZALOZKA);
+		if (openedFiles.size() == 0) {
+			add(VOID_TAB);
 			CLOSE_BUTTON.setEnabled(false);
-			MENU_ULOZIT.setEnabled(false);
+			MENU_SA.setEnabled(false);
 		}
 
-		return zavritelne;
+		return closeAble;
 	}
 	
-	private void nactiUmisteni() {
-		OKNO.setPreferredSize(new Dimension(CONFIG.ed_width, CONFIG.ed_height));
+	/**
+	 * Method reads params of last window settings
+	 * from instance of class {@link Config}
+	 */
+	private void loadWindowLocation() {
+		WINDOW.setPreferredSize(new Dimension(CONFIG.ed_width, CONFIG.ed_height));
 		if (CONFIG.isSet()) {
-			OKNO.setLocation(CONFIG.ed_posx, CONFIG.ed_posy);
+			WINDOW.setLocation(CONFIG.ed_posx, CONFIG.ed_posy);
 			if ((CONFIG.ed_fullscreen & JFrame.MAXIMIZED_BOTH) != JFrame.MAXIMIZED_BOTH) {
 				setPreferredSize(new Dimension(CONFIG.ed_width, CONFIG.ed_height));
 			}
-			OKNO.setExtendedState(CONFIG.ed_fullscreen);
+			WINDOW.setExtendedState(CONFIG.ed_fullscreen);
 		} else {
-			OKNO.setLocationRelativeTo(null);
+			WINDOW.setLocationRelativeTo(null);
 		}
 		
-		OKNO.pack();
+		WINDOW.pack();
 	}
 	
-	private void ulozUmisteni() {
-		CONFIG.ed_fullscreen = OKNO.getExtendedState();
-		CONFIG.ed_posx = OKNO.getLocation().x;
-		CONFIG.ed_posy = OKNO.getLocation().y;
-		CONFIG.ed_width = OKNO.getWidth();
-		CONFIG.ed_height = OKNO.getHeight();
+	/**
+	 * Method writes params of last window settings<br>
+	 * <font color="red">WARNING!</font>Window muss be visible
+	 * from instance of class {@link Config}
+	 */
+	private void saveWindowLocation() {
+		CONFIG.ed_fullscreen = WINDOW.getExtendedState();
+		CONFIG.ed_posx = WINDOW.getLocation().x;
+		CONFIG.ed_posy = WINDOW.getLocation().y;
+		CONFIG.ed_width = WINDOW.getWidth();
+		CONFIG.ed_height = WINDOW.getHeight();
 	}
 	
 	@Override
 	public void setSelectedIndex(int index) {
 		super.setSelectedIndex(index);
-		if (otevreneSoubory.size() == 0) {
-			OKNO.setTitle(LANG("editor_title"));
+		if (openedFiles.size() == 0) {
+			WINDOW.setTitle(LANG("editor_title"));
 		} else {
-			OKNO.setTitle(LANG("file") + ": " + getTitleAt(index));
+			WINDOW.setTitle(LANG("file") + ": " + getTitleAt(index));
 		}
 	}
 
-	public boolean jsouOtevreneSoubory() {
-		return otevreneSoubory.size() > 0;
+	/**
+	 * Method returns true if the List of opened files
+	 * contains 1 or more files
+	 * @return true/false
+	 */
+	public boolean isOpenedFiles() {
+		return openedFiles.size() > 0;
 	}
 
-	public void ulozitSoubor(String nazev) {
+	/**
+	 * Method saves the selected file to output
+	 * directory with a specific name
+	 * @param name name of file
+	 */
+	public void saveAs(String name) {
 		int index = getSelectedIndex();
-		Vhdr soubor = otevreneSoubory.get(index);
-		//soubor.ulozit(nazev);
+		Vhdr file = openedFiles.get(index);
+		//TODO soubor.ulozit(nazev);
 	}
 }
 
+/**
+ * Internal class representing a close button,
+ * On pressing of this button the editor closes
+ * the visible file.
+ * 
+ * @author IT Crowd
+ */
 class CloseButton extends JButton {
 	public CloseButton() {
 		super("X");
@@ -251,7 +290,7 @@ class CloseButton extends JButton {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				Aplikace.EDITOR.zavrit();
+				Appliacion.EDITOR.close();
 			}
 		});
 	}

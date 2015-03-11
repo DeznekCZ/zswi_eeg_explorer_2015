@@ -10,7 +10,7 @@ public class Config {
 	/** Check existing of config file */
 	private boolean loaded = false;
 	/** Frame data */
-	public String lang = "cestina", folder_input = "input", folder_output = "output";
+	public String lang = "english", folder_input = "input", folder_output = "output";
 	/** Editor data */
 	public int ed_width=600, ed_height=600, ed_posx, ed_posy, ed_fullscreen;
 	/** Eplorer data */

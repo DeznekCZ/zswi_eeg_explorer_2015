@@ -19,13 +19,13 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.filechooser.FileSystemView;
 import javax.swing.filechooser.FileView;
 
-import cz.eeg.Appliacion;
+import cz.eeg.Application;
 import cz.eeg.data.vhdrmerge.Vhdr;
 import cz.eeg.tool.Config;
 
 public class Select extends JFileChooser {
 	
-	public final static Config CONFIG = Appliacion.CONFIG;
+	public final static Config CONFIG = Application.CONFIG;
 	public static final int INPUT = 1;
 	public static final int OUTPUT = 2;
 	public static final Select INPUT_SELECT = new Select(new File("input"), Select.INPUT);
@@ -70,7 +70,7 @@ public class Select extends JFileChooser {
 				String command = actionEvent.getActionCommand();
 				if (command.equals(JFileChooser.APPROVE_SELECTION)) {
 					if (getSelectedFiles().length != 0) {
-						Appliacion.EDITOR.open(true);
+						Application.EDITOR.open(true);
 					}
 				}
 			}
@@ -96,7 +96,7 @@ public class Select extends JFileChooser {
 		        //We are interested in both event types
 		        if(propertyName.equals(JFileChooser.SELECTED_FILE_CHANGED_PROPERTY) ||
 		           propertyName.equals(JFileChooser.DIRECTORY_CHANGED_PROPERTY)){
-		        	Appliacion.selectionFrame = vyber;
+		        	Application.selectionFrame = vyber;
 		        }
 
 		 //Allow new events to be processed now

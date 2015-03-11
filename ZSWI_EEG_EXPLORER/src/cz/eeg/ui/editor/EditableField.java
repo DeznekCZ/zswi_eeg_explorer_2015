@@ -8,7 +8,7 @@ import javax.swing.JSplitPane;
 import javax.swing.JTextField;
 import javax.xml.soap.Text;
 
-import cz.eeg.Appliacion;
+import cz.eeg.Application;
 
 public class EditableField extends JPanel {
 	

@@ -8,7 +8,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import cz.eeg.Appliacion;
+import cz.eeg.Application;
 import cz.eeg.ui.Editor;
 
 /**
@@ -76,7 +76,7 @@ public class Dialog {
 		    	//System.out.println(LANG.format_age + ": " + age);
 		    	//System.out.println(year+"-"+month+"-"+day+"-"+gender+"-"+age+".vhdr");
 		    	
-		    	Appliacion.EDITOR.saveAs(gender+"_"+age+"_"+year+"_"+month+"_"+day);
+		    	Application.EDITOR.saveAs(gender+"_"+age+"_"+year+"_"+month+"_"+day);
 		    	
 		    	break;
 		    } else {

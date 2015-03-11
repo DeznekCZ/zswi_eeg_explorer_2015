@@ -20,7 +20,7 @@ import cz.eeg.ui.Select;
  * 
  * @author IT Crowd
  */
-public class Appliacion extends JFrame {
+public class Application extends JFrame {
 	
 	/** Serial version UID */
 	private static final long serialVersionUID = 1L;
@@ -39,8 +39,8 @@ public class Appliacion extends JFrame {
 	
 	//TODO Main window
 	/** Main window of EEG explorer */
-	public final static Appliacion WINDOW = new Appliacion();
-	/** Frame of explorer {@link Appliacion} */
+	public final static Application WINDOW = new Application();
+	/** Frame of explorer {@link Application} */
 	public final static Explorer EXPLORER = new Explorer();
 	/** Instance of {@link Editor}, {@link JFrame} linked by {@link Editor#WINDOW} */
 	public final static Editor EDITOR = new Editor();
@@ -52,17 +52,17 @@ public class Appliacion extends JFrame {
 	/** Currency focused {@link Select} frame */
 	public static Select selectionFrame = null;
 	
-	/** Method main, runs an {@link Appliacion} */
+	/** Method main, runs an {@link Application} */
 	public static void main(String[] args) {
 		WINDOW.run();
 
 		manager.addKeyEventDispatcher(
 				new KeyEventDispatcher() {
 				    public boolean dispatchKeyEvent(KeyEvent e) {
-				        if(Appliacion.WINDOW.isActive()
+				        if(Application.WINDOW.isActive()
 				        		&& e.getID() == KeyEvent.KEY_PRESSED 
 				        		&& e.getKeyCode() == KeyEvent.VK_ENTER) {
-				            Appliacion.EDITOR.open(true);
+				            Application.EDITOR.open(true);
 				        }
 				        return false;
 				    }
@@ -71,7 +71,7 @@ public class Appliacion extends JFrame {
 	}
 
 	//TODO Application window
-	/** Runs instance of {@link Appliacion} */
+	/** Runs instance of {@link Application} */
 	public void run() {
 		
 		setSize(new Dimension(CONFIG.ex_width, CONFIG.ex_height));

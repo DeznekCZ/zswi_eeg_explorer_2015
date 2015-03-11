@@ -20,14 +20,14 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
-import cz.eeg.Appliacion;
+import cz.eeg.Application;
 import cz.eeg.data.vhdrmerge.Vhdr;
 import cz.eeg.tool.Config;
 import cz.eeg.ui.editor.Dialog;
 
 public class Editor extends JTabbedPane {
 
-	public final static Config CONFIG = Appliacion.CONFIG;
+	public final static Config CONFIG = Application.CONFIG;
 	/** Menu panel */
 	public final static JPanel MENU_PANEL = new JPanel();
 	/** Void tab for editor */
@@ -84,7 +84,7 @@ public class Editor extends JTabbedPane {
 			
 			s1.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent event) {
-					Appliacion.WINDOW.requestFocus();
+					Application.WINDOW.requestFocus();
 				}
 			}); file.add(s1);
 			
@@ -127,8 +127,8 @@ public class Editor extends JTabbedPane {
 	 */
 	public void open(boolean isSelectedFiles) {
 		List<File> nonReadable = new ArrayList<File>();
-		if (isSelectedFiles && Appliacion.selectionFrame != null) {
-			File[] files = Appliacion.selectionFrame.getSelectedFiles();
+		if (isSelectedFiles && Application.selectionFrame != null) {
+			File[] files = Application.selectionFrame.getSelectedFiles();
 			if (files != null) {
 				for (File file : files) {
 					Vhdr vhdrSoubor = new Vhdr(file, true);
@@ -290,7 +290,7 @@ class CloseButton extends JButton {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				Appliacion.EDITOR.close();
+				Application.EDITOR.close();
 			}
 		});
 	}

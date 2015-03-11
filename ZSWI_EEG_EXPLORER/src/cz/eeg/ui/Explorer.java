@@ -12,12 +12,12 @@ import java.io.File;
 
 import javax.swing.*;
 
-import cz.eeg.Appliacion;
+import cz.eeg.Application;
 import cz.eeg.tool.Config;
 
 public class Explorer extends JPanel {
 
-	public final static Config CONFIG = Appliacion.CONFIG;
+	public final static Config CONFIG = Application.CONFIG;
 	//public final static Lang LANG = Aplikace.LANG;
 	
 	private final static JSplitPane SPLIT = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
@@ -26,7 +26,7 @@ public class Explorer extends JPanel {
 	public final Select VYSTUPNI_VYBER = Select.OUTPUT_SELECT;
 	
 	public Explorer() {
-		Container contentPane = Appliacion.WINDOW.getContentPane();
+		Container contentPane = Application.WINDOW.getContentPane();
 		
 		setLayout(new BorderLayout());
 		JMenuBar menuLista = new JMenuBar();
@@ -44,7 +44,7 @@ public class Explorer extends JPanel {
 
 				editor.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent event) {
-						Appliacion.EDITOR.open(false);
+						Application.EDITOR.open(false);
 					}
 				});
 				file.add(editor);
@@ -58,7 +58,7 @@ public class Explorer extends JPanel {
 
 				exit.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent event) {
-						Appliacion.WINDOW.setVisible(false);
+						Application.WINDOW.setVisible(false);
 					}
 				});
 				file.add(exit);
@@ -86,7 +86,7 @@ public class Explorer extends JPanel {
 				about.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent event) {
 						final JTextArea area = new JTextArea();
-						area.setText(LANG("credits_info")+Appliacion.AUTHOR);
+						area.setText(LANG("credits_info")+Application.AUTHOR);
 						area.setEditable(false);
 						area.setWrapStyleWord(true);
 						area.setLineWrap(true);
@@ -127,7 +127,7 @@ public class Explorer extends JPanel {
 	
 	@Override
 	public void paint(Graphics g) {
-		SPLIT.setDividerLocation(Appliacion.WINDOW.getWidth()/2);
+		SPLIT.setDividerLocation(Application.WINDOW.getWidth()/2);
 		super.paint(g);
 	}
 	

@@ -5,6 +5,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Scanner;
@@ -20,6 +21,7 @@ import cz.eeg.Application;
 import cz.eeg.data.DATA;
 import cz.eeg.data.Vmrk;
 import cz.eeg.ui.editor.EditableField;
+import cz.zcu.kiv.signal.*;
 
 
 public class Vhdr extends JSplitPane {
@@ -44,7 +46,7 @@ public class Vhdr extends JSplitPane {
 	private JPanel input;
 	private JTextArea markerTable;
 	
-	public Vhdr(File inputF, boolean viewable){
+	public Vhdr(File inputF, boolean viewable) {
 		super(JSplitPane.HORIZONTAL_SPLIT);
 		setName(inputF.getName());
 		
@@ -67,6 +69,36 @@ public class Vhdr extends JSplitPane {
 			add(jspm);
 			
 			p.setText(vhdr());
+			
+			
+
+			EEGDataTransformer dt = new EEGDataTransformer();
+			double[] d,j,k;
+			try {
+				d = dt.readBinaryData(inputF.getAbsolutePath(), 1);
+				for(int i=0;i<d.length;i++){
+					System.out.print(d[i]+" ");
+				}
+				System.out.println();
+				System.out.println(d.length);
+				j = dt.readBinaryData(inputF.getAbsolutePath(), 2);
+				for(int i=0;i<j.length;i++){
+					System.out.print(j[i]+" ");
+				}
+				System.out.println();
+				System.out.println(j.length);
+				k = dt.readBinaryData(inputF.getAbsolutePath(), 3);
+				for(int i=0;i<k.length;i++){
+					System.out.print(k[i]+" ");
+				}
+				System.out.println();
+				System.out.println(k.length);
+				
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
 			
 			setDividerLocation(Application.EDITOR.getSize().width * 2 / 3);
 		}else {

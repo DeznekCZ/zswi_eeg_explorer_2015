@@ -18,6 +18,7 @@ import javax.swing.JTextField;
 
 import cz.eeg.Application;
 import cz.eeg.data.DATA;
+import cz.eeg.data.Vmrk;
 import cz.eeg.ui.editor.EditableField;
 
 
@@ -53,12 +54,15 @@ public class Vhdr extends JSplitPane {
 			
 			openFile(inputF);
 			
+			String s=inputF.getAbsolutePath().replaceAll(".vhdr", ".vmrk");
+			Vmrk vm= new Vmrk(s);
+			
 			JTextArea p = new JTextArea();
 			input.add(p);
 			
 			JScrollPane jspi = new JScrollPane(input);
 			add(jspi);
-			markerTable = new JTextArea("");
+			markerTable = new JTextArea(vm.getLn());
 			JScrollPane jspm = new JScrollPane(markerTable);
 			add(jspm);
 			

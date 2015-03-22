@@ -9,13 +9,17 @@ import java.awt.Graphics;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 
 import javax.swing.*;
 
 import cz.eeg.Application;
 import cz.eeg.tool.Config;
 
+/**
+ * An instance of an file explorer
+ * 
+ * @author IT Crowd
+ */
 public class Explorer extends JPanel {
 
 	public final static Config CONFIG = Application.CONFIG;

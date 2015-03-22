@@ -23,6 +23,13 @@ import cz.eeg.Application;
 import cz.eeg.data.vhdrmerge.Vhdr;
 import cz.eeg.tool.Config;
 
+/**
+ * Instances represents extendex {@link JFileChooser}.
+ * Files selected in instance of {@link Select}
+ * is opened in {@link Editor#WINDOW}
+ *
+ * @author IT Crowd
+ */
 public class Select extends JFileChooser {
 	
 	public final static Config CONFIG = Application.CONFIG;
@@ -42,7 +49,7 @@ public class Select extends JFileChooser {
 			@Override
 			public Icon getIcon(File f) {
 				Icon ikona = FileSystemView.getFileSystemView().getSystemIcon(f);
-				if (!f.isDirectory() && !new Vhdr(f, false, null).isReadable()) {
+				if (!f.isDirectory() && !new Vhdr(f, false).isReadable()) {
 					return new BlockedIcon(this, ikona);
 				} else if (f.isDirectory() && type == OUTPUT
 						&& f.equals(INPUT_SELECT.getCurrentDirectory())) {

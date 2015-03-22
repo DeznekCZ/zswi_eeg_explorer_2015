@@ -3,6 +3,11 @@ package cz.eeg.data;
 import java.io.File;
 import java.util.Scanner;
 
+/**
+ * Instance of {@link Vmrk} represents *.vmrk file
+ *
+ * @author IT Crowd
+ */
 public class Vmrk extends File {
 	
 	private String ln;
@@ -17,7 +22,7 @@ public class Vmrk extends File {
 		
 	}
 	
-public static String viewFile(String name) throws Exception{
+	public static String viewFile(String name) throws Exception{
 		
 		String line = null;
 		Scanner s = new Scanner(new File(name));

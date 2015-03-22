@@ -12,6 +12,7 @@ import java.io.InputStreamReader;
 import java.util.Scanner;
 
 import javax.swing.BoxLayout;
+import javax.swing.JFrame;
 import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -24,9 +25,18 @@ import cz.eeg.Application;
 import cz.eeg.data.DATA;
 import cz.eeg.data.Vmrk;
 import cz.eeg.ui.editor.EditableField;
+import cz.eeg.ui.editor.MenuPanel;
 import cz.zcu.kiv.signal.*;
 
-
+/**
+ * Instances of {@link Vhdr} represents *.vhdr files.
+ * Class extends {@link JPanel} and can be display
+ * in {@link JFrame}
+ * 
+ * TODO NextInfo
+ *
+ * @author IT Crowd
+ */
 public class Vhdr extends JPanel {
 	
 
@@ -49,14 +59,22 @@ public class Vhdr extends JPanel {
 	private JTextPane input;
 	private JTextPane markerTable;
 	
-	public Vhdr(File inputF, boolean viewable, JPanel menuPanel) {
+	/**
+	 * Constructor reads a new *.vhdr file
+	 * @param inputF pointer to {@link File}
+	 * @param viewable true - instance is 
+	 * 				diplayable {@link JPanel}
+	 */
+	public Vhdr(File inputF, boolean viewable) {
 		
 		setName(inputF.getName());
 		
 		if (viewable) {
 			
 			setLayout(new BorderLayout());
-			add(menuPanel, BorderLayout.NORTH);
+			add(	//TODO Not complete
+					new MenuPanel(false, false, true), 
+					BorderLayout.NORTH);
 			
 			JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
 			add(split, BorderLayout.CENTER);
@@ -86,7 +104,7 @@ public class Vhdr extends JPanel {
 				
 				split.setDividerLocation(Application.EDITOR.getSize().width / 2);
 	
-		/*		EEGDataTransformer dt = new EEGDataTransformer();
+		/*TODO	EEGDataTransformer dt = new EEGDataTransformer();
 				double[] d,j,k;
 				try {
 					d = dt.readBinaryData(inputF.getAbsolutePath(), 1);

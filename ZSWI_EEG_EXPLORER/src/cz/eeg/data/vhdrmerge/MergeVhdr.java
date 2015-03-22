@@ -26,7 +26,7 @@ public class MergeVhdr {
 		 
 	}
 	
-	public void spoj(){
+	private void spoj(){
 		try {
 			if(v1.getNumberOfChannels()!=v2.getNumberOfChannels() || v1.getDataFormat().equals(v2.getDataFormat())==false){
 				// akce nejde spojit vyhodí hlášku a konec spojení

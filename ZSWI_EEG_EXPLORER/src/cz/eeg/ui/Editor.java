@@ -30,6 +30,12 @@ import cz.eeg.ui.editor.Dialog;
 import cz.eeg.ui.editor.EditButton;
 import cz.eeg.ui.editor.MenuPanel;
 
+/**
+ * Instance of {@link Editor} represent an file editor
+ * of *.vhdr files
+ *
+ * @author IT Crowd
+ */
 public class Editor extends JTabbedPane {
 
 	public final static Config CONFIG = Application.CONFIG;
@@ -94,9 +100,7 @@ public class Editor extends JTabbedPane {
 			File[] files = Application.selectionFrame.getSelectedFiles();
 			if (files != null) {
 				for (File file : files) {
-					Vhdr vhdrSoubor = new Vhdr(file, true, 
-							//TODO NotComplete
-							new MenuPanel(false,false,true));
+					Vhdr vhdrSoubor = new Vhdr(file, true);
 					if (!vhdrSoubor.isReadable()) {
 						nonReadable.add(file);
 						continue;

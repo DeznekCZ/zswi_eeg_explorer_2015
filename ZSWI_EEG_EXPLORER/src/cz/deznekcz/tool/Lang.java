@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.FormatFlagsConversionMismatchException;
 import java.util.Iterator;
@@ -31,7 +30,7 @@ import java.util.Scanner;
  * <br>- LANGset("cus-TOM_5ym bol", "value %d");
  * 
  * @author Zdeněk Novotný (DeznekCZ)
- * @version 2.1.1
+ * @version 2.2
  */
 public class Lang {
 	
@@ -130,6 +129,18 @@ public class Lang {
 	}
 	
 	/**
+	 * Method calls default value and replaces
+	 * every "|n" value to new line
+	 * character '\n'.
+	 * @param value default string
+	 * @return replaced string
+	 * @see #LANG(String, Object...)
+	 */
+	public static String LANGlined(String symbol, Object... args) {
+		return LANG(symbol, args).replaceAll("|n", ""+'\n');
+	}
+
+	/**
 	 * Returns a list of language symbols. Every symbol
 	 * is written in one line of {@link String}
 	 * @return {@link String} value
@@ -152,7 +163,7 @@ public class Lang {
 	 * @param symbol {@link Scanner} value
 	 * @param value {@link Scanner} value
 	 * 
-	 * @see #LANG(Object...)
+	 * @see #LANG(String, Object...)
 	 */
 	public static void LANGset(String symbol, String value) {
 		LANGgetItem(symbol).setValue(value);

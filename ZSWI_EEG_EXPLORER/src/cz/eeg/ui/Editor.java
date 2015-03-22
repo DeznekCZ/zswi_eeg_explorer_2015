@@ -1,7 +1,9 @@
 package cz.eeg.ui;
 
 import static cz.deznekcz.tool.Lang.*;
+
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -23,13 +25,14 @@ import javax.swing.JTabbedPane;
 import cz.eeg.Application;
 import cz.eeg.data.vhdrmerge.Vhdr;
 import cz.eeg.tool.Config;
+import cz.eeg.ui.editor.CloseButton;
 import cz.eeg.ui.editor.Dialog;
+import cz.eeg.ui.editor.EditButton;
+import cz.eeg.ui.editor.MenuPanel;
 
 public class Editor extends JTabbedPane {
 
 	public final static Config CONFIG = Application.CONFIG;
-	/** Menu panel */
-	public final static JPanel MENU_PANEL = new JPanel();
 	/** Void tab for editor */
 	public final static JPanel VOID_TAB = new JPanel();
 		
@@ -39,10 +42,6 @@ public class Editor extends JTabbedPane {
 
 		@Override public void setVisible(boolean arg0) { instance.setVisible(arg0); super.setVisible(arg0); };
 	};
-	
-	private static final CloseButton CLOSE_BUTTON = new CloseButton();
-	/** Menu item: SAVE_AS */
-	private static JMenuItem MENU_SA;
 	/** Intenal instace of {@link Editor}, is needed for visibility control */
 	private static Editor instance;
 	
@@ -56,60 +55,24 @@ public class Editor extends JTabbedPane {
 		
 		instance = this;
 		
-		VOID_TAB.setName(LANG("editor_no_file"));
-		VOID_TAB.repaint();
-		VOID_TAB.setEnabled(false);
-		add(VOID_TAB);
+		add(voidTab());
 		
 		WINDOW.setLayout(new BorderLayout());
-		WINDOW.add(MENU_PANEL, BorderLayout.NORTH);
+		// Panel added to each VhdrFile
+		// WINDOW.add(MENU_PANEL, BorderLayout.NORTH);
 		WINDOW.add(this, BorderLayout.CENTER);
-		
-		MENU_PANEL.setLayout(new BorderLayout());
-		//PANEL_TLACITEK.add(new CloseButton(), BorderLayout.EAST);
-		
-		// Soubor menu
-
-		final JMenuBar menuBar = new JMenuBar();
-		MENU_PANEL.add(menuBar, BorderLayout.NORTH);
-		
-		// Soubor menu
-
-		final JMenu file = new JMenu(LANG("file"));
-		menuBar.add(file);
-		{
-			// Soubor item
-
-			final JMenuItem s1 = new JMenuItem(LANG("file_open"));
-			
-			s1.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent event) {
-					Application.WINDOW.requestFocus();
-				}
-			}); file.add(s1);
-			
-			// Uložení
-
-			MENU_SA = new JMenuItem(LANG("file_save_as"));
-			
-			MENU_SA.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent event) {
-					new Dialog(Dialog.SAVE_AS);
-				}
-			}); file.add(MENU_SA);
-			MENU_SA.setEnabled(false);
-		}
-		
-		
-		// Zaviraci tlacitko
-        
-		menuBar.add(Box.createHorizontalGlue());
-		menuBar.add(CLOSE_BUTTON);
-		CLOSE_BUTTON.setEnabled(false);
 		
 		loadWindowLocation();
 	}
 	
+	private Component voidTab() {
+		VOID_TAB.setName(LANG("editor_no_file"));
+		VOID_TAB.setEnabled(false);
+		VOID_TAB.setLayout(new BorderLayout());
+		VOID_TAB.add(new MenuPanel(false,false,false), BorderLayout.NORTH);
+		return VOID_TAB;
+	}
+
 	@Override
 	public void setVisible(boolean b) {
 		
@@ -131,7 +94,9 @@ public class Editor extends JTabbedPane {
 			File[] files = Application.selectionFrame.getSelectedFiles();
 			if (files != null) {
 				for (File file : files) {
-					Vhdr vhdrSoubor = new Vhdr(file, true);
+					Vhdr vhdrSoubor = new Vhdr(file, true, 
+							//TODO NotComplete
+							new MenuPanel(false,false,true));
 					if (!vhdrSoubor.isReadable()) {
 						nonReadable.add(file);
 						continue;
@@ -150,8 +115,6 @@ public class Editor extends JTabbedPane {
 			
 			if (openedFiles.size() > 0) {
 				remove(VOID_TAB);
-				CLOSE_BUTTON.setEnabled(true);
-				MENU_SA.setEnabled(true);
 			}	
 
 			if (files == null || nonReadable.size() < files.length)
@@ -205,9 +168,7 @@ public class Editor extends JTabbedPane {
 		}
 		
 		if (openedFiles.size() == 0) {
-			add(VOID_TAB);
-			CLOSE_BUTTON.setEnabled(false);
-			MENU_SA.setEnabled(false);
+			add(voidTab());
 		}
 
 		return closeAble;
@@ -274,24 +235,8 @@ public class Editor extends JTabbedPane {
 		Vhdr file = openedFiles.get(index);
 		//TODO soubor.ulozit(nazev);
 	}
-}
 
-/**
- * Internal class representing a close button,
- * On pressing of this button the editor closes
- * the visible file.
- * 
- * @author IT Crowd
- */
-class CloseButton extends JButton {
-	public CloseButton() {
-		super("X");
-		addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				Application.EDITOR.close();
-			}
-		});
+	public void edit() {
+		
 	}
 }

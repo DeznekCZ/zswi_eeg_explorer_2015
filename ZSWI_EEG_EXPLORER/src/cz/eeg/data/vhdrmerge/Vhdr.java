@@ -1,5 +1,6 @@
 package cz.eeg.data.vhdrmerge;
 
+import java.awt.BorderLayout;
 import java.awt.Toolkit;
 import java.io.BufferedReader;
 import java.io.File;
@@ -11,11 +12,13 @@ import java.io.InputStreamReader;
 import java.util.Scanner;
 
 import javax.swing.BoxLayout;
+import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.JTextPane;
 
 import cz.eeg.Application;
 import cz.eeg.data.DATA;
@@ -24,83 +27,92 @@ import cz.eeg.ui.editor.EditableField;
 import cz.zcu.kiv.signal.*;
 
 
-public class Vhdr extends JSplitPane {
+public class Vhdr extends JPanel {
 	
 
-	private EditableField dataFormat;
-	private EditableField dataOrient;
+	private String dataFormat;
+	private String dataOrient;
 	private int numberOfChannels;
 	private int samplingInterval;
-	private EditableField binaryFormat;
-	private EditableField dataFile;
-	private EditableField markerFile;
-	private EditableField codePage;
-	private EditableField channelInfo=null;
-	private EditableField dator=null;
+	private String binaryFormat;
+	private String dataFile;
+	private String markerFile;
+	private String codePage;
+	private String channelInfo=null;
+	private String dator=null;
 	private String sampling=null;
 	private Channel[] channel;
 
 	private boolean readable = true;
 	//TODO editovany
 
-	private JPanel input;
-	private JTextArea markerTable;
+	private JTextPane input;
+	private JTextPane markerTable;
 	
-	public Vhdr(File inputF, boolean viewable) {
-		super(JSplitPane.HORIZONTAL_SPLIT);
+	public Vhdr(File inputF, boolean viewable, JPanel menuPanel) {
+		
 		setName(inputF.getName());
 		
 		if (viewable) {
-			input = new JPanel();
-			input.setLayout(new BoxLayout(input, BoxLayout.Y_AXIS));
+			
+			setLayout(new BorderLayout());
+			add(menuPanel, BorderLayout.NORTH);
+			
+			JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+			add(split, BorderLayout.CENTER);
+			
+			input = new JTextPane();
+			input.setEditable(false);
 			
 			openFile(inputF);
+			input.setText(vhdr());
 			
 			String s=inputF.getAbsolutePath().replaceAll(".vhdr", ".vmrk");
-			Vmrk vm= new Vmrk(s);
-			
-			JTextArea p = new JTextArea();
-			input.add(p);
-			
-			JScrollPane jspi = new JScrollPane(input);
-			add(jspi);
-			markerTable = new JTextArea(vm.getLn());
-			JScrollPane jspm = new JScrollPane(markerTable);
-			add(jspm);
-			
-			p.setText(vhdr());
-			
-			
-
-			EEGDataTransformer dt = new EEGDataTransformer();
-			double[] d,j,k;
+			Vmrk vm = null;
 			try {
-				d = dt.readBinaryData(inputF.getAbsolutePath(), 1);
-				for(int i=0;i<d.length;i++){
-					System.out.print(d[i]+" ");
-				}
-				System.out.println();
-				System.out.println(d.length);
-				j = dt.readBinaryData(inputF.getAbsolutePath(), 2);
-				for(int i=0;i<j.length;i++){
-					System.out.print(j[i]+" ");
-				}
-				System.out.println();
-				System.out.println(j.length);
-				k = dt.readBinaryData(inputF.getAbsolutePath(), 3);
-				for(int i=0;i<k.length;i++){
-					System.out.print(k[i]+" ");
-				}
-				System.out.println();
-				System.out.println(k.length);
-				
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				vm = new Vmrk(s);
+			} catch (Exception e) {
+				readable = false;
 			}
+			if (readable) {
+				JScrollPane jspi = new JScrollPane(input);
+				split.add(jspi);
+				markerTable = new JTextPane();
+				markerTable.setText(vm.getLn());
+				markerTable.setEditable(false);
+				
+				JScrollPane jspm = new JScrollPane(markerTable);
+				split.add(jspm);
+				
+				split.setDividerLocation(Application.EDITOR.getSize().width / 2);
+	
+		/*		EEGDataTransformer dt = new EEGDataTransformer();
+				double[] d,j,k;
+				try {
+					d = dt.readBinaryData(inputF.getAbsolutePath(), 1);
+					for(int i=0;i<d.length;i++){
+						System.out.print(d[i]+" ");
+					}
+					System.out.println();
+					System.out.println(d.length);
+					j = dt.readBinaryData(inputF.getAbsolutePath(), 2);
+					for(int i=0;i<j.length;i++){
+						System.out.print(j[i]+" ");
+					}
+					System.out.println();
+					System.out.println(j.length);
+					k = dt.readBinaryData(inputF.getAbsolutePath(), 3);
+					for(int i=0;i<k.length;i++){
+						System.out.print(k[i]+" ");
+					}
+					System.out.println();
+					System.out.println(k.length);
+					
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+	*/		}
 			
-			
-			setDividerLocation(Application.EDITOR.getSize().width * 2 / 3);
 		}else {
 			viewFile(inputF);
 		}
@@ -121,18 +133,18 @@ public class Vhdr extends JSplitPane {
 	private String vhdr(){
 		return new StringBuilder()
 					.append("[Common Infos]\n")
-					.append("Codepage="+codePage.getValue()+"\n")
-					.append("DataFile="+dataFile.getValue()+"\n")
-					.append("MarkerFile="+markerFile.getValue()+"\n")
-					.append("DataFormat="+dataFormat.getValue()+"\n")
-					.append(dator.getValue()+"\n")
-					.append("DataOrientation="+dataOrient.getValue()+"\n")
+					.append("Codepage="+codePage+"\n")
+					.append("DataFile="+dataFile+"\n")
+					.append("MarkerFile="+markerFile+"\n")
+					.append("DataFormat="+dataFormat+"\n")
+					.append(dator+"\n")
+					.append("DataOrientation="+dataOrient+"\n")
 					.append("NumberOfChannels="+numberOfChannels+"\n")
 					.append(sampling+"\n")
 					.append("SamplingInterval="+samplingInterval+"\n")
 					.append("\n")
 					.append("[Binary Infos]\n")
-					.append("BinaryFormat="+binaryFormat.getValue()+"\n")
+					.append("BinaryFormat="+binaryFormat+"\n")
 					.append("\n")
 					.append("[Channel Infos]\n")
 					.append(channelInfo)
@@ -187,18 +199,18 @@ public class Vhdr extends JSplitPane {
 			while (s.hasNextLine()){
 				line=s.nextLine();
 				if(line.equals("[Common Infos]")){/* codePage=s.nextLine().split("=")[1]; */
-					codePage = new EditableField(s.nextLine(), 20).editable();
-					dataFile = new EditableField(s.nextLine(), 20).editable();
-					markerFile = new EditableField(s.nextLine(), 20).editable();
-					dataFormat = new EditableField(s.nextLine(), 20).editable();
-					dator = new EditableField(s.nextLine(), 20).plain();
-					dataOrient = new EditableField(s.nextLine(), 20).editable();
+					codePage = s.nextLine().split("=")[1];
+					dataFile = s.nextLine().split("=")[1];
+					markerFile = s.nextLine().split("=")[1];
+					dataFormat = s.nextLine().split("=")[1];
+					dator = s.nextLine().split("=")[1];
+					dataOrient = s.nextLine().split("=")[1];
 					numberOfChannels=Integer.parseInt(s.nextLine().split("=")[1]);
 					sampling=s.nextLine();
 					samplingInterval=Integer.parseInt(s.nextLine().split("=")[1]);
 				}
 				if(line.equals("[Binary Infos]")){
-					binaryFormat=new EditableField(s.nextLine(), 20).editable();
+					binaryFormat = s.nextLine().split("=")[1];
 				}
 				if(line.equals("[Channel Infos]")){
 					line=s.nextLine();
@@ -218,18 +230,6 @@ public class Vhdr extends JSplitPane {
 
 			}
 			s.close();
-			//br.close();
-			
-			//SEGMENT adding to JPanel
-			input.add(codePage);
-			input.add(dataFile);
-			input.add(markerFile);
-			input.add(dataFormat);
-			input.add(dator);
-			input.add(dataOrient);
-			input.add(binaryFormat);
-			//input.add(channelInfo);
-	
 		}       
 		catch (Exception e){
 			readable=false;
@@ -242,12 +242,12 @@ public class Vhdr extends JSplitPane {
 	}
 
 	public String getDataFormat() {
-		return dataFormat.getValue();
+		return dataFormat;
 	}
 
 
 	public String getDataOrient() {
-		return dataOrient.getValue();
+		return dataOrient;
 	}
 
 
@@ -262,32 +262,32 @@ public class Vhdr extends JSplitPane {
 
 
 	public String getBinaryFormat() {
-		return binaryFormat.getValue();
+		return binaryFormat;
 	}
 
 
 	public String getDataFile() {
-		return dataFile.getValue();
+		return dataFile;
 	}
 
 
 	public String getMarkerFile() {
-		return markerFile.getValue();
+		return markerFile;
 	}
 
 
 	public String getCodePage() {
-		return codePage.getValue();
+		return codePage;
 	}
 
 
 	public String getChannelInfo() {
-		return channelInfo.getValue();
+		return channelInfo;
 	}
 
 
 	public String getDator() {
-		return dator.getValue();
+		return dator;
 	}
 
 

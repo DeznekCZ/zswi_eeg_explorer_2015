@@ -1,6 +1,7 @@
 package cz.eeg.ui;
 
 import static cz.deznekcz.tool.Lang.*;
+
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dimension;
@@ -65,6 +66,30 @@ public class Explorer extends JPanel {
 		
 			}
 	        
+			// Edit
+			
+			final JMenu edit = new JMenu(LANG("file_edit"));
+			menuLista.add(edit);
+			{
+				final JMenuItem move = new JMenuItem(LANG("file_move"));
+				
+				//Dialog.open(Dialog.COPY | Dialog.DELETE);
+				
+				move.setEnabled(false);
+				edit.add(move);
+				
+				final JMenuItem copy = new JMenuItem(LANG("file_copy"));
+				
+				//Dialog.open(Dialog.COPY);
+				
+				copy.setEnabled(false);
+				edit.add(copy);
+			}
+			
+			// Separator
+			
+			menuLista.add(Box.createHorizontalGlue());
+			
 			// Help menu
 
 			final JMenu help = new JMenu(LANG("credits"));
@@ -86,7 +111,7 @@ public class Explorer extends JPanel {
 				about.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent event) {
 						final JTextArea area = new JTextArea();
-						area.setText(LANG("credits_info")+Application.AUTHOR);
+						area.setText(LANGlined("credits_info", Application.AUTHOR));
 						area.setEditable(false);
 						area.setWrapStyleWord(true);
 						area.setLineWrap(true);

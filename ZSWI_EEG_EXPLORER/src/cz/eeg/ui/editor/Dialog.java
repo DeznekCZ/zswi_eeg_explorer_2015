@@ -16,11 +16,15 @@ import cz.eeg.ui.Editor;
  * @author IT Crowd
  *
  */
-public class Dialog {
+public final class Dialog {
 	
 	public final static int SAVE_AS = 1;
+
+	public static void open(int type) {
+		new Dialog(type);
+	}
 	
-	public Dialog(final int type) {
+	private Dialog(final int type) {
 		if (type == SAVE_AS) {
 			saveAs();
 		}

@@ -42,7 +42,7 @@ public class Select extends JFileChooser {
 			@Override
 			public Icon getIcon(File f) {
 				Icon ikona = FileSystemView.getFileSystemView().getSystemIcon(f);
-				if (!f.isDirectory() && !new Vhdr(f, false).isReadable()) {
+				if (!f.isDirectory() && !new Vhdr(f, false, null).isReadable()) {
 					return new BlockedIcon(this, ikona);
 				} else if (f.isDirectory() && type == OUTPUT
 						&& f.equals(INPUT_SELECT.getCurrentDirectory())) {

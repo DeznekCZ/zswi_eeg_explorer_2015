@@ -30,7 +30,7 @@ import java.util.Scanner;
  * <br>- LANGset("cus-TOM_5ym bol", "value %d");
  * 
  * @author Zdeněk Novotný (DeznekCZ)
- * @version 2.2
+ * @version 2.2.1
  */
 public class Lang {
 	
@@ -130,14 +130,14 @@ public class Lang {
 	
 	/**
 	 * Method calls default value and replaces
-	 * every "|n" value to new line
+	 * every "/n/" value to new line
 	 * character '\n'.
 	 * @param value default string
 	 * @return replaced string
 	 * @see #LANG(String, Object...)
 	 */
 	public static String LANGlined(String symbol, Object... args) {
-		return LANG(symbol, args).replaceAll("|n", ""+'\n');
+		return LANG(symbol, args).replaceAll("/n/", ""+'\n');
 	}
 
 	/**

@@ -13,6 +13,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 
 import cz.eeg.Application;
+import cz.eeg.ui.Editor;
 
 /**
  * Internal class representing a menu panel
@@ -50,6 +51,18 @@ public class MenuPanel extends JPanel {
 			
 			// Uložení
 
+			JMenuItem save = new JMenuItem(LANG("file_save"));
+			
+			save.addActionListener(new ActionListener() {
+				
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					//TODO Dialog.open(Dialog.SAVE);
+				}
+			});
+			
+			save.setEnabled(saveable);
+
 			JMenuItem saveAs = new JMenuItem(LANG("file_save_as"));
 			
 			saveAs.addActionListener(new ActionListener() {
@@ -62,6 +75,19 @@ public class MenuPanel extends JPanel {
 			
 			saveAs.setEnabled(saveable);
 			file.add(saveAs);
+			
+			file.addSeparator();
+			
+			JMenuItem close = new JMenuItem(LANG("file_close_menu"));
+			close.addActionListener(new ActionListener() {
+				
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					Application.EDITOR.close();
+				}
+			});
+			
+			file.add(close);
 		}
 		
 		

@@ -6,7 +6,7 @@ package cz.eeg.data.vhdrmerge;
 public class Channel {
 	private String channelNumber;
 	private String name;
-	private int resolutionInUnit;
+	private double resolutionInUnit;
 	private String unit;
 	
 	public Channel(String vstup){
@@ -14,7 +14,7 @@ public class Channel {
 		channelNumber=pole[0];
 		pole=rozdel(",", pole[1]);
 		name=pole[0];
-		resolutionInUnit=Integer.parseInt(pole[2]);
+		resolutionInUnit=Double.parseDouble(pole[2]);
 		unit=pole[3];
 	}
 	

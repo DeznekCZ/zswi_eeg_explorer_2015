@@ -232,7 +232,7 @@ public class Vhdr extends JPanel {
 				}
 				if(line.equals("[Channel Infos]")){
 					line=s.nextLine();
-					String channelInfoText = "";
+					String channelInfoText ="";
 					while(line.startsWith(";")){
 						channelInfoText+=line+"\n";
 						line=s.nextLine();

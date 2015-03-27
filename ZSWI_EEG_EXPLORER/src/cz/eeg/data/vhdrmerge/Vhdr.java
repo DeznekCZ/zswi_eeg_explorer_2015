@@ -1,6 +1,7 @@
 package cz.eeg.data.vhdrmerge;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Toolkit;
 import java.io.BufferedReader;
 import java.io.File;
@@ -37,7 +38,7 @@ import cz.zcu.kiv.signal.*;
  *
  * @author IT Crowd
  */
-public class Vhdr extends JPanel {
+public class Vhdr {
 	
 
 	private String dataFormat;
@@ -56,94 +57,71 @@ public class Vhdr extends JPanel {
 	
 
 	private boolean readable = true;
-	//TODO editovany
+	private boolean editing = false;
 
-	private JTextPane input;
-	private JTextPane markerTable;
+	private String name;
 	
 	/**
 	 * Constructor reads a new *.vhdr file
 	 * @param inputF pointer to {@link File}
-	 * @param viewable true - instance is 
-	 * 				diplayable {@link JPanel}
+	 * @param fullReading true - check only existency of marker and data file
 	 */
-	public Vhdr(File inputF, boolean viewable) {
+	public Vhdr(File inputF, boolean fullReading) {
 		
 		setName(inputF.getName());
 		
-		if (viewable) {
-			
-			setLayout(new BorderLayout());
-			add(	//TODO Not complete
-					new MenuPanel(false, false, true), 
-					BorderLayout.NORTH);
-			
-			JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
-			add(split, BorderLayout.CENTER);
-			
-			input = new JTextPane();
-			input.setEditable(false);
-			
-			openFile(inputF);
-			input.setText(vhdr());
-			
-			String s=inputF.getAbsolutePath().replaceAll(".vhdr", ".vmrk");
+		try {
+			if (fullReading) {
+				
+				openFile(inputF);
+				
+				String s=inputF.getAbsolutePath().replaceAll(".vhdr", ".vmrk");
+				vm = new Vmrk(s);
+				
+			} else {
+				viewFile(inputF);
+			}
+		} catch (Exception e) {
+			readable = false;
+		}
+		/*	EEGDataTransformer dt = new EEGDataTransformer();
+		double[] d,j,k;
+		
 			
 			try {
-				vm = new Vmrk(s);
-			} catch (Exception e) {
-				readable = false;
+				d = dt.readBinaryData(inputF.getAbsolutePath(), 1);
+				for(int i=0;i<d.length;i++){
+					System.out.print(d[i]+" ");
+				}
+				System.out.println();
+				System.out.println(d.length);
+				j = dt.readBinaryData(inputF.getAbsolutePath(), 2);
+				for(int i=0;i<j.length;i++){
+					System.out.print(j[i]+" ");
+				}
+				System.out.println();
+				System.out.println(j.length);
+				k = dt.readBinaryData(inputF.getAbsolutePath(), 3);
+				for(int i=0;i<k.length;i++){
+					System.out.print(k[i]+" ");
+				}
+				System.out.println();
+				System.out.println(k.length);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
-			if (readable) {
-				JScrollPane jspi = new JScrollPane(input);
-				split.add(jspi);
-				markerTable = new JTextPane();
-				markerTable.setText(vm.getLn());
-				markerTable.setEditable(false);
-				
-				JScrollPane jspm = new JScrollPane(markerTable);
-				split.add(jspm);
-				
-				split.setDividerLocation(Application.EDITOR.getSize().width / 2);
-	
-	/*	EEGDataTransformer dt = new EEGDataTransformer();
-				double[] d,j,k;
-				
-					
-					try {
-						d = dt.readBinaryData(inputF.getAbsolutePath(), 1);
-						for(int i=0;i<d.length;i++){
-							System.out.print(d[i]+" ");
-						}
-						System.out.println();
-						System.out.println(d.length);
-						j = dt.readBinaryData(inputF.getAbsolutePath(), 2);
-						for(int i=0;i<j.length;i++){
-							System.out.print(j[i]+" ");
-						}
-						System.out.println();
-						System.out.println(j.length);
-						k = dt.readBinaryData(inputF.getAbsolutePath(), 3);
-						for(int i=0;i<k.length;i++){
-							System.out.print(k[i]+" ");
-						}
-						System.out.println();
-						System.out.println(k.length);
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					*/
-					
-			}
-			
-		}else {
-			viewFile(inputF);
-		}
-		
-		
+			*/
 	}
 	
+	public Vhdr() {
+		this.readable = false;
+	}
+
+	private void setName(String name) {
+		this.name = name;
+	}
+
 	private String channelsToString(){
 		if (channel == null) return ";no channel\n";
 		String s="";
@@ -154,7 +132,7 @@ public class Vhdr extends JPanel {
 		return s;
 	}
 	
-	private String vhdr(){
+	public String getVhdrData(){
 		return new StringBuilder()
 					.append("[Common Infos]\n")
 					.append("Codepage="+codePage+"\n")
@@ -176,88 +154,77 @@ public class Vhdr extends JPanel {
 				.toString();
 	}
 	
-	private void viewFile(File iFile){
+	private void viewFile(File iFile) throws FileNotFoundException{
 		
-		
-		try {
-			Scanner s = new Scanner(iFile);
-			while(s.hasNext()) {
-				String line = s.nextLine();
-				String[] split = line.split("=");
-				
-				//TODO Získání adresy datového souboru
-				if (split.length == 2 && split[0].equals("DataFile")) {
-					String newPath = iFile.getParentFile().getAbsolutePath()
-							+ "/" + split[1];
-					if (!new File(newPath).exists())
-						throw new FileNotFoundException();
-				} else
-				//TODO Získání adresy markerového souboru
-				if (split.length == 2 && split[0].equals("MarkerFile")) {
-					String newPath = iFile.getParentFile().getAbsolutePath()
-							+ "/" + split[1];
-					if (!new File(newPath).exists())
-						throw new FileNotFoundException();
-				}
-				
-				//TODO Přepsání řádku na obrazovku, pokud se bude kreslit
-				
+		Scanner s = new Scanner(iFile);
+		while(s.hasNext()) {
+			String line = s.nextLine();
+			String[] split = line.split("=");
+			
+			//TODO Získání adresy datového souboru
+			if (split.length == 2 && split[0].equals("DataFile")) {
+				String newPath = iFile.getParentFile().getAbsolutePath()
+						+ "/" + split[1];
+				if (!new File(newPath).exists())
+					throw new FileNotFoundException();
+			} else
+			//TODO Získání adresy markerového souboru
+			if (split.length == 2 && split[0].equals("MarkerFile")) {
+				String newPath = iFile.getParentFile().getAbsolutePath()
+						+ "/" + split[1];
+				if (!new File(newPath).exists())
+					throw new FileNotFoundException();
 			}
-			s.close();
-		} catch (Exception e) {
-			//TODO V případě nečitelnosti se nastaví jako nečitelný Header
-			readable = false;
+			
+			//TODO Přepsání řádku na obrazovku, pokud se bude kreslit
+			
 		}
+		s.close();
 
 	}
 	
 
-	private void openFile(File file){
-		try{
+	private void openFile(File file) throws FileNotFoundException{
 			//InputStream ips=new FileInputStream(file); 
 			//InputStreamReader ipsr=new InputStreamReader(ips);
 			//BufferedReader br=new BufferedReader(ipsr);
 	
-			Scanner s = new Scanner(file);
-			String line;
-			while (s.hasNextLine()){
-				line=s.nextLine();
-				if(line.equals("[Common Infos]")){/* codePage=s.nextLine().split("=")[1]; */
-					codePage = s.nextLine().split("=")[1];
-					dataFile = s.nextLine().split("=")[1];
-					markerFile = s.nextLine().split("=")[1];
-					dataFormat = s.nextLine().split("=")[1];
-					dator = s.nextLine().split("=")[1];
-					dataOrient = s.nextLine().split("=")[1];
-					numberOfChannels=Integer.parseInt(s.nextLine().split("=")[1]);
-					sampling=s.nextLine();
-					samplingInterval=Integer.parseInt(s.nextLine().split("=")[1]);
-				}
-				if(line.equals("[Binary Infos]")){
-					binaryFormat = s.nextLine().split("=")[1];
-				}
-				if(line.equals("[Channel Infos]")){
-					line=s.nextLine();
-					String channelInfoText ="";
-					while(line.startsWith(";")){
-						channelInfoText+=line+"\n";
-						line=s.nextLine();
-						
-					}
-					channel=new Channel[numberOfChannels];
-					for(int j=0;j<numberOfChannels;j++){
-						channel[j]=new Channel(line);
-						line = s.nextLine();
-					}
-					break;
-				}
-
+		Scanner s = new Scanner(file);
+		String line;
+		while (s.hasNextLine()){
+			line=s.nextLine();
+			if(line.equals("[Common Infos]")){/* codePage=s.nextLine().split("=")[1]; */
+				codePage = s.nextLine().split("=")[1];
+				dataFile = s.nextLine().split("=")[1];
+				markerFile = s.nextLine().split("=")[1];
+				dataFormat = s.nextLine().split("=")[1];
+				dator = s.nextLine().split("=")[1];
+				dataOrient = s.nextLine().split("=")[1];
+				numberOfChannels=Integer.parseInt(s.nextLine().split("=")[1]);
+				sampling=s.nextLine();
+				samplingInterval=Integer.parseInt(s.nextLine().split("=")[1]);
 			}
-			s.close();
-		}       
-		catch (Exception e){
-			readable=false;
+			if(line.equals("[Binary Infos]")){
+				binaryFormat = s.nextLine().split("=")[1];
+			}
+			if(line.equals("[Channel Infos]")){
+				line=s.nextLine();
+				channelInfo ="";
+				while(line.startsWith(";")){
+					channelInfo+=line+"\n";
+					line=s.nextLine();
+					
+				}
+				channel=new Channel[numberOfChannels];
+				for(int j=0;j<numberOfChannels;j++){
+					channel[j]=new Channel(line);
+					line = s.nextLine();
+				}
+				break;
+			}
+
 		}
+		s.close();
 
 	}
 
@@ -328,5 +295,32 @@ public class Vhdr extends JPanel {
 		return vm;
 	}
 
+	public boolean isEditable() {
+		return readable && false; //TODO need function
+	}
+
+	public boolean isSaveable() {
+		return readable && true; //TODO need function
+	}
+
+	public boolean isCloseable() {
+		return readable && true; //OK is able
+	}
+
+	public String getVmrkData() {
+		return vm.getLn();
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public boolean isOpenForEditing() {
+		return editing;
+	}
+
+	public static Vhdr voidFile() {
+		return new Vhdr();
+	}
 	
 }

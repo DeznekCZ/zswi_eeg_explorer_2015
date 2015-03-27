@@ -76,9 +76,7 @@ public class Select extends JFileChooser {
 			public void actionPerformed(ActionEvent actionEvent) {
 				String command = actionEvent.getActionCommand();
 				if (command.equals(JFileChooser.APPROVE_SELECTION)) {
-					if (getSelectedFiles().length != 0) {
-						Application.EDITOR.open(true);
-					}
+					Application.EDITOR.open(getSelectedFiles());
 				}
 			}
 		};
@@ -115,22 +113,34 @@ public class Select extends JFileChooser {
 	
 }
 
+/**
+ * Instance of {@link BlockedIcon} draw red cross
+ * to icon image from {@link Icon} of file system.
+ *
+ * @author IT Crowd
+ */
 class BlockedIcon implements Icon {
 	
 	private BufferedImage image;
+	private int size;
 	
 	public BlockedIcon(FileView typIkon, Icon ikona) {
 		if (ikona instanceof BlockedIcon) {
 			image = ((BlockedIcon) ikona).image;
 		} else {
-			image = new BufferedImage(getIconWidth(), getIconHeight(), BufferedImage.TYPE_INT_ARGB);
+			image = new BufferedImage(ikona.getIconWidth(), ikona.getIconHeight(), 
+					BufferedImage.TYPE_INT_ARGB);
 			Graphics2D g2 = (Graphics2D) image.getGraphics();
 			ikona.paintIcon(null, g2, 0, 0);
 			
-			g2.setStroke(new BasicStroke(4));
+			g2.setStroke(new BasicStroke(3));
 			g2.setColor(Color.RED);
-			g2.drawLine(4, 4, 12, 12);
-			g2.drawLine(4, 12, 12, 4);
+			
+			size = ikona.getIconWidth();
+			
+			g2.drawLine(size - 10, size - 10, size - 2, size - 2);
+			g2.drawLine(size - 10, size - 2, size - 2, size - 10);
+			
 		}
 	}
 
@@ -142,11 +152,11 @@ class BlockedIcon implements Icon {
 	
 	@Override
 	public int getIconWidth() {
-		return 16;
+		return size;
 	}
 	
 	@Override
 	public int getIconHeight() {
-		return 16;
+		return size;
 	}
 }

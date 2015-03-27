@@ -13,6 +13,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 
 import cz.eeg.Application;
+import cz.eeg.data.vhdrmerge.Vhdr;
 import cz.eeg.ui.Editor;
 
 /**
@@ -23,7 +24,10 @@ import cz.eeg.ui.Editor;
  */
 public class MenuPanel extends JPanel {
 
-	public MenuPanel(boolean editable, boolean saveable, boolean closeable) {
+	/** */
+	private static final long serialVersionUID = 1L;
+
+	public MenuPanel(final Vhdr vhdrFile) {
 		setLayout(new BorderLayout());
 		//PANEL_TLACITEK.add(new CloseButton(), BorderLayout.EAST);
 		
@@ -50,7 +54,7 @@ public class MenuPanel extends JPanel {
 			file.addSeparator();
 			
 			// Uložení
-
+/*
 			JMenuItem save = new JMenuItem(LANG("file_save"));
 			
 			save.addActionListener(new ActionListener() {
@@ -61,7 +65,7 @@ public class MenuPanel extends JPanel {
 				}
 			});
 			
-			save.setEnabled(saveable);
+			save.setEnabled(saveable);*/
 
 			JMenuItem saveAs = new JMenuItem(LANG("file_save_as"));
 			
@@ -69,11 +73,11 @@ public class MenuPanel extends JPanel {
 				
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					Dialog.open(Dialog.SAVE_AS);
+					Dialog.open(Dialog.SAVE_AS, vhdrFile);
 				}
 			});
 			
-			saveAs.setEnabled(saveable);
+			saveAs.setEnabled(vhdrFile.isSaveable());
 			file.add(saveAs);
 			
 			file.addSeparator();
@@ -97,10 +101,10 @@ public class MenuPanel extends JPanel {
 		
 		EditButton edit = new EditButton();
 		menuBar.add(edit);
-		edit.setEnabled(editable);
+		edit.setEnabled(vhdrFile.isEditable());
 		
 		CloseButton close = new CloseButton();
 		menuBar.add(close);
-		close.setEnabled(closeable);
+		close.setEnabled(vhdrFile.isCloseable());
 	}
 }

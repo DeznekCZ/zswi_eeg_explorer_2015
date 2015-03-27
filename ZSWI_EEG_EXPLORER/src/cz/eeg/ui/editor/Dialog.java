@@ -2,6 +2,9 @@ package cz.eeg.ui.editor;
 
 import static cz.deznekcz.tool.Lang.*;
 
+import java.io.FileNotFoundException;
+import java.nio.file.FileAlreadyExistsException;
+
 import javax.swing.Box;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -9,6 +12,8 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import cz.eeg.Application;
+import cz.eeg.data.save.SaveFiles;
+import cz.eeg.data.vhdrmerge.Vhdr;
 import cz.eeg.ui.Editor;
 
 /**
@@ -20,17 +25,17 @@ public final class Dialog {
 	
 	public final static int SAVE_AS = 1;
 
-	public static void open(int type) {
-		new Dialog(type);
+	public static void open(int type, Object... params) {
+		new Dialog(type, params);
 	}
 	
-	private Dialog(final int type) {
+	private Dialog(final int type, Object... params) {
 		if (type == SAVE_AS) {
-			saveAs();
+			saveAs((Vhdr) params[0]);
 		}
 	}
 
-	private void saveAs() {
+	private void saveAs(Vhdr file) {
 		JTextField yearField = new JTextField(4);
 	    JTextField monthField = new JTextField(2);
 	    JTextField dayField = new JTextField(2);
@@ -54,6 +59,9 @@ public final class Dialog {
 	    myPanel.add(ageField);
 	
 	    String wrongMessage = "";
+	    
+	    String lastName = "";
+	    boolean overwrite = false;
 	    
 	    while (true) {
 		    int result = JOptionPane.showConfirmDialog(null, myPanel, 
@@ -80,7 +88,19 @@ public final class Dialog {
 		    	//System.out.println(LANG.format_age + ": " + age);
 		    	//System.out.println(year+"-"+month+"-"+day+"-"+gender+"-"+age+".vhdr");
 		    	
-		    	Application.EDITOR.saveAs(gender+"_"+age+"_"+year+"_"+month+"_"+day);
+		    	String newName = "";
+		    	
+		    	try {
+		    		newName = gender+"_"+age+"_"+year+"_"+month+"_"+day;
+					new SaveFiles(newName, file, overwrite);
+				} catch (FileNotFoundException e) {
+					wrongMessage = LANG("file_not_created");
+					continue;
+				} catch (FileAlreadyExistsException e) {
+					wrongMessage = LANG("file_exists");
+					lastName = newName;
+					continue;
+				}
 		    	
 		    	break;
 		    } else {
@@ -118,8 +138,6 @@ public final class Dialog {
 	}
 
 	private boolean testDay(String day, String month) {
-		if (month == null || month.equals("")) 
-			return true; 
 		try {
 			int[] dayConst = new int[] {
 				31,29,31,30,31,30,31,31,30,31,30,31

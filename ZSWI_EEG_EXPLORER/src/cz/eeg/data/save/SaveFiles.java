@@ -3,7 +3,9 @@ package cz.eeg.data.save;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
+import java.nio.file.FileAlreadyExistsException;
 
+import cz.eeg.Application;
 import cz.eeg.data.Vmrk;
 import cz.eeg.data.vhdrmerge.Channel;
 import cz.eeg.data.vhdrmerge.Vhdr;
@@ -15,9 +17,13 @@ public class SaveFiles {
 	private Vhdr v;
 	private String outFileName;
 	
-	public SaveFiles(String outFile,Vhdr vhdr) throws FileNotFoundException{
+	public SaveFiles(String outFile,Vhdr vhdr, boolean overwrite) throws FileNotFoundException, FileAlreadyExistsException{
 		outFileName=outFile;
 		f=new File(outFile+".vhdr");
+		
+		if (f.exists() && !overwrite)
+			throw new FileAlreadyExistsException(outFileName);
+		
 		v=vhdr;
 		saveVhdr();
 		saveVmrk();
@@ -53,7 +59,7 @@ public class SaveFiles {
 	}
 	
 	private String [] rozdel(String spl){
-		String [] s = spl.split(".");
+		String [] s = spl.split("\\.");
 		return s;
 		
 	}

@@ -61,8 +61,9 @@ public class Application extends JFrame {
 				    public boolean dispatchKeyEvent(KeyEvent e) {
 				        if(Application.WINDOW.isActive()
 				        		&& e.getID() == KeyEvent.KEY_PRESSED 
-				        		&& e.getKeyCode() == KeyEvent.VK_ENTER) {
-				            Application.EDITOR.open(true);
+				        		&& e.getKeyCode() == KeyEvent.VK_ENTER
+				        		&& Application.selectionFrame != null) {
+				            Application.EDITOR.open(Application.selectionFrame.getSelectedFiles());
 				        }
 				        return false;
 				    }
@@ -108,10 +109,12 @@ public class Application extends JFrame {
 	@Override
 	public void setVisible(boolean b) {
 		if (!b) {
-			Editor.WINDOW.setVisible(true);
-			boolean closing = true;
-			while (closing && EDITOR.isOpenedFiles()) {
-				closing = EDITOR.close();
+			if (EDITOR.isOpenedFiles()) {
+				Editor.WINDOW.setVisible(true);
+				boolean closing = true;
+				while (closing && EDITOR.isOpenedFiles()) {
+					closing = EDITOR.close();
+				}
 			}
 			if (!EDITOR.isOpenedFiles()) {
 				

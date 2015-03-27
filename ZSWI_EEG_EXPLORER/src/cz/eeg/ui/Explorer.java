@@ -49,7 +49,7 @@ public class Explorer extends JPanel {
 
 				editor.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent event) {
-						Application.EDITOR.open(false);
+						Application.EDITOR.open(null);
 					}
 				});
 				file.add(editor);

@@ -26,6 +26,7 @@ import cz.eeg.Application;
 import cz.eeg.data.vhdrmerge.Vhdr;
 import cz.eeg.tool.Config;
 import cz.eeg.ui.editor.CloseButton;
+import cz.eeg.ui.editor.Create;
 import cz.eeg.ui.editor.Dialog;
 import cz.eeg.ui.editor.EditButton;
 import cz.eeg.ui.editor.MenuPanel;
@@ -75,7 +76,7 @@ public class Editor extends JTabbedPane {
 		VOID_TAB.setName(LANG("editor_no_file"));
 		VOID_TAB.setEnabled(false);
 		VOID_TAB.setLayout(new BorderLayout());
-		VOID_TAB.add(new MenuPanel(false,false,false), BorderLayout.NORTH);
+		VOID_TAB.add(new MenuPanel(Vhdr.voidFile()), BorderLayout.NORTH);
 		return VOID_TAB;
 	}
 
@@ -92,22 +93,19 @@ public class Editor extends JTabbedPane {
 	/**
 	 * Method open the {@link Editor}. Opens new files if is selected
 	 * in focused selection frame.
-	 * @param isSelectedFiles
+	 * @param listOfFiles
 	 */
-	public void open(boolean isSelectedFiles) {
+	public void open(File[] listOfFiles) {
 		List<File> nonReadable = new ArrayList<File>();
-		if (isSelectedFiles && Application.selectionFrame != null) {
-			File[] files = Application.selectionFrame.getSelectedFiles();
-			if (files != null) {
-				for (File file : files) {
-					Vhdr vhdrSoubor = new Vhdr(file, true);
-					if (!vhdrSoubor.isReadable()) {
-						nonReadable.add(file);
-						continue;
-					}
+		if (listOfFiles != null && listOfFiles.length > 0) {
+			for (File file : listOfFiles) {
+				Vhdr vhdrSoubor = new Vhdr(file, true);
+				if (vhdrSoubor.isReadable()) {
 					openedFiles.add(vhdrSoubor);
-					addTab(vhdrSoubor.getName(), vhdrSoubor);
+					addTab(vhdrSoubor.getName(), Create.filePanel(vhdrSoubor));
 					setSelectedIndex(getTabCount()-1);
+				} else {
+					nonReadable.add(file);
 				}
 			}
 			
@@ -121,7 +119,7 @@ public class Editor extends JTabbedPane {
 				remove(VOID_TAB);
 			}	
 
-			if (files == null || nonReadable.size() < files.length)
+			if (listOfFiles == null || nonReadable.size() < listOfFiles.length)
 				WINDOW.setVisible(true);
 			return;
 		}

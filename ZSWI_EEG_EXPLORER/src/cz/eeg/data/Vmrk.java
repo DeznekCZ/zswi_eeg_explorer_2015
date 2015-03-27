@@ -10,6 +10,8 @@ import java.util.Scanner;
  */
 public class Vmrk extends File {
 	
+	/** */
+	private static final long serialVersionUID = 1L;
 	private String ln;
 	
 	public String getLn() {

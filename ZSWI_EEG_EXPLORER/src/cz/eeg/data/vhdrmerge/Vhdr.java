@@ -52,6 +52,8 @@ public class Vhdr extends JPanel {
 	private String dator=null;
 	private String sampling=null;
 	private Channel[] channel;
+	private Vmrk vm;
+	
 
 	private boolean readable = true;
 	//TODO editovany
@@ -86,7 +88,7 @@ public class Vhdr extends JPanel {
 			input.setText(vhdr());
 			
 			String s=inputF.getAbsolutePath().replaceAll(".vhdr", ".vmrk");
-			Vmrk vm = null;
+			
 			try {
 				vm = new Vmrk(s);
 			} catch (Exception e) {
@@ -104,32 +106,36 @@ public class Vhdr extends JPanel {
 				
 				split.setDividerLocation(Application.EDITOR.getSize().width / 2);
 	
-		/*TODO	EEGDataTransformer dt = new EEGDataTransformer();
+	/*	EEGDataTransformer dt = new EEGDataTransformer();
 				double[] d,j,k;
-				try {
-					d = dt.readBinaryData(inputF.getAbsolutePath(), 1);
-					for(int i=0;i<d.length;i++){
-						System.out.print(d[i]+" ");
-					}
-					System.out.println();
-					System.out.println(d.length);
-					j = dt.readBinaryData(inputF.getAbsolutePath(), 2);
-					for(int i=0;i<j.length;i++){
-						System.out.print(j[i]+" ");
-					}
-					System.out.println();
-					System.out.println(j.length);
-					k = dt.readBinaryData(inputF.getAbsolutePath(), 3);
-					for(int i=0;i<k.length;i++){
-						System.out.print(k[i]+" ");
-					}
-					System.out.println();
-					System.out.println(k.length);
+				
 					
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-	*/		}
+					try {
+						d = dt.readBinaryData(inputF.getAbsolutePath(), 1);
+						for(int i=0;i<d.length;i++){
+							System.out.print(d[i]+" ");
+						}
+						System.out.println();
+						System.out.println(d.length);
+						j = dt.readBinaryData(inputF.getAbsolutePath(), 2);
+						for(int i=0;i<j.length;i++){
+							System.out.print(j[i]+" ");
+						}
+						System.out.println();
+						System.out.println(j.length);
+						k = dt.readBinaryData(inputF.getAbsolutePath(), 3);
+						for(int i=0;i<k.length;i++){
+							System.out.print(k[i]+" ");
+						}
+						System.out.println();
+						System.out.println(k.length);
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					*/
+					
+			}
 			
 		}else {
 			viewFile(inputF);
@@ -318,4 +324,9 @@ public class Vhdr extends JPanel {
 		return channel;
 	}
 
+	public Vmrk getVm() {
+		return vm;
+	}
+
+	
 }

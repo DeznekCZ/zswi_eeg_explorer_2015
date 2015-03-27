@@ -21,6 +21,20 @@ public class SaveFiles {
 		v=vhdr;
 		saveVhdr();
 		saveVmrk();
+		saveDataFile();
+	}
+	
+	
+	private void saveDataFile(){
+		File oldfile =new File(v.getDataFile());
+		String [] s=rozdel(v.getDataFile());
+		File newfile =new File(outFileName+"."+s[1]);
+ 
+		if(oldfile.renameTo(newfile)){
+			System.out.println("Rename complete");
+		}else{
+			System.out.println("Rename failed");
+		}
 	}
 	
 	private void saveVhdr() throws FileNotFoundException{

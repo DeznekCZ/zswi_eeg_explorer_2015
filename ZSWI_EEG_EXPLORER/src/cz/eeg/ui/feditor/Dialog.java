@@ -1,4 +1,4 @@
-package cz.eeg.ui.editor;
+package cz.eeg.ui.feditor;
 
 import static cz.deznekcz.tool.Lang.*;
 
@@ -12,10 +12,11 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import cz.eeg.data.Marker;
 import cz.eeg.data.Vhdr;
 import cz.eeg.data.save.SaveFiles;
 import cz.eeg.ui.Application;
-import cz.eeg.ui.Editor;
+import cz.eeg.ui.FileEditor;
 
 /**
  * File handling dialog class
@@ -25,6 +26,8 @@ import cz.eeg.ui.Editor;
 public final class Dialog {
 	
 	public final static int SAVE_AS = 1;
+	public static final int EDIT = 2;
+	public static final int MARKER_ERROR = 3;
 
 	public static void open(int type, Object... params) {
 		new Dialog(type, params);
@@ -33,7 +36,17 @@ public final class Dialog {
 	private Dialog(final int type, Object... params) {
 		if (type == SAVE_AS) {
 			saveAs((Vhdr) params[0]);
+		} else if (type == EDIT) {
+			editMarker((Marker) params[0]);
+		} else if (type == MARKER_ERROR) {
+			JOptionPane.showMessageDialog(null, 
+					LANG("marker_reading_error", ((Exception) params[0]).getMessage()), 
+					LANG("error"), JOptionPane.ERROR_MESSAGE);
 		}
+	}
+
+	private void editMarker(Marker marker) {
+		
 	}
 
 	private void saveAs(Vhdr file) {

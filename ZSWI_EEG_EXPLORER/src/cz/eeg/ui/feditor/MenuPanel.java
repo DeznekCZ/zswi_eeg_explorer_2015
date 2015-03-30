@@ -1,4 +1,4 @@
-package cz.eeg.ui.editor;
+package cz.eeg.ui.feditor;
 
 import static cz.deznekcz.tool.Lang.LANG;
 
@@ -14,7 +14,7 @@ import javax.swing.JPanel;
 
 import cz.eeg.data.Vhdr;
 import cz.eeg.ui.Application;
-import cz.eeg.ui.Editor;
+import cz.eeg.ui.FileEditor;
 
 /**
  * Internal class representing a menu panel

@@ -27,7 +27,7 @@ import cz.eeg.ui.Application;
 /**
  * Instances represents extendex {@link JFileChooser}.
  * Files selected in instance of {@link Select}
- * is opened in {@link Editor#WINDOW}
+ * is opened in {@link FileEditor#WINDOW}
  *
  * @author IT Crowd
  */

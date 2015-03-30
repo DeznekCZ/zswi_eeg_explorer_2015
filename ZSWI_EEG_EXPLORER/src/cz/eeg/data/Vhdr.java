@@ -276,7 +276,7 @@ public class Vhdr {
 	}
 
 	public boolean isEditable() {
-		return readable && false; //TODO need function
+		return readable; //TODO need function
 	}
 
 	public boolean isSaveable() {

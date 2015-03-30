@@ -1,4 +1,4 @@
-package cz.eeg.ui.editor;
+package cz.eeg.ui.feditor;
 
 import java.awt.BorderLayout;
 import java.awt.Component;

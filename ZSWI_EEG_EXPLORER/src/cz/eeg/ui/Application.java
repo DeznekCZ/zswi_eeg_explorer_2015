@@ -40,8 +40,8 @@ public class Application extends JFrame {
 	public final static Application WINDOW = new Application();
 	/** Frame of explorer {@link Application} */
 	public final static Explorer EXPLORER = new Explorer();
-	/** Instance of {@link Editor}, {@link JFrame} linked by {@link Editor#WINDOW} */
-	public final static Editor EDITOR = new Editor();
+	/** Instance of {@link FileEditor}, {@link JFrame} linked by {@link FileEditor#WINDOW} */
+	public final static FileEditor EDITOR = new FileEditor();
 	/** API {@link KeyboardFocusManager} */
 	public static KeyboardFocusManager manager =
 	         KeyboardFocusManager.getCurrentKeyboardFocusManager();
@@ -108,7 +108,7 @@ public class Application extends JFrame {
 	public void setVisible(boolean b) {
 		if (!b) {
 			if (EDITOR.isOpenedFiles()) {
-				Editor.WINDOW.setVisible(true);
+				FileEditor.WINDOW.setVisible(true);
 				boolean closing = true;
 				while (closing && EDITOR.isOpenedFiles()) {
 					closing = EDITOR.close();
@@ -116,7 +116,7 @@ public class Application extends JFrame {
 			}
 			if (!EDITOR.isOpenedFiles()) {
 				
-				Editor.WINDOW.setVisible(false);
+				FileEditor.WINDOW.setVisible(false);
 				
 				CONFIG.ex_fullscreen = getExtendedState();
 				CONFIG.ex_posx = getLocation().x;

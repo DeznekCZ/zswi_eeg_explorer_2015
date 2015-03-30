@@ -24,19 +24,19 @@ import javax.swing.JTabbedPane;
 
 import cz.eeg.data.Vhdr;
 import cz.eeg.tool.Config;
-import cz.eeg.ui.editor.CloseButton;
-import cz.eeg.ui.editor.Panels;
-import cz.eeg.ui.editor.Dialog;
-import cz.eeg.ui.editor.EditButton;
-import cz.eeg.ui.editor.MenuPanel;
+import cz.eeg.ui.feditor.CloseButton;
+import cz.eeg.ui.feditor.Dialog;
+import cz.eeg.ui.feditor.EditButton;
+import cz.eeg.ui.feditor.MenuPanel;
+import cz.eeg.ui.feditor.Panels;
 
 /**
- * Instance of {@link Editor} represent an file editor
+ * Instance of {@link FileEditor} represent an file editor
  * of *.vhdr files
  *
  * @author IT Crowd
  */
-public class Editor extends JTabbedPane {
+public class FileEditor extends JTabbedPane {
 
 	public final static Config CONFIG = Application.CONFIG;
 	/** Void tab for editor */
@@ -48,16 +48,16 @@ public class Editor extends JTabbedPane {
 
 		@Override public void setVisible(boolean arg0) { instance.setVisible(arg0); super.setVisible(arg0); };
 	};
-	/** Intenal instace of {@link Editor}, is needed for visibility control */
-	private static Editor instance;
+	/** Intenal instace of {@link FileEditor}, is needed for visibility control */
+	private static FileEditor instance;
 	
 	/** List of openned files */
 	private List<Vhdr> openedFiles = new ArrayList<Vhdr>();
 	
 	/**
-	 * Default constructor of instaces of class {@link Editor}
+	 * Default constructor of instaces of class {@link FileEditor}
 	 */
-	public Editor() {
+	public FileEditor() {
 		
 		instance = this;
 		
@@ -90,7 +90,7 @@ public class Editor extends JTabbedPane {
 	}
 
 	/**
-	 * Method open the {@link Editor}. Opens new files if is selected
+	 * Method open the {@link FileEditor}. Opens new files if is selected
 	 * in focused selection frame.
 	 * @param listOfFiles
 	 */
@@ -238,6 +238,12 @@ public class Editor extends JTabbedPane {
 	}
 
 	public void edit() {
-		
+		int index = getSelectedIndex();
+		Vhdr file = openedFiles.get(index);
+		try {
+			new MarkerEditor(file.getVm().editFile());
+		} catch (Exception e) {
+			Dialog.open(Dialog.MARKER_ERROR, e);
+		}
 	}
 }

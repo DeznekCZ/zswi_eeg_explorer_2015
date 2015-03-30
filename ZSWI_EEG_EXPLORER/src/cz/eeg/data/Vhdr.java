@@ -1,33 +1,8 @@
-package cz.eeg.data.vhdrmerge;
+package cz.eeg.data;
 
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Toolkit;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.Scanner;
-
-import javax.swing.BoxLayout;
-import javax.swing.JFrame;
-import javax.swing.JMenuBar;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.JTextPane;
-
-import cz.eeg.Application;
-import cz.eeg.data.DATA;
-import cz.eeg.data.Vmrk;
-import cz.eeg.ui.editor.EditableField;
-import cz.eeg.ui.editor.MenuPanel;
-import cz.zcu.kiv.signal.*;
 
 /**
  * Instances of {@link Vhdr} represents *.vhdr files.
@@ -46,8 +21,9 @@ public class Vhdr {
 	private int numberOfChannels;
 	private int samplingInterval;
 	private String binaryFormat;
-	private String dataFile;
-	private String markerFile;
+	private File headerFile;
+	private File dataFile;
+	private File markerFile;
 	private String codePage;
 	private String channelInfo=null;
 	private String dator=null;
@@ -67,6 +43,7 @@ public class Vhdr {
 	 * @param fullReading true - check only existency of marker and data file
 	 */
 	public Vhdr(File inputF, boolean fullReading) {
+		headerFile = inputF;
 		
 		setName(inputF.getName());
 		
@@ -75,8 +52,9 @@ public class Vhdr {
 				
 				openFile(inputF);
 				
-				String s=inputF.getAbsolutePath().replaceAll(".vhdr", ".vmrk");
-				vm = new Vmrk(s);
+				//String s=inputF.getAbsolutePath().replaceAll(".vhdr", ".vmrk");
+				//vm = new Vmrk(s);
+				vm = new Vmrk(markerFile);
 				
 			} else {
 				viewFile(inputF);
@@ -136,8 +114,8 @@ public class Vhdr {
 		return new StringBuilder()
 					.append("[Common Infos]\n")
 					.append("Codepage="+codePage+"\n")
-					.append("DataFile="+dataFile+"\n")
-					.append("MarkerFile="+markerFile+"\n")
+					.append("DataFile="+dataFile.getName()+"\n")
+					.append("MarkerFile="+markerFile.getName()+"\n")
 					.append("DataFormat="+dataFormat+"\n")
 					.append(dator+"\n")
 					.append("DataOrientation="+dataOrient+"\n")
@@ -195,8 +173,10 @@ public class Vhdr {
 			line=s.nextLine();
 			if(line.equals("[Common Infos]")){/* codePage=s.nextLine().split("=")[1]; */
 				codePage = s.nextLine().split("=")[1];
-				dataFile = s.nextLine().split("=")[1];
-				markerFile = s.nextLine().split("=")[1];
+				dataFile = new File(file.getParentFile().getAbsolutePath() + "/" +
+						s.nextLine().split("=")[1]);
+				markerFile = new File(file.getParentFile().getAbsolutePath() + "/" +
+						s.nextLine().split("=")[1]);
 				dataFormat = s.nextLine().split("=")[1];
 				dator = s.nextLine().split("=")[1];
 				dataOrient = s.nextLine().split("=")[1];
@@ -257,13 +237,13 @@ public class Vhdr {
 	}
 
 
-	public String getDataFile() {
-		return dataFile;
+	public String getDataFileName() {
+		return dataFile.getName();
 	}
 
 
-	public String getMarkerFile() {
-		return markerFile;
+	public String getMarkerFileName() {
+		return markerFile.getName();
 	}
 
 
@@ -313,6 +293,18 @@ public class Vhdr {
 
 	public String getName() {
 		return name;
+	}
+
+	public File getDataFile() {
+		return dataFile;
+	}
+
+	public File getMarkerFile() {
+		return markerFile;
+	}
+
+	public File getHeaderFile() {
+		return headerFile;
 	}
 
 	public boolean isOpenForEditing() {

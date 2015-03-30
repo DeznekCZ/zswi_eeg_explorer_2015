@@ -1,4 +1,4 @@
-package cz.eeg.data.vhdrmerge;
+package cz.eeg.data;
 
 
 /**

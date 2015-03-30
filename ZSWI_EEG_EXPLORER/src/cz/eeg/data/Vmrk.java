@@ -8,7 +8,7 @@ import java.util.Scanner;
  *
  * @author IT Crowd
  */
-public class Vmrk extends File {
+public class Vmrk{
 	
 	/** */
 	private static final long serialVersionUID = 1L;
@@ -18,16 +18,15 @@ public class Vmrk extends File {
 		return ln;
 	}
 
-	public Vmrk(String name) throws Exception{
-		super(name);
-		ln=viewFile(name);
+	public Vmrk(File markerFile) throws Exception{
+		ln=viewFile(markerFile);
 		
 	}
 	
-	public static String viewFile(String name) throws Exception{
+	public static String viewFile(File file) throws Exception{
 		
 		String line = null;
-		Scanner s = new Scanner(new File(name));
+		Scanner s = new Scanner(file);
 		while(s.hasNext()) {
 			if(line==null){line= s.nextLine()+"\n";} 
 			else{line+= s.nextLine()+"\n";}

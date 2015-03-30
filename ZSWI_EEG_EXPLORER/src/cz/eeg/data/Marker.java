@@ -1,6 +1,5 @@
 package cz.eeg.data;
 
-import cz.eeg.ui.editor.EditableField;
 
 public class Marker {
 

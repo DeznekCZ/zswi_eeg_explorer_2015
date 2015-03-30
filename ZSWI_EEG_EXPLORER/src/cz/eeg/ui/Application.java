@@ -1,4 +1,4 @@
-package cz.eeg;
+package cz.eeg.ui;
 
 import static cz.deznekcz.tool.Lang.*;
 
@@ -11,9 +11,7 @@ import java.awt.event.KeyEvent;
 import javax.swing.JFrame;
 
 import cz.eeg.tool.Config;
-import cz.eeg.ui.Editor;
-import cz.eeg.ui.Explorer;
-import cz.eeg.ui.Select;
+import cz.eeg.ui.explorer.Select;
 
 /**
  * Running class of EEG explorer

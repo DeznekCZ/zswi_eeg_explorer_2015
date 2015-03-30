@@ -1,6 +1,7 @@
-package cz.eeg.ui;
+package cz.eeg.ui.explorer;
 
 import static cz.deznekcz.tool.Lang.*;
+
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Component;
@@ -19,9 +20,9 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.filechooser.FileSystemView;
 import javax.swing.filechooser.FileView;
 
-import cz.eeg.Application;
-import cz.eeg.data.vhdrmerge.Vhdr;
+import cz.eeg.data.Vhdr;
 import cz.eeg.tool.Config;
+import cz.eeg.ui.Application;
 
 /**
  * Instances represents extendex {@link JFileChooser}.

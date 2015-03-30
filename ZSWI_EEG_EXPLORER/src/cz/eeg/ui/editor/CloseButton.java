@@ -5,7 +5,7 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 
-import cz.eeg.Application;
+import cz.eeg.ui.Application;
 
 /**
  * Internal class representing a close button,

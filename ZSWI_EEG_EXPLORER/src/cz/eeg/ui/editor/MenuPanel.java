@@ -12,8 +12,8 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 
-import cz.eeg.Application;
-import cz.eeg.data.vhdrmerge.Vhdr;
+import cz.eeg.data.Vhdr;
+import cz.eeg.ui.Application;
 import cz.eeg.ui.Editor;
 
 /**

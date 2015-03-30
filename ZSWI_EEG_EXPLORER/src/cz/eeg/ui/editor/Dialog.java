@@ -2,6 +2,7 @@ package cz.eeg.ui.editor;
 
 import static cz.deznekcz.tool.Lang.*;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.nio.file.FileAlreadyExistsException;
 
@@ -11,9 +12,9 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import cz.eeg.Application;
+import cz.eeg.data.Vhdr;
 import cz.eeg.data.save.SaveFiles;
-import cz.eeg.data.vhdrmerge.Vhdr;
+import cz.eeg.ui.Application;
 import cz.eeg.ui.Editor;
 
 /**
@@ -68,9 +69,11 @@ public final class Dialog {
 		               LANG("editor_save"), JOptionPane.OK_CANCEL_OPTION);
 		    if (result == JOptionPane.OK_OPTION) {
 		    	
-		    	if (testYear(yearField.getText()) && testMonth(monthField.getText())
-		    			&& testDay(dayField.getText(), monthField.getText())
-		    			&& testGender(genderField.getText()) && testAge(ageField.getText())) {
+		    	if (testYear(yearField.getText()) 
+		    			|| testMonth(monthField.getText())
+		    			|| testDay(dayField.getText(), monthField.getText())
+		    			|| testGender(genderField.getText())
+		    			|| testAge(ageField.getText())) {
 		    		wrongMessage = LANG("format_wrong");
 		    		continue;
 		    	}
@@ -91,8 +94,9 @@ public final class Dialog {
 		    	String newName = "";
 		    	
 		    	try {
-		    		newName = gender+"_"+age+"_"+year+"_"+month+"_"+day;
-					new SaveFiles(newName, file, overwrite);
+		    		newName = gender+"_"+age+"_"+year+"_"+month+"_"+day;//TODO next field
+					new SaveFiles(new File(Application.EXPLORER.getOutputPath()),
+							newName, file, overwrite);
 				} catch (FileNotFoundException e) {
 					wrongMessage = LANG("file_not_created");
 					continue;

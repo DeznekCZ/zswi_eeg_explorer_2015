@@ -9,7 +9,7 @@ import java.nio.file.FileAlreadyExistsException;
 import org.junit.Before;
 import org.junit.Test;
 
-import cz.eeg.data.vhdrmerge.Vhdr;
+import cz.eeg.data.Vhdr;
 
 public class SaveFilesTest {
 
@@ -28,7 +28,7 @@ public class SaveFilesTest {
 	@Test
 	public void testSaveAs(){
 		try {
-			new SaveFiles("novySoubor", vhdrFile, true);
+			new SaveFiles(new File("."),"novySoubor", vhdrFile, true);
 		} catch (FileNotFoundException e) {
 			assertTrue("File is not created.", false);
 		} catch (FileAlreadyExistsException e) {

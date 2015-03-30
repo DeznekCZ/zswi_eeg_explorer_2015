@@ -22,11 +22,10 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
-import cz.eeg.Application;
-import cz.eeg.data.vhdrmerge.Vhdr;
+import cz.eeg.data.Vhdr;
 import cz.eeg.tool.Config;
 import cz.eeg.ui.editor.CloseButton;
-import cz.eeg.ui.editor.Create;
+import cz.eeg.ui.editor.Panels;
 import cz.eeg.ui.editor.Dialog;
 import cz.eeg.ui.editor.EditButton;
 import cz.eeg.ui.editor.MenuPanel;
@@ -102,7 +101,7 @@ public class Editor extends JTabbedPane {
 				Vhdr vhdrSoubor = new Vhdr(file, true);
 				if (vhdrSoubor.isReadable()) {
 					openedFiles.add(vhdrSoubor);
-					addTab(vhdrSoubor.getName(), Create.filePanel(vhdrSoubor));
+					addTab(vhdrSoubor.getName(), Panels.filePanel(vhdrSoubor));
 					setSelectedIndex(getTabCount()-1);
 				} else {
 					nonReadable.add(file);

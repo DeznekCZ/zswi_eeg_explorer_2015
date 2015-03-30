@@ -5,22 +5,23 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.nio.file.FileAlreadyExistsException;
 
-import cz.eeg.Application;
+import cz.eeg.data.Channel;
+import cz.eeg.data.Vhdr;
 import cz.eeg.data.Vmrk;
-import cz.eeg.data.vhdrmerge.Channel;
-import cz.eeg.data.vhdrmerge.Vhdr;
+import cz.eeg.ui.Application;
 
 public class SaveFiles {
 
 	
 	private File f;
 	private Vhdr v;
-	private String outFileName,outPath;
+	private String outFileName;
+	private File outPath;
 	
-	public SaveFiles(String outFile,Vhdr vhdr, boolean overwrite, String outP) throws FileNotFoundException, FileAlreadyExistsException{
-		outFileName=outFile;
-		outPath=outP;
-		f=new File(outPath+outFile+".vhdr");
+	public SaveFiles(File outFile, String newName, Vhdr vhdr, boolean overwrite) throws FileNotFoundException, FileAlreadyExistsException{
+		outFileName=newName;
+		outPath=outFile;
+		f=new File(outFile.getAbsolutePath()+"/"+newName+".vhdr");
 		
 		if (f.exists() && !overwrite)
 			throw new FileAlreadyExistsException(outFileName);
@@ -33,9 +34,9 @@ public class SaveFiles {
 	
 	
 	private void saveDataFile(){
-		File oldfile =new File(v.getDataFile());
-		String [] s=rozdel(v.getDataFile());
-		File newfile =new File(outPath+outFileName+"."+s[1]);
+		File oldfile = v.getDataFile();
+		String [] s=rozdel(v.getDataFileName());
+		File newfile =new File(outPath.getAbsolutePath()+"/"+outFileName+"."+s[1]);
  
 		if(oldfile.renameTo(newfile)){
 			System.out.println("Rename complete");
@@ -52,9 +53,9 @@ public class SaveFiles {
 	
 	private void saveVmrk() throws FileNotFoundException{
 		String vmrk=v.getVm().getLn();
-		String [] s=rozdel(v.getDataFile());
-		vmrk.replace("DataFile="+v.getDataFile(), "DataFile="+outFileName+"."+s[1]);
-		PrintWriter pw=new PrintWriter(new File (outPath+outFileName+".vmrk"));
+		String [] s=rozdel(v.getDataFileName());
+		vmrk.replace("DataFile="+v.getDataFileName(), "DataFile="+outFileName+"."+s[1]);
+		PrintWriter pw=new PrintWriter(new File (outPath.getAbsolutePath()+"/"+outFileName+".vmrk"));
 		pw.write(vmrk);
 		pw.close();
 	}
@@ -66,7 +67,7 @@ public class SaveFiles {
 	}
 	
 	private String newVhdr(){
-		String [] s=rozdel(v.getDataFile());
+		String [] s=rozdel(v.getDataFileName());
 		
 		return new StringBuilder()
 					.append("[Common Infos]\n")

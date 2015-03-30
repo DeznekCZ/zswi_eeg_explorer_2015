@@ -6,6 +6,9 @@ import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
+import cz.eeg.data.Channel;
+import cz.eeg.data.Vhdr;
+
 /**
  * Třída pro spojení 2 VHDR souborů
  * vstupem vždy dva soubory + název nového vhdr + nový datafile(název) + nový marker file(název)

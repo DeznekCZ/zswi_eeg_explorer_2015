@@ -12,8 +12,8 @@ import java.awt.event.ActionListener;
 
 import javax.swing.*;
 
-import cz.eeg.Application;
 import cz.eeg.tool.Config;
+import cz.eeg.ui.explorer.Select;
 
 /**
  * An instance of an file explorer

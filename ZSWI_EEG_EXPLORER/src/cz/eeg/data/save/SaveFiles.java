@@ -15,11 +15,12 @@ public class SaveFiles {
 	
 	private File f;
 	private Vhdr v;
-	private String outFileName;
+	private String outFileName,outPath;
 	
-	public SaveFiles(String outFile,Vhdr vhdr, boolean overwrite) throws FileNotFoundException, FileAlreadyExistsException{
+	public SaveFiles(String outFile,Vhdr vhdr, boolean overwrite, String outP) throws FileNotFoundException, FileAlreadyExistsException{
 		outFileName=outFile;
-		f=new File(outFile+".vhdr");
+		outPath=outP;
+		f=new File(outPath+outFile+".vhdr");
 		
 		if (f.exists() && !overwrite)
 			throw new FileAlreadyExistsException(outFileName);
@@ -34,7 +35,7 @@ public class SaveFiles {
 	private void saveDataFile(){
 		File oldfile =new File(v.getDataFile());
 		String [] s=rozdel(v.getDataFile());
-		File newfile =new File(outFileName+"."+s[1]);
+		File newfile =new File(outPath+outFileName+"."+s[1]);
  
 		if(oldfile.renameTo(newfile)){
 			System.out.println("Rename complete");
@@ -53,7 +54,7 @@ public class SaveFiles {
 		String vmrk=v.getVm().getLn();
 		String [] s=rozdel(v.getDataFile());
 		vmrk.replace("DataFile="+v.getDataFile(), "DataFile="+outFileName+"."+s[1]);
-		PrintWriter pw=new PrintWriter(new File (outFileName+".vmrk"));
+		PrintWriter pw=new PrintWriter(new File (outPath+outFileName+".vmrk"));
 		pw.write(vmrk);
 		pw.close();
 	}

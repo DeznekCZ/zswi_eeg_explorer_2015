@@ -10,8 +10,8 @@ import cz.eeg.ui.feditor.Dialog;
 
 public class EditPart extends JButton {
 
-	public EditPart(String string, final Marker marker, final String field) {
-		super(string);
+	public EditPart(Object value, final Marker marker, final String field) {
+		super(value.toString());
 		
 		addActionListener(new ActionListener() {
 			

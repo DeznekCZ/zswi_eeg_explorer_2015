@@ -3,7 +3,7 @@ package cz.eeg.data;
 
 public class Marker {
 
-	private String markerNumber;
+	private int markerNumber;
 	private String type;
 	private String description;
 
@@ -14,7 +14,7 @@ public class Marker {
 	public Marker(String line){
 
 		String [] lineF=line.split("=");
-		markerNumber=lineF[0].substring(2);
+		markerNumber=Integer.parseInt(lineF[0].substring(2));
 		String [] lineF1=lineF[1].split(",");
 		type=lineF1[0];
 		description=lineF1[1];
@@ -23,7 +23,7 @@ public class Marker {
 		channelNumber=lineF1[4];
 	}
 
-	public String getMarkerNumber() {
+	public int getMarkerNumber() {
 		return markerNumber;
 	}
 
@@ -59,7 +59,7 @@ public class Marker {
 		this.channelNumber = channelNumber;
 	}
 
-	public void setMarkerNumber(String markerNumber) {
+	public void setMarkerNumber(int markerNumber) {
 		this.markerNumber = markerNumber;
 	}
 

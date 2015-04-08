@@ -4,6 +4,7 @@ import static cz.deznekcz.tool.Lang.*;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.lang.reflect.Field;
 import java.nio.file.FileAlreadyExistsException;
 
 import javax.swing.Box;
@@ -30,14 +31,10 @@ public final class Dialog {
 	public static final int MARKER_ERROR = 3;
 
 	public static void open(int type, Object... params) {
-		new Dialog(type, params);
-	}
-	
-	private Dialog(final int type, Object... params) {
 		if (type == SAVE_AS) {
 			saveAs((Vhdr) params[0]);
 		} else if (type == EDIT) {
-			editMarker((Marker) params[0]);
+			editMarker((Marker) params[0], (Field) params[1]);
 		} else if (type == MARKER_ERROR) {
 			JOptionPane.showMessageDialog(null, 
 					LANG("marker_reading_error", ((Exception) params[0]).getMessage()), 
@@ -45,11 +42,13 @@ public final class Dialog {
 		}
 	}
 
-	private void editMarker(Marker marker) {
-		
+	private static void editMarker(Marker marker, Field field) {
+		if (field.getType() == Integer.class) {
+			
+		}
 	}
 
-	private void saveAs(Vhdr file) {
+	private static void saveAs(Vhdr file) {
 		JTextField yearField = new JTextField(4);
 	    JTextField monthField = new JTextField(2);
 	    JTextField dayField = new JTextField(2);
@@ -126,7 +125,7 @@ public final class Dialog {
 	    }
 	}
 	
-	private boolean testMonth(String month) {
+	private static boolean testMonth(String month) {
 		if (month == null || month.equals("")) 
 			return true; 
 		try {
@@ -140,7 +139,7 @@ public final class Dialog {
 		return false;
 	}
 
-	private boolean testYear(String year) {
+	private static boolean testYear(String year) {
 		if (year == null || year.equals("")) 
 			return true; 
 		try {
@@ -154,7 +153,7 @@ public final class Dialog {
 		return false;
 	}
 
-	private boolean testDay(String day, String month) {
+	private static boolean testDay(String day, String month) {
 		try {
 			int[] dayConst = new int[] {
 				31,29,31,30,31,30,31,31,30,31,30,31
@@ -172,7 +171,7 @@ public final class Dialog {
 		return false;
 	}
 
-	private boolean testGender(String gender) {
+	private static boolean testGender(String gender) {
 		if (gender == null || gender.equals("")) 
 			return true;
 		switch (gender) {
@@ -185,7 +184,7 @@ public final class Dialog {
 		}
 	}
 
-	private boolean testAge(String age) {
+	private static boolean testAge(String age) {
 		if (age == null || age.equals("")) 
 			return true;
 		try {

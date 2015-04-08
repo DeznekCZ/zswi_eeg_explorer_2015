@@ -1,4 +1,4 @@
-package cz.eeg.ui.feditor;
+package cz.eeg.ui.dialog;
 
 import static cz.deznekcz.tool.Lang.*;
 
@@ -36,9 +36,11 @@ public final class Dialog {
 		} else if (type == EDIT) {
 			editMarker((Marker) params[0], (Field) params[1]);
 		} else if (type == MARKER_ERROR) {
-			JOptionPane.showMessageDialog(null, 
-					LANG("marker_reading_error", ((Exception) params[0]).getMessage()), 
-					LANG("error"), JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(
+			/*frame*/	null, // null == new
+			/*message*/	LANG("marker_reading_error", ((Exception) params[0]).getMessage()), 
+			/*title*/	LANG("error"), 
+			/*type*/	JOptionPane.ERROR_MESSAGE);
 		}
 	}
 

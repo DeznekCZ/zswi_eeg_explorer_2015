@@ -1,32 +1,23 @@
 package cz.eeg.ui;
 
-import static cz.deznekcz.tool.Lang.*;
+import static cz.deznekcz.tool.Lang.LANG;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.swing.Box;
-import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
 import cz.eeg.data.Vhdr;
 import cz.eeg.tool.Config;
-import cz.eeg.ui.feditor.CloseButton;
-import cz.eeg.ui.feditor.Dialog;
-import cz.eeg.ui.feditor.EditButton;
+import cz.eeg.ui.dialog.Dialog;
 import cz.eeg.ui.feditor.MenuPanel;
 import cz.eeg.ui.feditor.Panels;
 

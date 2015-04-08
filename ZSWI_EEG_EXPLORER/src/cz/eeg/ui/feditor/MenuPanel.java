@@ -15,6 +15,7 @@ import javax.swing.JPanel;
 import cz.eeg.data.Vhdr;
 import cz.eeg.ui.Application;
 import cz.eeg.ui.FileEditor;
+import cz.eeg.ui.dialog.Dialog;
 
 /**
  * Internal class representing a menu panel

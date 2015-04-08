@@ -6,7 +6,7 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 
 import cz.eeg.data.Marker;
-import cz.eeg.ui.feditor.Dialog;
+import cz.eeg.ui.dialog.Dialog;
 
 public class EditPart extends JButton {
 

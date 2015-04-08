@@ -9,10 +9,10 @@ public class Channel {
 	private double resolutionInUnit;
 	private String unit;
 	
-	public Channel(String vstup){
-		String [] pole=rozdel("=",vstup);
+	public Channel(String inputLine){
+		String [] pole = inputLine.split("=",2);
 		channelNumber=pole[0];
-		pole=rozdel(",", pole[1]);
+		pole = pole[1].split(",",2);
 		name=pole[0];
 		resolutionInUnit=Double.parseDouble(pole[2]);
 		unit=pole[3];
@@ -24,7 +24,6 @@ public class Channel {
 		
 	}
 
-	public String[]  rozdel(String delic,String vstup){
-		return vstup.split(delic);}
+	
 	
 }

@@ -5,6 +5,7 @@ editor_edit=Edit
 editor_no_file=No file opened
 editor_save=Save
 editor_title=File viewer
+exception=File reading error: %s - %s
 error=Error
 exit=Exit
 file=File

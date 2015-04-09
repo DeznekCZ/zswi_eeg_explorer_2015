@@ -21,6 +21,7 @@ import javax.swing.filechooser.FileSystemView;
 import javax.swing.filechooser.FileView;
 
 import cz.eeg.data.Vhdr;
+import cz.eeg.io.FilesIO;
 import cz.eeg.tool.Config;
 import cz.eeg.ui.Application;
 
@@ -50,7 +51,7 @@ public class Select extends JFileChooser {
 			@Override
 			public Icon getIcon(File f) {
 				Icon ikona = FileSystemView.getFileSystemView().getSystemIcon(f);
-				if (!f.isDirectory() && !new Vhdr(f, false).isReadable()) {
+				if (!f.isDirectory() && !FilesIO.isReadable(f)) {
 					return new BlockedIcon(this, ikona);
 				} else if (f.isDirectory() && type == OUTPUT
 						&& f.equals(INPUT_SELECT.getCurrentDirectory())) {

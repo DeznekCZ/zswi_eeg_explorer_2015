@@ -37,12 +37,12 @@ public class Vhdr {
 
 	private String name;
 	
-	/**
+	/* /**
 	 * Constructor reads a new *.vhdr file
 	 * @param inputF pointer to {@link File}
 	 * @param fullReading true - check only existency of marker and data file
 	 */
-	public Vhdr(File inputF, boolean fullReading) {
+/*	public Vhdr(File inputF, boolean fullReading) {
 		headerFile = inputF;
 		
 		setName(inputF.getName());
@@ -90,7 +90,7 @@ public class Vhdr {
 				e.printStackTrace();
 			}
 			*/
-	}
+/*	}*/
 	
 	public Vhdr() {
 		this.readable = false;

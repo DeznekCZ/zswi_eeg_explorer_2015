@@ -10,6 +10,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import cz.eeg.data.Vhdr;
+import cz.eeg.io.FilesIO;
 
 public class SaveFilesTest {
 
@@ -17,7 +18,7 @@ public class SaveFilesTest {
 	
 	@Before
 	public void setUp() throws Exception {
-		vhdrFile = new Vhdr(new File("input/Masaryko002_20141124.vhdr"), true);
+		vhdrFile = FilesIO.read(new File("input/Masaryko002_20141124.vhdr"));
 	}
 
 	@Test

@@ -16,6 +16,8 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
 import cz.eeg.data.Vhdr;
+import cz.eeg.io.FileReadingException;
+import cz.eeg.io.FilesIO;
 import cz.eeg.tool.Config;
 import cz.eeg.ui.dialog.Dialog;
 import cz.eeg.ui.feditor.MenuPanel;
@@ -89,12 +91,18 @@ public class FileEditor extends JTabbedPane {
 		List<File> nonReadable = new ArrayList<File>();
 		if (listOfFiles != null && listOfFiles.length > 0) {
 			for (File file : listOfFiles) {
-				Vhdr vhdrSoubor = new Vhdr(file, true);
-				if (vhdrSoubor.isReadable()) {
+				try {
+					Vhdr vhdrSoubor = FilesIO.read(file);
+					
+					if (!vhdrSoubor.isReadable()) {
+						throw new FileReadingException("Non reading");
+					}
+					
 					openedFiles.add(vhdrSoubor);
 					addTab(vhdrSoubor.getName(), Panels.filePanel(vhdrSoubor));
 					setSelectedIndex(getTabCount()-1);
-				} else {
+					
+				} catch (Exception e) {
 					nonReadable.add(file);
 				}
 			}

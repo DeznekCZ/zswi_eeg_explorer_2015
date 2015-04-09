@@ -102,7 +102,7 @@ public class FilesIO {
 	public static File backupDataFile(File dataFile) {
 		return dataFile;
 	}
-	public static Vhdr mergeVhdrs(Vhdr... vhdrInstances) throws IOArrayException {
+	public static Vhdr mergeVhdrs(Vhdr... vhdrInstances) throws VhdrMergeException {
 		return new Vhdr();
 	}
 }

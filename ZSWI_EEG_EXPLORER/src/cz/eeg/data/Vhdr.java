@@ -57,7 +57,7 @@ public class Vhdr {
 				vm = new Vmrk(markerFile);
 				
 			} else {
-				viewFile(inputF);
+				//viewFile(inputF); 
 			}
 		} catch (Exception e) {
 			readable = false;
@@ -132,34 +132,10 @@ public class Vhdr {
 				.toString();
 	}
 	
-	private void viewFile(File iFile) throws FileNotFoundException{
+	/*private void viewFile(File iFile) throws FileNotFoundException{
 		
-		Scanner s = new Scanner(iFile);
-		while(s.hasNext()) {
-			String line = s.nextLine();
-			String[] split = line.split("=");
-			
-			//TODO Získání adresy datového souboru
-			if (split.length == 2 && split[0].equals("DataFile")) {
-				String newPath = iFile.getParentFile().getAbsolutePath()
-						+ "/" + split[1];
-				if (!new File(newPath).exists())
-					throw new FileNotFoundException();
-			} else
-			//TODO Získání adresy markerového souboru
-			if (split.length == 2 && split[0].equals("MarkerFile")) {
-				String newPath = iFile.getParentFile().getAbsolutePath()
-						+ "/" + split[1];
-				if (!new File(newPath).exists())
-					throw new FileNotFoundException();
-			}
-			
-			//TODO Přepsání řádku na obrazovku, pokud se bude kreslit
-			
-		}
-		s.close();
-
-	}
+		
+	}*/ // metoda dodána do FILESIO
 	
 
 	private void openFile(File file) throws FileNotFoundException{
@@ -314,5 +290,74 @@ public class Vhdr {
 	public static Vhdr voidFile() {
 		return new Vhdr();
 	}
+
+	public boolean isEditing() {
+		return editing;
+	}
+
+	public void setEditing(boolean editing) {
+		this.editing = editing;
+	}
+
+	public void setDataFormat(String dataFormat) {
+		this.dataFormat = dataFormat;
+	}
+
+	public void setDataOrient(String dataOrient) {
+		this.dataOrient = dataOrient;
+	}
+
+	public void setNumberOfChannels(int numberOfChannels) {
+		this.numberOfChannels = numberOfChannels;
+	}
+
+	public void setSamplingInterval(int samplingInterval) {
+		this.samplingInterval = samplingInterval;
+	}
+
+	public void setBinaryFormat(String binaryFormat) {
+		this.binaryFormat = binaryFormat;
+	}
+
+	public void setHeaderFile(File headerFile) {
+		this.headerFile = headerFile;
+	}
+
+	public void setDataFile(File dataFile) {
+		this.dataFile = dataFile;
+	}
+
+	public void setMarkerFile(File markerFile) {
+		this.markerFile = markerFile;
+	}
+
+	public void setCodePage(String codePage) {
+		this.codePage = codePage;
+	}
+
+	public void setChannelInfo(String channelInfo) {
+		this.channelInfo = channelInfo;
+	}
+
+	public void setDator(String dator) {
+		this.dator = dator;
+	}
+
+	public void setSampling(String sampling) {
+		this.sampling = sampling;
+	}
+
+	public void setChannel(Channel[] channel) {
+		this.channel = channel;
+	}
+
+	public void setVm(Vmrk vm) {
+		this.vm = vm;
+	}
+
+	public void setReadable(boolean readable) {
+		this.readable = readable;
+	}
+	
 	
 }

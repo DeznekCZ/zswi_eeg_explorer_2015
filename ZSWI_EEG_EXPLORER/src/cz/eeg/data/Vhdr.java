@@ -50,7 +50,7 @@ public class Vhdr {
 		try {
 			if (fullReading) {
 				
-				openFile(inputF);
+				//openFile(inputF);
 				
 				//String s=inputF.getAbsolutePath().replaceAll(".vhdr", ".vmrk");
 				//vm = new Vmrk(s);
@@ -138,7 +138,7 @@ public class Vhdr {
 	}*/ // metoda dodána do FILESIO
 	
 
-	private void openFile(File file) throws FileNotFoundException{
+	/*private void openFile(File file) throws FileNotFoundException{
 			//InputStream ips=new FileInputStream(file); 
 			//InputStreamReader ipsr=new InputStreamReader(ips);
 			//BufferedReader br=new BufferedReader(ipsr);
@@ -147,7 +147,7 @@ public class Vhdr {
 		String line;
 		while (s.hasNextLine()){
 			line=s.nextLine();
-			if(line.equals("[Common Infos]")){/* codePage=s.nextLine().split("=")[1]; */
+			if(line.equals("[Common Infos]")){/* codePage=s.nextLine().split("=")[1]; 
 				codePage = s.nextLine().split("=")[1];
 				dataFile = new File(file.getParentFile().getAbsolutePath() + "/" +
 						s.nextLine().split("=")[1]);
@@ -182,7 +182,7 @@ public class Vhdr {
 		}
 		s.close();
 
-	}
+	}*/
 
 	public boolean isReadable() {
 		return readable;

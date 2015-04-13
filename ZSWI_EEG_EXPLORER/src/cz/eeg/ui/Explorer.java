@@ -23,12 +23,20 @@ import cz.eeg.ui.explorer.FileBrowserPanel;
  */
 public class Explorer extends JPanel {
 
+	/** */
+	private static final long serialVersionUID = -4683589648282776251L;
+
+	public static final File TEMT_DIRRECTORY = new File("temp");
+	static {
+		if (!TEMT_DIRRECTORY.exists()) {
+			TEMT_DIRRECTORY.mkdir();
+		}
+	}
+	
 	public final static Config CONFIG = Application.CONFIG;
 	//public final static Lang LANG = Aplikace.LANG;
 	
 	private final static JSplitPane SPLIT = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
-
-	public static final File TEMT_DIRRECTORY = new File("temp");
 	
 	public final FileBrowserPanel VSTUPNI_VYBER = FileBrowserPanel.INPUT_SELECT;
 	public final FileBrowserPanel VYSTUPNI_VYBER = FileBrowserPanel.OUTPUT_SELECT;

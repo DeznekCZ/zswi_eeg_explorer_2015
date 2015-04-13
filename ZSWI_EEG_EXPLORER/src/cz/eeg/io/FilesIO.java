@@ -3,6 +3,7 @@ package cz.eeg.io;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Scanner;
 
 import cz.deznekcz.tool.Lang;
@@ -97,7 +98,12 @@ public class FilesIO {
 		return vh;
 	}
 	public static boolean write(Vhdr linkedVhdr) {
+		String vhdr=linkedVhdr.getVhdrData();		
+		//PrintWriter pw=new PrintWriter(""); ///Do jakého File se to má zapsat???
+		//pw.write(vhdr);
+		//pw.close();
 		return false;
+		
 	}
 	public static File backupDataFile(File dataFile) {
 		return dataFile;

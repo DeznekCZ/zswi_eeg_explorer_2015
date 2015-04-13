@@ -122,9 +122,9 @@ public class FilesIO {
 				String path = linkedVhdr.getDataFile().getParent().toString();
 				System.out.println(path);
 				if(linkedVhdr.getDataFile().getName().endsWith(".avg")){
-					path+="\\"+linkedVhdr.getDataFileName().replace(".avg", ".vhdr");
+					path+="\\"+linkedVhdr.getDataFileName().replace(".avg", ".vhdr"); // ale je to cesta do input protoze neni predan output
 				}if(linkedVhdr.getDataFile().getName().endsWith(".eeg")){
-					path+="\\"+linkedVhdr.getDataFileName().replace(".eeg", ".vhdr");
+					path+="\\"+linkedVhdr.getDataFileName().replace(".eeg", ".vhdr");// ale je to cesta do input protoze neni predan output
 				}
 				pw = new PrintWriter(path);
 				pw.write(vhdr);

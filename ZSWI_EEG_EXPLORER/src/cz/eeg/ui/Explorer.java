@@ -9,11 +9,12 @@ import java.awt.Graphics;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 
 import javax.swing.*;
 
 import cz.eeg.tool.Config;
-import cz.eeg.ui.explorer.Select;
+import cz.eeg.ui.explorer.FileBrowserPanel;
 
 /**
  * An instance of an file explorer
@@ -26,9 +27,11 @@ public class Explorer extends JPanel {
 	//public final static Lang LANG = Aplikace.LANG;
 	
 	private final static JSplitPane SPLIT = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+
+	public static final File TEMT_DIRRECTORY = new File("temp");
 	
-	public final Select VSTUPNI_VYBER = Select.INPUT_SELECT;
-	public final Select VYSTUPNI_VYBER = Select.OUTPUT_SELECT;
+	public final FileBrowserPanel VSTUPNI_VYBER = FileBrowserPanel.INPUT_SELECT;
+	public final FileBrowserPanel VYSTUPNI_VYBER = FileBrowserPanel.OUTPUT_SELECT;
 	
 	public Explorer() {
 		Container contentPane = Application.WINDOW.getContentPane();

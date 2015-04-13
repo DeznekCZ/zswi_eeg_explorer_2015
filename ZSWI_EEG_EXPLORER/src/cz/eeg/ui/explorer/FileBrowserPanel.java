@@ -24,23 +24,29 @@ import cz.eeg.data.Vhdr;
 import cz.eeg.io.FilesIO;
 import cz.eeg.tool.Config;
 import cz.eeg.ui.Application;
+import cz.eeg.ui.Explorer;
 
 /**
  * Instances represents extendex {@link JFileChooser}.
- * Files selected in instance of {@link Select}
+ * Files selected in instance of {@link FileBrowserPanel}
  * is opened in {@link FileEditor#WINDOW}
  *
  * @author IT Crowd
  */
-public class Select extends JFileChooser {
+public class FileBrowserPanel extends JFileChooser {
+	
+	/** */
+	private static final long serialVersionUID = 843399005305757375L;
 	
 	public final static Config CONFIG = Application.CONFIG;
 	public static final int INPUT = 1;
 	public static final int OUTPUT = 2;
-	public static final Select INPUT_SELECT = new Select(new File("input"), Select.INPUT);
-	public static final Select OUTPUT_SELECT = new Select(new File("output"), Select.OUTPUT);
+	public static final FileBrowserPanel INPUT_SELECT = new FileBrowserPanel(new File("input"), FileBrowserPanel.INPUT);
+	public static final FileBrowserPanel OUTPUT_SELECT = new FileBrowserPanel(new File("output"), FileBrowserPanel.OUTPUT);
+
+	//public static final File TEMT_DIRRECTORY = new File("temp");
 	
-	public Select(File slozka, final int type) {
+	public FileBrowserPanel(File slozka, final int type) {
 		super(slozka);
 		
 		setControlButtonsAreShown(false);
@@ -55,6 +61,9 @@ public class Select extends JFileChooser {
 					return new BlockedIcon(this, ikona);
 				} else if (f.isDirectory() && type == OUTPUT
 						&& f.equals(INPUT_SELECT.getCurrentDirectory())) {
+					return new BlockedIcon(this, ikona);
+				} else if (f.isDirectory()
+						&& f.equals(Explorer.TEMT_DIRRECTORY)) {
 					return new BlockedIcon(this, ikona);
 				} else {
 					return ikona;
@@ -72,7 +81,7 @@ public class Select extends JFileChooser {
 		setFileSelectionMode(FILES_ONLY);
 		setMultiSelectionEnabled(true);
 		
-		final Select vyber = this;
+		final FileBrowserPanel vyber = this;
 		
 		final ActionListener actionListener = new ActionListener() {
 			public void actionPerformed(ActionEvent actionEvent) {

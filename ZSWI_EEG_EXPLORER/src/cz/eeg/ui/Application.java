@@ -11,7 +11,7 @@ import java.awt.event.KeyEvent;
 import javax.swing.JFrame;
 
 import cz.eeg.tool.Config;
-import cz.eeg.ui.explorer.Select;
+import cz.eeg.ui.explorer.FileBrowserPanel;
 
 /**
  * Running class of EEG explorer
@@ -47,8 +47,8 @@ public class Application extends JFrame {
 	         KeyboardFocusManager.getCurrentKeyboardFocusManager();
 	
 	//TODO Active selectin window
-	/** Currency focused {@link Select} frame */
-	public static Select selectionFrame = null;
+	/** Currency focused {@link FileBrowserPanel} frame */
+	public static FileBrowserPanel selectionFrame = null;
 	
 	/** Method main, runs an {@link Application} */
 	public static void main(String[] args) {

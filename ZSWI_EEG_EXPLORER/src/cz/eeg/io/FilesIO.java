@@ -109,14 +109,32 @@ public class FilesIO {
 						Lang.LANG("exception", e.getClass().getName(), e.getMessage()));*/
 		}
 		vh.setReadable(true);
+		
 		return vh;
 	}
 
 	public static boolean write(EegFile linkedVhdr) {
-		String vhdr=linkedVhdr.getVhdrData();		
-		//PrintWriter pw=new PrintWriter(""); ///Do jakého File se to má zapsat???
-		//pw.write(vhdr);
-		//pw.close();
+		
+		
+		PrintWriter pw;
+			try {
+				String vhdr=linkedVhdr.getVhdrData();	
+				String path = linkedVhdr.getDataFile().getParent().toString();
+				System.out.println(path);
+				if(linkedVhdr.getDataFile().getName().endsWith(".avg")){
+					path+="\\"+linkedVhdr.getDataFileName().replace(".avg", ".vhdr");
+				}if(linkedVhdr.getDataFile().getName().endsWith(".eeg")){
+					path+="\\"+linkedVhdr.getDataFileName().replace(".eeg", ".vhdr");
+				}
+				pw = new PrintWriter(path);
+				pw.write(vhdr);
+				pw.close();
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			
 		return false;
 		
 	}

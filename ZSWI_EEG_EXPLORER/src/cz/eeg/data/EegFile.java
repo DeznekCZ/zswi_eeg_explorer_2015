@@ -153,7 +153,7 @@ public class EegFile {
 	}
 	
 	/**
-	 * String for "*.vhdk" file
+	 * String for "*.vhdr" file
 	 * @return value
 	 */
 	public String getVhdrData(){

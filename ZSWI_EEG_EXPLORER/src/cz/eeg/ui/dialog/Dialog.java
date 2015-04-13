@@ -15,7 +15,7 @@ import javax.swing.JTextField;
 
 import cz.eeg.data.Marker;
 import cz.eeg.data.Vhdr;
-import cz.eeg.data.save.SaveFiles;
+import cz.eeg.data.save.RenameAndSave;
 import cz.eeg.ui.Application;
 import cz.eeg.ui.FileEditor;
 
@@ -109,7 +109,7 @@ public final class Dialog {
 		    	
 		    	try {
 		    		newName = gender+"_"+age+"_"+year+"_"+month+"_"+day;//TODO next field
-					new SaveFiles(new File(Application.EXPLORER.getOutputPath()),
+					new RenameAndSave(new File(Application.EXPLORER.getOutputPath()),
 							newName, file, overwrite);
 				} catch (FileNotFoundException e) {
 					wrongMessage = LANG("file_not_created");

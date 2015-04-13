@@ -29,7 +29,7 @@ public class SaveFilesTest {
 	@Test
 	public void testSaveAs(){
 		try {
-			new SaveFiles(new File("."),"novySoubor", vhdrFile, true);
+			new RenameAndSave(new File("."),"novySoubor", vhdrFile, true);
 		} catch (FileNotFoundException e) {
 			assertTrue("File is not created.", false);
 		} catch (FileAlreadyExistsException e) {

@@ -10,7 +10,7 @@ import cz.eeg.data.Vhdr;
 import cz.eeg.data.Vmrk;
 import cz.eeg.ui.Application;
 
-public class SaveFiles {
+public class RenameAndSave {
 
 	
 	private File f;
@@ -18,7 +18,7 @@ public class SaveFiles {
 	private String outFileName;
 	private File outPath;
 	
-	public SaveFiles(File outFile, String newName, Vhdr vhdr, boolean overwrite) throws FileNotFoundException, FileAlreadyExistsException{
+	public RenameAndSave(File outFile, String newName, Vhdr vhdr, boolean overwrite) throws FileNotFoundException, FileAlreadyExistsException{
 		outFileName=newName;
 		outPath=outFile;
 		f=new File(outFile.getAbsolutePath()+"/"+newName+".vhdr");

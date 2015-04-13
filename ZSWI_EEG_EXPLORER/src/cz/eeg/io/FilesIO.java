@@ -113,21 +113,26 @@ public class FilesIO {
 		return vh;
 	}
 
-	public static boolean write(EegFile linkedVhdr) {
+	public static boolean write(EegFile linkedVhdr,File outPath) {
 		
 		
 		PrintWriter pw;
 			try {
-				String vhdr=linkedVhdr.getVhdrData();	
-				String path = linkedVhdr.getDataFile().getParent().toString();
-				System.out.println(path);
+				String pathH= outPath.getParent().toString(); // zde se musi predat outpath tedy kam zapisuji
+				String pathM=outPath.getParent().toString();
 				if(linkedVhdr.getDataFile().getName().endsWith(".avg")){
-					path+="\\"+linkedVhdr.getDataFileName().replace(".avg", ".vhdr"); // ale je to cesta do input protoze neni predan output
+					pathH+="\\"+linkedVhdr.getDataFileName().replace(".avg", ".vhdr"); // ale je to cesta do input protoze neni predan output
+					pathM+="\\"+linkedVhdr.getDataFileName().replace(".avg", ".vmrk");
 				}if(linkedVhdr.getDataFile().getName().endsWith(".eeg")){
-					path+="\\"+linkedVhdr.getDataFileName().replace(".eeg", ".vhdr");// ale je to cesta do input protoze neni predan output
+					pathH+="\\"+linkedVhdr.getDataFileName().replace(".eeg", ".vhdr");// ale je to cesta do input protoze neni predan output
+					pathM+="\\"+linkedVhdr.getDataFileName().replace(".eeg", ".vmrk");
 				}
-				pw = new PrintWriter(path);
-				pw.write(vhdr);
+				pw = new PrintWriter(pathH); //zapisuje header
+				pw.write(linkedVhdr.getVhdrData());
+				pw.close();
+				
+				pw = new PrintWriter(pathM); // zapisuje marker
+				pw.write(linkedVhdr.getVmrkData());
 				pw.close();
 			} catch (FileNotFoundException e) {
 				// TODO Auto-generated catch block

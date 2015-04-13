@@ -274,6 +274,7 @@ public class EegFile {
 		return readable && true; //OK is able
 	}
 
+
 	/**
 	 * String for "*.vmrk" file
 	 * @return value

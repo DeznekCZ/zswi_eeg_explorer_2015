@@ -15,7 +15,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
-import cz.eeg.data.Vhdr;
+import cz.eeg.data.EegFile;
 import cz.eeg.io.FileReadingException;
 import cz.eeg.io.FilesIO;
 import cz.eeg.tool.Config;
@@ -45,7 +45,7 @@ public class FileEditor extends JTabbedPane {
 	private static FileEditor instance;
 	
 	/** List of openned files */
-	private List<Vhdr> openedFiles = new ArrayList<Vhdr>();
+	private List<EegFile> openedFiles = new ArrayList<EegFile>();
 	
 	/**
 	 * Default constructor of instaces of class {@link FileEditor}
@@ -68,7 +68,7 @@ public class FileEditor extends JTabbedPane {
 		VOID_TAB.setName(LANG("editor_no_file"));
 		VOID_TAB.setEnabled(false);
 		VOID_TAB.setLayout(new BorderLayout());
-		VOID_TAB.add(new MenuPanel(Vhdr.voidFile()), BorderLayout.NORTH);
+		VOID_TAB.add(new MenuPanel(EegFile.voidFile()), BorderLayout.NORTH);
 		return VOID_TAB;
 	}
 
@@ -92,17 +92,18 @@ public class FileEditor extends JTabbedPane {
 		if (listOfFiles != null && listOfFiles.length > 0) {
 			for (File file : listOfFiles) {
 				try {
-					Vhdr vhdrSoubor = FilesIO.read(file);
+					EegFile vhdrSoubor = FilesIO.read(file);
 					
 					if (!vhdrSoubor.isReadable()) {
 						throw new FileReadingException("Non reading");
 					}
 					
-					openedFiles.add(vhdrSoubor);
 					addTab(vhdrSoubor.getName(), Panels.filePanel(vhdrSoubor));
+					openedFiles.add(vhdrSoubor);
 					setSelectedIndex(getTabCount()-1);
 					
 				} catch (Exception e) {
+					e.printStackTrace();
 					nonReadable.add(file);
 				}
 			}
@@ -154,7 +155,7 @@ public class FileEditor extends JTabbedPane {
 		if (isOpenedFiles()) {
 			WINDOW.setVisible(true);
 			int index = getSelectedIndex();
-			Vhdr soubor = openedFiles.get(index);
+			EegFile soubor = openedFiles.get(index);
 			
 			int option = JOptionPane.showConfirmDialog(null, 
 					LANG("file_close", soubor.getName()), LANG("file"), JOptionPane.OK_CANCEL_OPTION);
@@ -232,15 +233,15 @@ public class FileEditor extends JTabbedPane {
 	 */
 	public void saveAs(String name) {
 		int index = getSelectedIndex();
-		Vhdr file = openedFiles.get(index);
+		EegFile file = openedFiles.get(index);
 		//TODO soubor.ulozit(nazev);
 	}
 
 	public void edit() {
 		int index = getSelectedIndex();
-		Vhdr file = openedFiles.get(index);
+		EegFile file = openedFiles.get(index);
 		try {
-			new MarkerEditor(file.getVm().editFile());
+			new MarkerEditor(file.getMarkerList());
 		} catch (Exception e) {
 			Dialog.open(Dialog.MARKER_ERROR, e);
 		}

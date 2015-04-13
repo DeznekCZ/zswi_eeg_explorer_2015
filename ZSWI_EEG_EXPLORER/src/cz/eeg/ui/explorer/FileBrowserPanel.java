@@ -20,7 +20,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.filechooser.FileSystemView;
 import javax.swing.filechooser.FileView;
 
-import cz.eeg.data.Vhdr;
+import cz.eeg.data.EegFile;
 import cz.eeg.io.FilesIO;
 import cz.eeg.tool.Config;
 import cz.eeg.ui.Application;

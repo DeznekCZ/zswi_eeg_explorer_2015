@@ -70,4 +70,11 @@ public class Marker {
 	public void setDescription(String description) {
 		this.description = description;
 	}
+	
+	@Override
+	public String toString() {
+		return String.format("Mk%d=%s,%s,%s,%s,%s",
+				markerNumber, type, description, positionInDataPoints,
+				sizeInDataPoints, channelNumber);
+	}
 }

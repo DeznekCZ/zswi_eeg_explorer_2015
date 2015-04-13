@@ -12,7 +12,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 
-import cz.eeg.data.Vhdr;
+import cz.eeg.data.EegFile;
 import cz.eeg.ui.Application;
 import cz.eeg.ui.FileEditor;
 import cz.eeg.ui.dialog.Dialog;
@@ -28,7 +28,7 @@ public class MenuPanel extends JPanel {
 	/** */
 	private static final long serialVersionUID = 1L;
 
-	public MenuPanel(final Vhdr vhdrFile) {
+	public MenuPanel(final EegFile vhdrFile) {
 		setLayout(new BorderLayout());
 		//PANEL_TLACITEK.add(new CloseButton(), BorderLayout.EAST);
 		

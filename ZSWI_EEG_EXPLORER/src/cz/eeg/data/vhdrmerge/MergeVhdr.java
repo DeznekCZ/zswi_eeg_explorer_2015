@@ -7,7 +7,7 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 
 import cz.eeg.data.Channel;
-import cz.eeg.data.Vhdr;
+import cz.eeg.data.EegFile;
 
 /**
  * Třída pro spojení 2 VHDR souborů
@@ -15,8 +15,8 @@ import cz.eeg.data.Vhdr;
  * */
 public class MergeVhdr {
 
-	private Vhdr v1;
-	private Vhdr v2;
+	private EegFile v1;
+	private EegFile v2;
 	private String newFile,dataFile,markerFile;
 	
 	public MergeVhdr(String file1,String file2,String newFile,String dataFile,String markerFile){
@@ -37,24 +37,13 @@ public class MergeVhdr {
 			
 			PrintWriter pw=new PrintWriter(new File(newFile));
 			
+			// TODO už si opravdu dělej co chceš, když ti říkám, co máš používat tak na to kašleš
+			v1.setDataFile(new File(dataFile));
+			v1.setMarkerFile(new File(markerFile));
+			v1.setHeaderFile(new File(newFile));
 			
-			pw.write("[Common Infos]\n");
-			pw.write("Codepage=UTF-8\n");
-			pw.write("DataFile="+dataFile+"\n");
-			pw.write("MarkerFile="+markerFile+"\n");
-			pw.write("DataFormat="+v1.getDataFormat()+"\n");
-			pw.write(v1.getDator()+"\n");
-			pw.write("DataOrientation="+v1.getDataOrient()+"\n");
-			pw.write("NumberOfChannels="+v1.getNumberOfChannels()+"\n");
-			pw.write(v1.getChannelInfo()+"\n");
-			pw.write("[Binary Infos]\n");
-			pw.write("BinaryFormat="+v1.getBinaryFormat()+"\n");
-			pw.write("[Channel Infos]\n");
-			pw.write(v1.getSampling()+"\n");
-			Channel [] kanaly=v1.getChannel();
-			for(int i=0;i<v1.getNumberOfChannels();i++){
-				pw.write(kanaly[i].toString());
-			}
+			pw.write(v1.getVhdrData());
+			
 			pw.close();
 			
 		} catch (FileNotFoundException e) {

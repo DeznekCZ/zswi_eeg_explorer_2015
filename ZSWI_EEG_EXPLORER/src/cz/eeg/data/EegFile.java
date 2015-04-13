@@ -2,10 +2,11 @@ package cz.eeg.data;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.List;
 import java.util.Scanner;
 
 /**
- * Instances of {@link Vhdr} represents *.vhdr files.
+ * Instances of {@link EegFile} represents *.vhdr files.
  * Class extends {@link JPanel} and can be display
  * in {@link JFrame}
  * 
@@ -13,9 +14,52 @@ import java.util.Scanner;
  *
  * @author IT Crowd
  */
-public class Vhdr {
+public class EegFile {
 	
-
+	/** FORMATING codepage, datafile, markers */
+	private static final String MARKER_FILE_FORMAT = 
+		new StringBuilder()
+			.append("Brain Vision Data Exchange Marker File, Version 1.0")
+			.append("\n\n[Common Infos]")
+			.append("\nCodepage=%s")
+			.append("\nDataFile=%s")
+			.append("\n\n[Marker Infos]")
+			.append("\n; Each entry: Mk<Marker number>=<Type>,<Description>,<Position in data points>,")
+			.append("\n; <Size in data points>, <Channel number (0 = marker is related to all channels)>")
+			.append("\n; Fields are delimited by commas, some fields might be omitted (empty).")
+			.append("\n; Commas in type or description text are coded as \"\\1\".")
+			.append("\n%s").toString();
+	/** FORMATING codepage, datafile, markerfile, dataformat, orientation, chnnels,
+	 * sappling, binaryformat, channels */
+	private static final String HEADER_FILE_FORMAT =
+		new StringBuilder()
+			.append("Brain Vision Data Exchange Header File Version 1.0")
+			.append("\n; Data created by the Vision Recorder")
+			.append("\n\n[Common Infos]")
+			.append("\nCodepage=%s")
+			.append("\nDataFile=%s")
+			.append("\nMarkerFile=%s")
+			.append("\nDataFormat=%s")
+			.append("\n; Data orientation: MULTIPLEXED=ch1,pt1, ch2,pt1 ...")
+			.append("\nDataOrientation=%s")
+			.append("\nNumberOfChannels=%d")
+			.append("\n; Sampling interval in microseconds")
+			.append("\nSamplingInterval=%d")
+			.append("\nSegmentationType=MARKERBASED")
+			.append("\nSegmentDataPoints=1100")
+			.append("\nAveraged=YES")
+			.append("\nAveragedSegments=8")
+			.append("\n\n[Binary Infos]")
+			.append("\nBinaryFormat=%s")
+			.append("\n\n[Channel Infos]")
+			.append("\n; Each entry: Ch<Channel number>=<Name>,<Reference channel name>,")
+			.append("\n; <Resolution in \"Unit\">,<Unit>, Future extensions..")
+			.append("\n; Fields are delimited by commas, some fields might be omitted (empty).")
+			.append("\n; Commas in channel names are coded as \"\\1\".")
+			.append("\n%s") // CHANNELS
+			.append("\n\n[Comment]")
+			.append("\nEDITED by EEG EXPLORER from IT Crowd.").toString();
+	
 	private String dataFormat;
 	private String dataOrient;
 	private int numberOfChannels;
@@ -25,17 +69,14 @@ public class Vhdr {
 	private File dataFile;
 	private File markerFile;
 	private String codePage;
-	private String channelInfo=null;
-	private String dator=null;
-	private String sampling=null;
 	private Channel[] channel;
-	private Vmrk vm;
-	
+	private List<Marker> markerList;
 
 	private boolean readable = true;
 	private boolean editing = false;
 
 	private String name;
+	private String textData;
 	
 	/* /**
 	 * Constructor reads a new *.vhdr file
@@ -92,11 +133,12 @@ public class Vhdr {
 			*/
 /*	}*/
 	
-	public Vhdr() {
+	public EegFile() {
 		this.readable = false;
+		this.textData = "";
 	}
 
-	private void setName(String name) {
+	public void setName(String name) {
 		this.name = name;
 	}
 
@@ -110,26 +152,15 @@ public class Vhdr {
 		return s;
 	}
 	
+	/**
+	 * String for "*.vhdk" file
+	 * @return value
+	 */
 	public String getVhdrData(){
-		return new StringBuilder()
-					.append("[Common Infos]\n")
-					.append("Codepage="+codePage+"\n")
-					.append("DataFile="+dataFile.getName()+"\n")
-					.append("MarkerFile="+markerFile.getName()+"\n")
-					.append("DataFormat="+dataFormat+"\n")
-					.append(dator+"\n")
-					.append("DataOrientation="+dataOrient+"\n")
-					.append("NumberOfChannels="+numberOfChannels+"\n")
-					.append(sampling+"\n")
-					.append("SamplingInterval="+samplingInterval+"\n")
-					.append("\n")
-					.append("[Binary Infos]\n")
-					.append("BinaryFormat="+binaryFormat+"\n")
-					.append("\n")
-					.append("[Channel Infos]\n")
-					.append(channelInfo)
-					.append(channelsToString())
-				.toString();
+		return String.format(HEADER_FILE_FORMAT, 
+				codePage, dataFile.getName(), markerFile.getName(),
+				dataFormat, dataOrient, numberOfChannels, samplingInterval,
+				binaryFormat, channelsToString());
 	}
 	
 	/*private void viewFile(File iFile) throws FileNotFoundException{
@@ -227,28 +258,8 @@ public class Vhdr {
 		return codePage;
 	}
 
-
-	public String getChannelInfo() {
-		return channelInfo;
-	}
-
-
-	public String getDator() {
-		return dator;
-	}
-
-
-	public String getSampling() {
-		return sampling;
-	}
-
-
 	public Channel[] getChannel() {
 		return channel;
-	}
-
-	public Vmrk getVm() {
-		return vm;
 	}
 
 	public boolean isEditable() {
@@ -263,8 +274,12 @@ public class Vhdr {
 		return readable && true; //OK is able
 	}
 
+	/**
+	 * String for "*.vmrk" file
+	 * @return value
+	 */
 	public String getVmrkData() {
-		return vm.getLn();
+		return String.format(MARKER_FILE_FORMAT, codePage, dataFile.getName(), markersToString());
 	}
 
 	public String getName() {
@@ -287,8 +302,8 @@ public class Vhdr {
 		return editing;
 	}
 
-	public static Vhdr voidFile() {
-		return new Vhdr();
+	public static EegFile voidFile() {
+		return new EegFile();
 	}
 
 	public boolean isEditing() {
@@ -335,29 +350,35 @@ public class Vhdr {
 		this.codePage = codePage;
 	}
 
-	public void setChannelInfo(String channelInfo) {
-		this.channelInfo = channelInfo;
-	}
-
-	public void setDator(String dator) {
-		this.dator = dator;
-	}
-
-	public void setSampling(String sampling) {
-		this.sampling = sampling;
-	}
-
 	public void setChannel(Channel[] channel) {
 		this.channel = channel;
-	}
-
-	public void setVm(Vmrk vm) {
-		this.vm = vm;
 	}
 
 	public void setReadable(boolean readable) {
 		this.readable = readable;
 	}
 	
+	public List<Marker> getMarkerList() {
+		return markerList;
+	}
+
+	public void setList(List<Marker> markerList) {
+		this.markerList = markerList;
+	}
 	
+	public void setTextData(String textData) {
+		this.textData = textData;
+	}
+
+	public String getTextData() {
+		return textData;
+	}
+
+	private String markersToString() {
+		String data = "";
+		for (Marker marker : markerList) {
+			data += String.format("\n%s", marker.toString());
+		}
+		return data;
+	}
 }

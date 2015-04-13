@@ -14,7 +14,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import cz.eeg.data.Marker;
-import cz.eeg.data.Vhdr;
+import cz.eeg.data.EegFile;
 import cz.eeg.data.save.RenameAndSave;
 import cz.eeg.ui.Application;
 import cz.eeg.ui.FileEditor;
@@ -32,7 +32,7 @@ public final class Dialog {
 
 	public static void open(int type, Object... params) {
 		if (type == SAVE_AS) {
-			saveAs((Vhdr) params[0]);
+			saveAs((EegFile) params[0]);
 		} else if (type == EDIT) {
 			editMarker((Marker) params[0], (Field) params[1]);
 		} else if (type == MARKER_ERROR) {
@@ -50,7 +50,7 @@ public final class Dialog {
 		}
 	}
 
-	private static void saveAs(Vhdr file) {
+	private static void saveAs(EegFile file) {
 		JTextField yearField = new JTextField(4);
 	    JTextField monthField = new JTextField(2);
 	    JTextField dayField = new JTextField(2);

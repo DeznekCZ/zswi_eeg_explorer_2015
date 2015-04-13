@@ -9,12 +9,12 @@ import java.nio.file.FileAlreadyExistsException;
 import org.junit.Before;
 import org.junit.Test;
 
-import cz.eeg.data.Vhdr;
+import cz.eeg.data.EegFile;
 import cz.eeg.io.FilesIO;
 
 public class SaveFilesTest {
 
-	Vhdr vhdrFile;
+	EegFile vhdrFile;
 	
 	@Before
 	public void setUp() throws Exception {

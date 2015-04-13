@@ -10,11 +10,11 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
 
-import cz.eeg.data.Vhdr;
+import cz.eeg.data.EegFile;
 
 public class Panels {
 
-	public static JPanel filePanel(Vhdr vhdrSoubor) {
+	public static JPanel filePanel(EegFile vhdrSoubor) {
 		JPanel panel = new JPanel();
 		
 		panel.setLayout(new BorderLayout());

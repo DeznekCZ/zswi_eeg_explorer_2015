@@ -12,7 +12,7 @@ public class Channel {
 	public Channel(String inputLine){
 		String [] pole = inputLine.split("=",2);
 		channelNumber=pole[0];
-		pole = pole[1].split(",",2);
+		pole = pole[1].split(",",4);
 		name=pole[0];
 		resolutionInUnit=Double.parseDouble(pole[2]);
 		unit=pole[3];

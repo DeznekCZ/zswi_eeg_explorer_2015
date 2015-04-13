@@ -6,22 +6,20 @@ import java.io.PrintWriter;
 import java.nio.file.FileAlreadyExistsException;
 
 import cz.eeg.data.Channel;
-import cz.eeg.data.Vhdr;
-import cz.eeg.data.Vmrk;
-import cz.eeg.ui.Application;
+import cz.eeg.data.EegFile;
 
 public class RenameAndSave {
 
 	
 	private File f;
-	private Vhdr v;
+	private EegFile v;
 	private String outFileName;
 	private File outPath;
 	
-	public RenameAndSave(File outFile, String newName, Vhdr vhdr, boolean overwrite) throws FileNotFoundException, FileAlreadyExistsException{
+	public RenameAndSave(File outDirectory, String newName, EegFile vhdr, boolean overwrite) throws FileNotFoundException, FileAlreadyExistsException{
 		outFileName=newName;
-		outPath=outFile;
-		f=new File(outFile.getAbsolutePath()+"/"+newName+".vhdr");
+		outPath=outDirectory;
+		f=new File(outDirectory.getAbsolutePath()+"/"+newName+".vhdr");
 		
 		if (f.exists() && !overwrite)
 			throw new FileAlreadyExistsException(outFileName);
@@ -52,7 +50,7 @@ public class RenameAndSave {
 	}
 	
 	private void saveVmrk() throws FileNotFoundException{
-		String vmrk=v.getVm().getLn();
+		String vmrk=v.getVmrkData();
 		String [] s=rozdel(v.getDataFileName());
 		vmrk.replace("DataFile="+v.getDataFileName(), "DataFile="+outFileName+"."+s[1]);
 		PrintWriter pw=new PrintWriter(new File (outPath.getAbsolutePath()+"/"+outFileName+".vmrk"));
@@ -69,35 +67,11 @@ public class RenameAndSave {
 	private String newVhdr(){
 		String [] s=rozdel(v.getDataFileName());
 		
-		return new StringBuilder()
-					.append("[Common Infos]\n")
-					.append("Codepage="+v.getCodePage()+"\n")
-					.append("DataFile="+outFileName+"."+s[1]+"\n")
-					.append("MarkerFile="+outFileName+".vmrk"+"\n")
-					.append("DataFormat="+v.getDataFormat()+"\n")
-					.append(v.getDator()+"\n")
-					.append("DataOrientation="+v.getDataOrient()+"\n")
-					.append("NumberOfChannels="+v.getNumberOfChannels()+"\n")
-					.append(v.getSampling()+"\n")
-					.append("SamplingInterval="+v.getSamplingInterval()+"\n")
-					.append("\n")
-					.append("[Binary Infos]\n")
-					.append("BinaryFormat="+v.getBinaryFormat()+"\n")
-					.append("\n")
-					.append("[Channel Infos]\n")
-					.append(v.getChannelInfo())
-					.append(channelToString(v.getChannel()))
-				.toString();
-	}
-	
-	private String channelToString(Channel[] channel){
-		if (channel == null) return ";no channel\n";
-		String s="";
-		for(int i=0;i<v.getNumberOfChannels();i++){
-			if (channel[i] != null)
-				s+=channel[i].toString()+"\n";
-		}
-		return s;
+		v.setHeaderFile(f);
+		v.setMarkerFile(new File(outPath.getAbsolutePath() + "/" + outFileName + "vmrk"));
+		v.setDataFile(new File(outPath.getAbsolutePath() + "/" + outFileName + s[1]));
+		
+		return v.getVhdrData();
 	}
 	
 	

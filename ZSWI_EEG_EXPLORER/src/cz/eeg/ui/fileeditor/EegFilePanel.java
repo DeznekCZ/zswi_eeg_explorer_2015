@@ -1,4 +1,4 @@
-package cz.eeg.ui.feditor;
+package cz.eeg.ui.fileeditor;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -12,9 +12,9 @@ import javax.swing.JTextArea;
 
 import cz.eeg.data.EegFile;
 
-public class Panels {
+public class EegFilePanel {
 
-	public static JPanel filePanel(EegFile vhdrSoubor) {
+	public static JPanel create(EegFile vhdrSoubor) {
 		JPanel panel = new JPanel();
 		
 		panel.setLayout(new BorderLayout());

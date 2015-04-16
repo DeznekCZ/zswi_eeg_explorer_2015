@@ -1,4 +1,4 @@
-package cz.eeg.ui.feditor;
+package cz.eeg.ui.fileeditor;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

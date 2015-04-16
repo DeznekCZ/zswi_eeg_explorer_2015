@@ -1,4 +1,4 @@
-package cz.eeg.ui.meditor;
+package cz.eeg.ui.markereditor;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -6,7 +6,7 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 
 import cz.eeg.data.Marker;
-import cz.eeg.ui.dialog.Dialog;
+import cz.eeg.ui.dialog.DialogManagement;
 
 public class EditPart extends JButton {
 
@@ -18,7 +18,7 @@ public class EditPart extends JButton {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
-					Dialog.open(Dialog.EDIT, marker, Marker.class.getDeclaredField(field));
+					DialogManagement.open(DialogManagement.EDIT, marker, Marker.class.getDeclaredField(field));
 				} catch (NoSuchFieldException | SecurityException e1) {
 					//TODO
 					e1.printStackTrace();

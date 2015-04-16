@@ -11,7 +11,7 @@ import javax.swing.JScrollPane;
 
 import static cz.deznekcz.tool.Lang.*;
 import cz.eeg.data.Marker;
-import cz.eeg.ui.meditor.EditableField;
+import cz.eeg.ui.markereditor.EditableField;
 
 public class MarkerEditor extends JFrame {
 

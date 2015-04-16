@@ -1,4 +1,4 @@
-package cz.eeg.ui.meditor;
+package cz.eeg.ui.markereditor;
 
 import javax.swing.JButton;
 

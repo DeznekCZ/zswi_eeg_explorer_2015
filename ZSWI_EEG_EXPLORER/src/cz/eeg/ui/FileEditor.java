@@ -19,9 +19,9 @@ import cz.eeg.data.EegFile;
 import cz.eeg.io.FileReadingException;
 import cz.eeg.io.FilesIO;
 import cz.eeg.tool.Config;
-import cz.eeg.ui.dialog.Dialog;
-import cz.eeg.ui.feditor.MenuPanel;
-import cz.eeg.ui.feditor.Panels;
+import cz.eeg.ui.dialog.DialogManagement;
+import cz.eeg.ui.fileeditor.MenuPanel;
+import cz.eeg.ui.fileeditor.EegFilePanel;
 
 /**
  * Instance of {@link FileEditor} represent an file editor
@@ -98,7 +98,7 @@ public class FileEditor extends JTabbedPane {
 						throw new FileReadingException("Non reading");
 					}
 					
-					addTab(vhdrSoubor.getName(), Panels.filePanel(vhdrSoubor));
+					addTab(vhdrSoubor.getName(), EegFilePanel.create(vhdrSoubor));
 					openedFiles.add(vhdrSoubor);
 					setSelectedIndex(getTabCount()-1);
 					
@@ -243,7 +243,7 @@ public class FileEditor extends JTabbedPane {
 		try {
 			new MarkerEditor(file.getMarkerList());
 		} catch (Exception e) {
-			Dialog.open(Dialog.MARKER_ERROR, e);
+			DialogManagement.open(DialogManagement.MARKER_ERROR, e);
 		}
 	}
 }

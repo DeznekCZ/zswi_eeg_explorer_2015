@@ -1,4 +1,4 @@
-package cz.eeg.ui.feditor;
+package cz.eeg.ui.fileeditor;
 
 import static cz.deznekcz.tool.Lang.LANG;
 
@@ -15,7 +15,7 @@ import javax.swing.JPanel;
 import cz.eeg.data.EegFile;
 import cz.eeg.ui.Application;
 import cz.eeg.ui.FileEditor;
-import cz.eeg.ui.dialog.Dialog;
+import cz.eeg.ui.dialog.DialogManagement;
 
 /**
  * Internal class representing a menu panel
@@ -74,7 +74,7 @@ public class MenuPanel extends JPanel {
 				
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					Dialog.open(Dialog.SAVE_AS, vhdrFile);
+					DialogManagement.open(DialogManagement.SAVE_AS, vhdrFile);
 				}
 			});
 			

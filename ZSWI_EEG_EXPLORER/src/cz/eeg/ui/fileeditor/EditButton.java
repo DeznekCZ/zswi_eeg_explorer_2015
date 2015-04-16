@@ -1,4 +1,4 @@
-package cz.eeg.ui.feditor;
+package cz.eeg.ui.fileeditor;
 
 import static cz.deznekcz.tool.Lang.LANG;
 

@@ -24,7 +24,7 @@ import cz.eeg.ui.FileEditor;
  * @author IT Crowd
  *
  */
-public final class Dialog {
+public final class DialogManagement {
 	
 	public final static int SAVE_AS = 1;
 	public static final int EDIT = 2;

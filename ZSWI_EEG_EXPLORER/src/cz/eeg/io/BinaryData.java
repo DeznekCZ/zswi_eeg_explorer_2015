@@ -1,15 +1,15 @@
-package cz.eeg.data;
+package cz.eeg.io;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 
-public class DATA extends File{
+public class BinaryData extends File{
 
 	/**pole reprezentujici data v danem souboru*/
 	private static byte [] dat;
 	
-	public DATA(String name) {
+	public BinaryData(String name) {
 		super(name);
 		ctiByte(name);
 	}

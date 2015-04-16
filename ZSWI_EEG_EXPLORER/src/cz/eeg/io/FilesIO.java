@@ -10,7 +10,6 @@ import java.util.Scanner;
 
 import cz.deznekcz.tool.Lang;
 import cz.eeg.data.Channel;
-import cz.eeg.data.DATA;
 import cz.eeg.data.Marker;
 import cz.eeg.data.EegFile;
 

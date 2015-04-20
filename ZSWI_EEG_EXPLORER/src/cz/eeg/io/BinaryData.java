@@ -13,7 +13,7 @@ public class BinaryData{
 	
 	public BinaryData(File name,int numberChannels) {
 		dat = new double[numberChannels] [];
-		for(int i=0;i<numberChannels;i++){
+		for(int i=1;i<numberChannels+1;i++){
 			ctiByte(name, i);
 		}
 	}

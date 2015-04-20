@@ -1,0 +1,33 @@
+Brain Vision Data Exchange Header File Version 1.0
+; Data created by the Vision Recorder
+
+[Common Infos]
+Codepage=UTF-8
+DataFile=m_012_2000_12_05eeg
+MarkerFile=m_012_2000_12_05vmrk
+DataFormat=BINARY
+; Data orientation: MULTIPLEXED=ch1,pt1, ch2,pt1 ...
+DataOrientation=MULTIPLEXED
+NumberOfChannels=3
+; Sampling interval in microseconds
+SamplingInterval=1000
+SegmentationType=MARKERBASED
+SegmentDataPoints=1100
+Averaged=YES
+AveragedSegments=8
+
+[Binary Infos]
+BinaryFormat=IEEE_FLOAT_32
+
+[Channel Infos]
+; Each entry: Ch<Channel number>=<Name>,<Reference channel name>,
+; <Resolution in "Unit">,<Unit>, Future extensions..
+; Fields are delimited by commas, some fields might be omitted (empty).
+; Commas in channel names are coded as "\1".
+Ch1=Fz,,0.0488281,µV
+Ch2=Cz,,0.0488281,µV
+Ch3=Pz,,0.0488281,µV
+
+
+[Comment]
+EDITED by EEG EXPLORER from IT Crowd.

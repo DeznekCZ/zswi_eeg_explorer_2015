@@ -188,7 +188,7 @@ public class FileEditor extends JTabbedPane {
 			}
 			WINDOW.setExtendedState(CONFIG.ed_fullscreen);
 		} else {
-			WINDOW.setLocationRelativeTo(null);
+			WINDOW.setLocationRelativeTo(Application.EXPLORER);
 		}
 		
 		WINDOW.pack();

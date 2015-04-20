@@ -81,10 +81,12 @@ public class Application extends JFrame {
 			}
 			setExtendedState(CONFIG.ex_fullscreen);
 		} else {
-			setLocationRelativeTo(null);
+			
 		}
 
 		pack();
+		
+		setLocationRelativeTo(null);
 		
 		setVisible(true);
 	}

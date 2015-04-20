@@ -47,6 +47,8 @@ public final class DialogManagement {
 	private static void editMarker(Marker marker, Field field) {
 		if (field.getType() == Integer.class) {
 			
+		} else if (field.getType() == String.class) {
+			
 		}
 	}
 

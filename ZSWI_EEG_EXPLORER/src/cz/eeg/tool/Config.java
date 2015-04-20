@@ -14,7 +14,7 @@ public class Config {
 	/** Editor data */
 	public int ed_width=600, ed_height=600, ed_posx, ed_posy, ed_fullscreen;
 	/** Eplorer data */
-	public int ex_width=600, ex_height=600, ex_posx, ex_posy, ex_fullscreen;
+	public int ex_width=300, ex_height=600, ex_posx, ex_posy, ex_fullscreen;
 	/** Marker editor data */
 	public int mk_height=200;
 	/** Settings filename */

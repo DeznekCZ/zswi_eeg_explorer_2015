@@ -5,6 +5,8 @@ import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.Scanner;
 
+import cz.eeg.io.BinaryData;
+
 /**
  * Instances of {@link EegFile} represents *.vhdr files.
  * Class extends {@link JPanel} and can be display
@@ -70,6 +72,7 @@ public class EegFile {
 	private File markerFile;
 	private String codePage;
 	private Channel[] channel;
+	private double [] [] data;
 	private List<Marker> markerList;
 
 	private boolean readable = true;
@@ -281,6 +284,10 @@ public class EegFile {
 	 */
 	public String getVmrkData() {
 		return String.format(MARKER_FILE_FORMAT, codePage, dataFile.getName(), markersToString());
+	}
+	public double[][] getDataRead(){
+		BinaryData b=new BinaryData(dataFile, getNumberOfChannels());
+		return b.getDat();
 	}
 
 	public String getName() {

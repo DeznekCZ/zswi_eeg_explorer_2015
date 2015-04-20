@@ -4,19 +4,23 @@ import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 
-public class BinaryData extends File{
+import cz.zcu.kiv.signal.EEGDataTransformer;
+
+public class BinaryData{
 
 	/**pole reprezentujici data v danem souboru*/
-	private static byte [] dat;
+	private static double [][] dat;
 	
-	public BinaryData(String name) {
-		super(name);
-		ctiByte(name);
+	public BinaryData(File name,int numberChannels) {
+		dat = new double[numberChannels] [];
+		for(int i=0;i<numberChannels;i++){
+			ctiByte(name, i);
+		}
 	}
 
 	
 	/**Getter pro bytove pole dat*/
-	public static byte[] getDat() {
+	public static double [] [] getDat() {
 		return dat;
 	}
 
@@ -25,26 +29,17 @@ public class BinaryData extends File{
 	/**
 	 * Metoda naplneni pole byte daty 
 	 * @param name Jmeno cteneho datoveho souboru*/
-	public static void ctiByte(String name)
+	public static void ctiByte(File datafile,int channel)
 	{      
-		try
-		{
-			RandomAccessFile data = new RandomAccessFile(name,"rw");
-			long size = data.length();
-			dat= new byte [(int)data.length()];
-			for (int x=0; x < size; x++)
-			{
-				//data.seek(x);
-				//byte b = data.readByte();
-				dat[x]=data.readByte();
-				//System.out.print(b+" ");
-				   
+		EEGDataTransformer dt = new EEGDataTransformer();
+			try {
+				dat[channel-1]=dt.readBinaryData(datafile.getAbsolutePath(), channel);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
-			//System.out.println();
-			data.close();
-		}
-		catch (IOException ex)
-		{ }
+		
+		
 	}
 	
 	

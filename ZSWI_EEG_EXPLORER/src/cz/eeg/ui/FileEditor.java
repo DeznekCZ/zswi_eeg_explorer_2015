@@ -88,9 +88,15 @@ public class FileEditor extends JTabbedPane {
 	 * @param listOfFiles
 	 */
 	public void open(File[] listOfFiles) {
+		int opened = 0;
+		
 		List<File> nonReadable = new ArrayList<File>();
 		if (listOfFiles != null && listOfFiles.length > 0) {
 			for (File file : listOfFiles) {
+				// Non traversable files
+				if (file.isDirectory())
+					continue;
+				
 				try {
 					EegFile vhdrSoubor = FilesIO.read(file);
 					
@@ -101,6 +107,7 @@ public class FileEditor extends JTabbedPane {
 					addTab(vhdrSoubor.getName(), EegFilePanel.create(vhdrSoubor));
 					openedFiles.add(vhdrSoubor);
 					setSelectedIndex(getTabCount()-1);
+					opened ++;
 					
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -118,7 +125,7 @@ public class FileEditor extends JTabbedPane {
 				remove(VOID_TAB);
 			}	
 
-			if (listOfFiles == null || nonReadable.size() < listOfFiles.length)
+			if (listOfFiles == null || opened > 0)
 				WINDOW.setVisible(true);
 			return;
 		}

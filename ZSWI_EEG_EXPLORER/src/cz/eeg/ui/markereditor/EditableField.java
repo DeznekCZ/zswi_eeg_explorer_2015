@@ -58,7 +58,7 @@ public class EditableField extends JPanel {
 				"1,0" );
 		field.add( new FixedPart(marker.getType()),
 				"2,0" );
-		field.add( new EditPart( marker.getDescription(), marker, "description"),
+		field.add( new EditPart (marker.getDescription(), marker, "description"),
 				"3,0" );
 		field.add( new FixedPart(marker.getPositionInDataPoints()),
 				"4,0" );
@@ -68,10 +68,5 @@ public class EditableField extends JPanel {
 				"6,0" );
 		
 		return field;
-	}
-
-	private static BasicStroke next() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 }

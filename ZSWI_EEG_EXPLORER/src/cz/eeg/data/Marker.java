@@ -10,9 +10,10 @@ public class Marker {
 	private String positionInDataPoints;
 	private String sizeInDataPoints;
 	private String channelNumber;
+	private EegFile ownerEeg;
 
 	public Marker(String line){
-
+		
 		String [] lineF=line.split("=");
 		markerNumber=Integer.parseInt(lineF[0].substring(2));
 		String [] lineF1=lineF[1].split(",");

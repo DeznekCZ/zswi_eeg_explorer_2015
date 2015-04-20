@@ -26,7 +26,7 @@ public class Explorer extends JPanel {
 	/** */
 	private static final long serialVersionUID = -4683589648282776251L;
 
-	public static final File TEMT_DIRRECTORY = new File("temp");
+	public static final File TEMT_DIRRECTORY = new File("./temp");
 	static {
 		if (!TEMT_DIRRECTORY.exists()) {
 			TEMT_DIRRECTORY.mkdir();

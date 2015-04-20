@@ -73,8 +73,11 @@ public class FileBrowserPanel extends JFileChooser {
 			@Override
 		    public Boolean isTraversable(File f) {
 				if (type == OUTPUT)
-					return (f.isDirectory()
-		        		&& !f.equals(INPUT_SELECT.getCurrentDirectory())); 
+					return !(f.isDirectory()
+		        		&& (
+		        			f.equals(INPUT_SELECT.getCurrentDirectory())
+		        		 || f.equals(Explorer.TEMT_DIRRECTORY)
+		        		)); 
 				else return super.isTraversable(f);
 		    }
 		});

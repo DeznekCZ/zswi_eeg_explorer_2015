@@ -13,6 +13,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import cz.eeg.data.Channel;
 import cz.eeg.data.Marker;
 import cz.eeg.data.EegFile;
 import cz.eeg.data.save.RenameAndSave;
@@ -30,18 +31,51 @@ public final class DialogManagement {
 	public final static int SAVE_AS = 1;
 	public static final int EDIT = 2;
 	public static final int MARKER_ERROR = 3;
+	public static final int PLOTING = 4;
 
 	public static void open(int type, Object... params) {
-		if (type == SAVE_AS) {
+		switch (type) {
+		case SAVE_AS:
 			saveAs((EegFile) params[0]);
-		} else if (type == EDIT) {
+			break;
+		case EDIT:
 			editMarker((Marker) params[0], (Field) params[1]);
-		} else if (type == MARKER_ERROR) {
+			break;
+		case PLOTING:
+			plot((EegFile) params[0]);
+			break;
+		case MARKER_ERROR:
 			JOptionPane.showMessageDialog(
 			/*frame*/	null, // null == new
 			/*message*/	LANG("marker_reading_error", ((Exception) params[0]).getMessage()), 
 			/*title*/	LANG("error"), 
 			/*type*/	JOptionPane.ERROR_MESSAGE);
+		default:
+			break;
+		}
+	}
+
+	private static void plot(EegFile eegFile) {
+		Channel[] channels = eegFile.getChannel();
+		
+		Object[] possibilities = new Object[channels.length];
+		
+		for (int i = 0; i < possibilities.length; i++) {
+			possibilities[i] = channels[i].getName();
+		}
+		
+		String s = (String)JOptionPane.showInputDialog(
+		                    null,
+		                    LANG("ploting_select_channel"),
+		                    "Customized Dialog",
+		                    JOptionPane.PLAIN_MESSAGE,
+		                    null,
+		                    possibilities,
+		                    possibilities[0]);
+
+		//If a string was returned, say so.
+		if ((s != null) && (s.length() > 0)) {
+		    return;
 		}
 	}
 

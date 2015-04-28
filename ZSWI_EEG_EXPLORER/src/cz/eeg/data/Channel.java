@@ -5,6 +5,8 @@ package cz.eeg.data;
  * Třída reprezentující objekt jednoho kanálu (elektrody)*/
 public class Channel {
 	private String channelNumber;
+	
+
 	private String name;
 	private double resolutionInUnit;
 	private String unit;
@@ -24,6 +26,20 @@ public class Channel {
 		
 	}
 
-	
+	public String getChannelNumber() {
+		return channelNumber;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public double getResolutionInUnit() {
+		return resolutionInUnit;
+	}
+
+	public String getUnit() {
+		return unit;
+	}
 	
 }

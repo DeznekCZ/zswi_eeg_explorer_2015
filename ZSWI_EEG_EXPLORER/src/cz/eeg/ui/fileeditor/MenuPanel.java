@@ -12,6 +12,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 
+import cz.eeg.data.Channel;
 import cz.eeg.data.EegFile;
 import cz.eeg.ui.Application;
 import cz.eeg.ui.FileEditor;
@@ -95,6 +96,32 @@ public class MenuPanel extends JPanel {
 			file.add(close);
 		}
 		
+		final JMenu data = new JMenu(LANG("menu_data"));
+		menuBar.add(data);
+		{
+			final Channel[] channels = vhdrFile.getChannel();
+			
+			for (int i = 0; i < channels.length; i++) {
+				final int index = i;
+				JMenuItem channel = new JMenuItem(channels[i].getName());
+				channel.addActionListener(new ActionListener() {
+					
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						Plotter.open(channels[index], index, vhdrFile);
+					}
+				});
+			}
+			
+			JMenuItem close = new JMenuItem(LANG("menu_edit_"));
+			close.addActionListener(new ActionListener() {
+				
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					Plotter.open(null, -1, vhdrFile);
+				}
+			});
+		}
 		
 		// Zaviraci tlacitko
         

@@ -20,34 +20,50 @@ public class Plotter {
 	private static ChartPanel graphPanel;
 	private static JFrame frame;
 	
-	public static void open(Channel channel, int index, EegFile vhdrFile) {
+	public static void open(EegFile vhdrFile, int... index) {
 		if (frame == null) {
 			frame = new JFrame();
+			frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 			graphPanel = new ChartPanel(null);
+			frame.add(graphPanel);
+			frame.pack();
+			frame.setLocationRelativeTo(null);
 		}
-
-		String visibleChannel = (channel == null ? LANG("channels_all") : channel.getName());
-		frame.setTitle(LANG("plotter", vhdrFile.getName(), visibleChannel));
+		
+		String channelList = LANG("channels_all");
+		
+		if (index != null && index.length > 0) {
+			Channel[] channels = vhdrFile.getChannel();
+			channelList = channels[index[0]].getName();
+			for (int i = 1; i < index.length; i++) {
+				channelList += ", " + channels[index[i]].getName();
+			}
+		} else {
+			index = new int[vhdrFile.getNumberOfChannels()];
+			for (int i = 0; i < index.length; i++) {
+				index[i] = i;
+			}
+		}
+		
+		frame.setTitle(LANG("plotter", vhdrFile.getName(), channelList));
 		
 		graphPanel.setChart(
 				createGraph(
-						prepareDataSet(vhdrFile, channel, index)));
+						prepareDataSet(vhdrFile, index)));
+		
+		frame.setVisible(true);
 		
 	}
-
-	private static XYSeriesCollection prepareDataSet(EegFile vhdrFile, Channel channel,
-			int index) {
+	
+	private static XYSeriesCollection prepareDataSet(EegFile vhdrFile, int[] index) {
 		final int NUMBER_OF_CHANNELS = vhdrFile.getNumberOfChannels();
 		XYSeriesCollection series = new XYSeriesCollection();
 		BinaryData.read(vhdrFile.getHeaderFile(), NUMBER_OF_CHANNELS);
+		Channel[] channels = vhdrFile.getChannel();
+		double[][] data = BinaryData.getDat();
 		
-		if (index == -1) {
-			double[][] data = BinaryData.getDat();
-			for (int i = 0; i < NUMBER_OF_CHANNELS; i++) {
-				series.addSeries(values(channel, data[i]));
-			}
-		} else {
-			series.addSeries(values(channel, BinaryData.getDat()[index]));
+		for (int i = 0; i < index.length; i++) {
+			series.addSeries(values(channels[index[i]], data[index[i]]));
 		}
 		
 		return series;
@@ -56,7 +72,7 @@ public class Plotter {
 	private static XYSeries values(Channel channel, double[] data) {
 		XYSeries values = new XYSeries(channel.getName());
 		for (int i = 0; i < data.length; i++) {
-			values.add(i / channel.getResolutionInUnit(), data[i]);
+			values.add(i * channel.getResolutionInUnit(), data[i]);
 		}
 		return values;
 	}
@@ -67,7 +83,7 @@ public class Plotter {
 				LANG("plot_time_label"), 
 				LANG("plot_strength_label"), 
 				data, 
-				PlotOrientation.HORIZONTAL, 
+				PlotOrientation.VERTICAL, 
 				true, true, false); // legend, tooltips, urls
 		return graph;
 	}

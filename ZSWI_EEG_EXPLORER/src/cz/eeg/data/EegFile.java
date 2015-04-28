@@ -389,4 +389,8 @@ public class EegFile {
 		}
 		return data;
 	}
+
+	public boolean isPlotAble() {
+		return readable && channel != null && channel.length > 0;
+	}
 }

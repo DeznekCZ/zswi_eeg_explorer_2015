@@ -53,7 +53,7 @@ public class MenuPanel extends JPanel {
 				}
 			}); file.add(s1);
 			
-			file.addSeparator();
+			//file.addSeparator();
 			
 			// Uložení
 /*
@@ -93,34 +93,56 @@ public class MenuPanel extends JPanel {
 				}
 			});
 			
+			close.setEnabled(vhdrFile.isReadable());
 			file.add(close);
 		}
 		
 		final JMenu data = new JMenu(LANG("menu_data"));
 		menuBar.add(data);
-		{
+		
+		if (!vhdrFile.isPlotAble()) {
+			JMenuItem noChannels = new JMenuItem(LANG("menu_data_no_channels"));
+			noChannels.setEnabled(false);
+			data.add(noChannels);
+		} else {
+			
+			JMenuItem select = new JMenuItem(LANG("menu_data_select"));
+			select.addActionListener(new ActionListener() {		
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					DialogManagement.open(DialogManagement.PLOTING, vhdrFile);
+				}
+			});
+			//select.setEnabled(false);
+			data.add(select);
+
+			data.addSeparator();
+			
 			final Channel[] channels = vhdrFile.getChannel();
 			
 			for (int i = 0; i < channels.length; i++) {
 				final int index = i;
 				JMenuItem channel = new JMenuItem(channels[i].getName());
-				channel.addActionListener(new ActionListener() {
-					
+				channel.addActionListener(new ActionListener() {		
 					@Override
 					public void actionPerformed(ActionEvent e) {
-						Plotter.open(channels[index], index, vhdrFile);
+						Plotter.open(vhdrFile, index);
 					}
 				});
+				data.add(channel);
 			}
 			
-			JMenuItem close = new JMenuItem(LANG("menu_edit_"));
-			close.addActionListener(new ActionListener() {
+			data.addSeparator();
+			
+			JMenuItem allChannels = new JMenuItem(LANG("menu_data_all_channels"));
+			allChannels.addActionListener(new ActionListener() {
 				
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					Plotter.open(null, -1, vhdrFile);
+					Plotter.open(vhdrFile);
 				}
 			});
+			data.add(allChannels);
 		}
 		
 		// Zaviraci tlacitko

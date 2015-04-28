@@ -2,12 +2,16 @@ package cz.eeg.ui.dialog;
 
 import static cz.deznekcz.tool.Lang.*;
 
+import java.awt.FlowLayout;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.lang.reflect.Field;
 import java.nio.file.FileAlreadyExistsException;
+import java.util.ArrayList;
 
 import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -20,6 +24,7 @@ import cz.eeg.data.save.RenameAndSave;
 import cz.eeg.io.FilesIO;
 import cz.eeg.ui.Application;
 import cz.eeg.ui.FileEditor;
+import cz.eeg.ui.fileeditor.Plotter;
 
 /**
  * File handling dialog class
@@ -58,24 +63,57 @@ public final class DialogManagement {
 	private static void plot(EegFile eegFile) {
 		Channel[] channels = eegFile.getChannel();
 		
-		Object[] possibilities = new Object[channels.length];
+		JCheckBox[] possibilities = new JCheckBox[channels.length];
+		JPanel myPanel = new JPanel();
+		myPanel.setLayout(new BoxLayout(myPanel, BoxLayout.Y_AXIS));
 		
 		for (int i = 0; i < possibilities.length; i++) {
-			possibilities[i] = channels[i].getName();
+			possibilities[i] = new JCheckBox(channels[i].getName());
+			myPanel.add(possibilities[i]);
 		}
 		
-		String s = (String)JOptionPane.showInputDialog(
+		JLabel message = new JLabel("");
+		message.setVisible(false);
+		
+		/*String s = (String)JOptionPane.showInputDialog(
 		                    null,
 		                    LANG("ploting_select_channel"),
 		                    "Customized Dialog",
 		                    JOptionPane.PLAIN_MESSAGE,
 		                    null,
 		                    possibilities,
-		                    possibilities[0]);
-
-		//If a string was returned, say so.
-		if ((s != null) && (s.length() > 0)) {
-		    return;
+		                    possibilities[0]);*/
+		boolean fail = true;
+		while(fail) {
+			int option = JOptionPane.showConfirmDialog(
+								null, 
+								myPanel, 
+								LANG("ploting_select_channel"), 
+								JOptionPane.OK_CANCEL_OPTION);
+	
+			if (option == JOptionPane.OK_OPTION) {
+				ArrayList<Integer> indexes = new ArrayList<Integer>(possibilities.length);
+				for (int i = 0; i < possibilities.length; i++)
+					if (possibilities[i].isSelected())
+						indexes.add(i);
+				if (indexes.size() > 0) {
+					fail = false;
+					if (indexes.size() == possibilities.length) {
+						Plotter.open(eegFile);
+					} else {
+						int[] indexArray = new int[indexes.size()];
+						for (int i = 0; i < indexArray.length; i++) {
+							indexArray[i] = (int) indexes.get(i);
+						}
+						Plotter.open(eegFile, indexArray);
+					}
+				} else {
+					message.setText(LANG("channels_not_selected"));
+					message.setVisible(true);
+				}
+			} else {
+				fail = false;
+			}
 		}
 	}
 

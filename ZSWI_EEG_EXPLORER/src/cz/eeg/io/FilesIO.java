@@ -259,21 +259,21 @@ public class FilesIO {
 		return bytes;
 	}
 
-	public static EegFile mergeVhdrs(String newName,EegFile... vhdrInstances) throws VhdrMergeException {
-
+	public static boolean mergeVhdrs(File outPath,String newName,EegFile... vhdrInstances) throws VhdrMergeException, FileNotFoundException, FileReadingException {
+		EegFile merged;
 		if(vhdrInstances[0].getNumberOfChannels()!=vhdrInstances[1].getNumberOfChannels() 
 				|| 	!vhdrInstances[0].getBinaryFormat().equals(vhdrInstances[1].getBinaryFormat())
 				){
 			throw new VhdrMergeException();
 		}else{
-			EegFile merged = new EegFile();
-			merged=vhdrInstances[0];
-			merged.setDataFile(new File(newName+".eeg"));
-			merged.setMarkerFile(new File(newName+".vmrk"));
-
+			
+			merged = read(vhdrInstances[0].getHeaderFile());
+			merged.setDataFile(new File(outPath.getAbsolutePath()+"/"+newName+".eeg"));
+			merged.setMarkerFile(new File(outPath.getAbsolutePath()+"/"+newName+".vmrk"));
+			
 		}
 
 
-		return new EegFile();
+		return true;
 	}
 }

@@ -3,16 +3,18 @@ package cz.eeg.io;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.util.LinkedList;
+import java.util.List;
 
 import cz.zcu.kiv.signal.EEGDataTransformer;
 
 public class BinaryData{
 
 	/**pole reprezentujici data v danem souboru*/
-	private static double [][] dat;
+	private static double [] [] dat;
 	
-	public BinaryData(File name,int numberChannels) {
-		dat = new double[numberChannels] [];
+	public static void read(File name,int numberChannels) {
+		dat = new double [numberChannels] [];
 		for(int i=1;i<numberChannels+1;i++){
 			ctiByte(name, i);
 		}
@@ -29,11 +31,11 @@ public class BinaryData{
 	/**
 	 * Metoda naplneni pole byte daty 
 	 * @param name Jmeno cteneho datoveho souboru*/
-	public static void ctiByte(File datafile,int channel)
+	public static void ctiByte(File headerFile,int channel)
 	{      
 		EEGDataTransformer dt = new EEGDataTransformer();
 			try {
-				dat[channel-1]=dt.readBinaryData(datafile.getAbsolutePath(), channel);
+				dat[channel-1]=dt.readBinaryData(headerFile.getAbsolutePath(), channel);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

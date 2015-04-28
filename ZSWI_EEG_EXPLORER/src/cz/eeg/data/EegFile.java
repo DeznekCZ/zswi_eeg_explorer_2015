@@ -286,8 +286,8 @@ public class EegFile {
 		return String.format(MARKER_FILE_FORMAT, codePage, dataFile.getName(), markersToString());
 	}
 	public double[][] getDataRead(){
-		BinaryData b=new BinaryData(dataFile, getNumberOfChannels());
-		return b.getDat();
+		BinaryData.read(getHeaderFile(), getNumberOfChannels());
+		return BinaryData.getDat();
 	}
 
 	public String getName() {

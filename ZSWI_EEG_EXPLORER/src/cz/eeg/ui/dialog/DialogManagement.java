@@ -16,6 +16,7 @@ import javax.swing.JTextField;
 import cz.eeg.data.Marker;
 import cz.eeg.data.EegFile;
 import cz.eeg.data.save.RenameAndSave;
+import cz.eeg.io.FilesIO;
 import cz.eeg.ui.Application;
 import cz.eeg.ui.FileEditor;
 
@@ -111,18 +112,21 @@ public final class DialogManagement {
 		    	
 		    	try {
 		    		newName = gender+"_"+age+"_"+year+"_"+month+"_"+day;//TODO next field
-					new RenameAndSave(new File(Application.EXPLORER.getOutputPath()),
-							newName, file, overwrite);
-				} catch (FileNotFoundException e) {
-					wrongMessage = LANG("file_not_created");
+					if	(FilesIO.write(
+							file, 
+							new File(Application.EXPLORER.getOutputPath()), 
+							newName, 
+							overwrite)
+							)
+						break;
+					
+					wrongMessage = LANG("file_writing_failed");
 					continue;
 				} catch (FileAlreadyExistsException e) {
 					wrongMessage = LANG("file_exists");
 					lastName = newName;
 					continue;
 				}
-		    	
-		    	break;
 		    } else {
 		    	break;
 		    }

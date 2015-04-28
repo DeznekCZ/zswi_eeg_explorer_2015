@@ -20,9 +20,10 @@ public class FilesIOTest {
 
 
 	@Test
-	public void testRead() {
-		fail("Not yet implemented");
+	public void isReadable() {
+		assertTrue(fi.isReadable(new File("input/Masaryko002_20141124-1.vhdr")));
 	}
+	
 
 	@Test
 	public void testWrite() throws IOException, FileReadingException {
@@ -34,10 +35,7 @@ public class FilesIOTest {
 		assertTrue(	fi.write(FilesIO.read(new File("input/Masaryko002_20141124-1.vhdr")),new File("output"), "novy-1", true));
 	}
 
-	@Test
-	public void testBackupDataFile() {
-		fail("Not yet implemented");
-	}
+
 
 	@Test
 	public void testMergeDataFiles() {

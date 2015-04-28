@@ -43,7 +43,28 @@ public class MarkerTest  {
 		assertEquals("0",mk.getChannelNumber());
 	}
 
+	@Test
+	public void testSetMarkerNumber() {
+		mk.setMarkerNumber(2);
+		assertEquals(2,mk.getMarkerNumber());
+	}
+	@Test
+	public void testSetType() {
+		mk.setType("0");
+		assertEquals("0",mk.getType());
+	}
+	
+	@Test
+	public void testSetDescription() {
+		mk.setDescription("0");
+		assertEquals("0",mk.getDescription());
+	}
 
+	@Test
+	public void testToString() {
+		Marker mk1=new Marker("Mk6=Stimulus,S  6,19469,0,0");
+		assertEquals(mk1.toString(),mk.toString());
+	}
 
 
 }

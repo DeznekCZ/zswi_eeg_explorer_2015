@@ -124,39 +124,42 @@ public class FilesIO {
 
 		PrintWriter pw;
 		try {
-			String pathH= outPath.getParent().toString(); // zde se musi predat outpath tedy kam zapisuji
-			String pathM=outPath.getParent().toString();
-
+			String pathH = null;
+			String pathM = null;
+			String pathD=null;
 			if(linkedVhdr.getDataFile().getName().endsWith(".avg")){
-
-
-				pathH+=outPath.getAbsolutePath()+"/"+newName+".vhdr"; // ale je to cesta do input protoze neni predan output
-				pathM+=outPath.getAbsolutePath()+"/"+newName+".vmrk"; 
+				pathD=outPath.getAbsolutePath()+"/"+newName+".avg";
+				if(!saveDataFile(2,pathD,linkedVhdr)){return false;}
+				pathH =outPath.getAbsolutePath()+"/"+newName+".vhdr"; // ale je to cesta do input protoze neni predan output
+				pathM =outPath.getAbsolutePath()+"/"+newName+".vmrk"; 
 			}if(linkedVhdr.getDataFile().getName().endsWith(".eeg")){
-				pathH+="\\"+linkedVhdr.getDataFileName().replace(".eeg", ".vhdr");// ale je to cesta do input protoze neni predan output
-				pathH+=outPath.getAbsolutePath()+"/"+newName+".vhdr"; // ale je to cesta do input protoze neni predan output
-				pathM+=outPath.getAbsolutePath()+"/"+newName+".vmrk";
+				pathD=outPath.getAbsolutePath()+"/"+newName+".eeg";
+				if(!saveDataFile(1,pathD,linkedVhdr)){return false;}
+				pathH =outPath.getAbsolutePath()+"/"+newName+".vhdr"; // ale je to cesta do input protoze neni predan output
+				pathM =outPath.getAbsolutePath()+"/"+newName+".vmrk";
 			}
+			EegFile newVhdr = read(linkedVhdr.getHeaderFile());
+			newVhdr.setMarkerFile(new File(pathM));
+			newVhdr.setDataFile(new File(pathD));
 			pw = new PrintWriter(pathH); //zapisuje header
-			pw.write(linkedVhdr.getVhdrData());
+			pw.write(newVhdr.getVhdrData());
 			pw.close();
 
 			pw = new PrintWriter(pathM); // zapisuje marker
-			pw.write(linkedVhdr.getVmrkData());
+			pw.write(newVhdr.getVmrkData());
 			pw.close();
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			return true;
+		} catch (IOException | FileReadingException e) {
+			return false;
 		}
 
 
-		return false;
 
 	}
 	public static File backupDataFile(File dataFile) {
 		return dataFile;
 	}
-	public boolean saveDataFile(int choose,String newName,EegFile vhdr) throws IOException{
+	public static boolean saveDataFile(int choose,String newName,EegFile vhdr) throws IOException{
 		FileOutputStream fos= new FileOutputStream(newName);
 		switch(choose){
 		case 1 :
@@ -210,16 +213,16 @@ public class FilesIO {
 				fos.close();
 				return true;
 			}else{
-				if(vhdrInstances[0].getName().endsWith(".avg")){
-					BinaryData.read(vhdrInstances[0].getHeaderFile(), numberOfChannels);
+				if(vhdrInstances[0].getDataFileName().endsWith(".avg")){
+					BinaryData.read(vhdrInstances[0].getHeaderFile(), vhdrInstances[0].getNumberOfChannels());
 					for(int i = 0;i<BinaryData.getDat()[0].length;i++){
-						for (int k=0;k<vhdrInstances[1].getNumberOfChannels();k++){
+						for (int k=0;k<vhdrInstances[0].getNumberOfChannels();k++){
 							short d1=(short)(BinaryData.getDat()[k][i]);
 							byte [] zapis= toByteArrayAvg(d1);
 							fos.write(zapis);
 						}
 					}
-					BinaryData.read(vhdrInstances[1].getHeaderFile(), numberOfChannels);
+					BinaryData.read(vhdrInstances[1].getHeaderFile(), vhdrInstances[1].getNumberOfChannels());
 					for(int i = 0;i<BinaryData.getDat()[0].length;i++){
 						for (int k=0;k<vhdrInstances[1].getNumberOfChannels();k++){
 							short d2=(short)(BinaryData.getDat()[k][i]);

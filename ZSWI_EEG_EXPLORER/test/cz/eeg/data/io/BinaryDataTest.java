@@ -14,32 +14,26 @@ import cz.eeg.io.FilesIO;
 
 public class BinaryDataTest {
 
-	BinaryData dataFile=new BinaryData(new File("input/Masaryko001_20141124.eeg"), 3);
 	
-	@AfterClass
-	public static void tearDownAfterClass() throws Exception {
-	}
+	
 
-
-
-	@After
-	public void tearDown() throws Exception {
-	}
 
 	@Test
 	public void testBinaryData() {
-		assertNotNull(dataFile);
+		BinaryData.read(new File("input/Masaryko001_20141124.eeg"), 3);
+		assertNotNull(BinaryData.getDat());
 	}
 
 	@Test
 	public void testGetDat() {
-		//dataFile.getDat();
-		assertArrayEquals(dataFile.getDat(), new BinaryData(new File("input/Masaryko001_20141124.eeg"), 3).getDat());
+		BinaryData.read(new File("input/Masaryko001_20141124.eeg"), 3);
+		assertNotNull(BinaryData.getDat());
 	}
 
 	@Test
 	public void testCtiByte() {
-		assertNull(dataFile.getDat()[0]);
+		BinaryData.read(new File("input/Masaryko001_20141124.eeg"), 3);
+		assertNotNull(BinaryData.getDat());
 
 	}
 

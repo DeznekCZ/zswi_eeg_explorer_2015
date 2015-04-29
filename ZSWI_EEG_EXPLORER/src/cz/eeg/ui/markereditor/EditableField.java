@@ -1,27 +1,9 @@
 package cz.eeg.ui.markereditor;
 
-import static cz.deznekcz.tool.Lang.*;
-
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.GridLayout;
-import java.util.List;
-
-import static java.lang.String.format;
-
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JSplitPane;
-import javax.swing.JTextField;
-import javax.xml.soap.Text;
 
 import layout.TableLayout;
-import layout.TableLayoutConstraints;
 import cz.eeg.data.Marker;
-import cz.eeg.ui.Application;
 
 
 public class EditableField extends JPanel {
@@ -32,10 +14,6 @@ public class EditableField extends JPanel {
 	//public final static Lang LANG = Aplikace.LANG;
 
 	public static final int DEFAULT_SIZE = 0;
-	
-	private boolean plain = false;
-	
-	private Marker marker;
 	
 	/**
 	 * 

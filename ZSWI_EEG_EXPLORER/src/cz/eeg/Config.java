@@ -1,4 +1,4 @@
-package cz.eeg.tool;
+package cz.eeg;
 
 import java.io.File;
 import java.io.FileNotFoundException;

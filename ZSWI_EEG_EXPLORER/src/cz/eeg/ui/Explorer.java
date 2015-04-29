@@ -13,7 +13,8 @@ import java.io.File;
 
 import javax.swing.*;
 
-import cz.eeg.tool.Config;
+import cz.eeg.Application;
+import cz.eeg.Config;
 import cz.eeg.ui.explorer.FileBrowserPanel;
 
 /**
@@ -21,7 +22,7 @@ import cz.eeg.ui.explorer.FileBrowserPanel;
  * 
  * @author IT Crowd
  */
-public class Explorer extends JPanel {
+public class Explorer extends JFrame {
 
 	/** */
 	private static final long serialVersionUID = -4683589648282776251L;
@@ -42,7 +43,8 @@ public class Explorer extends JPanel {
 	public final FileBrowserPanel VYSTUPNI_VYBER = FileBrowserPanel.OUTPUT_SELECT;
 	
 	public Explorer() {
-		Container contentPane = Application.WINDOW.getContentPane();
+		
+		super(LANG("window_name"));
 		
 		setLayout(new BorderLayout());
 		JMenuBar menuLista = new JMenuBar();
@@ -60,7 +62,7 @@ public class Explorer extends JPanel {
 
 				editor.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent event) {
-						Application.EDITOR.open(null);
+						GuiManager.EDITOR.open(null);
 					}
 				});
 				file.add(editor);
@@ -74,7 +76,7 @@ public class Explorer extends JPanel {
 
 				exit.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent event) {
-						Application.WINDOW.setVisible(false);
+						GuiManager.EXPLORER.setVisible(false);
 					}
 				});
 				file.add(exit);
@@ -155,6 +157,25 @@ public class Explorer extends JPanel {
 		SPLIT.setDividerLocation(CONFIG.ex_width / 2);
 		SPLIT.setDividerSize(3);
 		SPLIT.setEnabled(false);
+		
+		setSize(new Dimension(CONFIG.ex_width, CONFIG.ex_height));
+		if (CONFIG.isSet()) {
+			setLocation(CONFIG.ex_posx, CONFIG.ex_posy);
+			if ((CONFIG.ex_fullscreen & JFrame.MAXIMIZED_BOTH) != JFrame.MAXIMIZED_BOTH) {
+				setPreferredSize(new Dimension(CONFIG.ex_width, CONFIG.ex_height));
+			}
+			setExtendedState(CONFIG.ex_fullscreen);
+		} else {
+			
+		}
+
+		setFocusable(true);
+		
+		pack();
+		
+		setLocationRelativeTo(null);
+		
+		setVisible(true);
 	}
 
 	public String getInputPath() {
@@ -167,60 +188,39 @@ public class Explorer extends JPanel {
 	
 	@Override
 	public void paint(Graphics g) {
-		SPLIT.setDividerLocation(Application.WINDOW.getWidth()/2);
+		SPLIT.setDividerLocation(getWidth()/2);
 		super.paint(g);
 	}
 	
-//  TODO LATER USE	
-//	/**
-//	 * Metoda vytvářející odkaz menu pro jazyk nacházející se ve složce "lang",
-//	 * pokud se jazyk ve složce nenachází načte angličtinu
-//	 * (tato metoda je použita v místě, kde tato možnost nenastane, ale může nastat
-//	 * chyba při parsování díky chybnému názvů parametru v souboru ".lng")
-//	 * @param langName name of lang
-//	 * @return instance of class {@link JMenuItem}
-//	 */
-//	private JMenuItem novyJazyk(final String langName) {
-//		Lang newLang = new Lang(langName);
-//		JMenuItem item = new JMenuItem(newLang.lang_name); // eMenuItem
-//        item.addActionListener(new ActionListener() {
-//        	private String language = langName;
-//            public void actionPerformed(ActionEvent event) {
-//                LANGload(language);
-//               	Appliacion.WINDOW.pack();
-//               	Appliacion.EDITOR.repaint();
-//            }
-//        });
-//		return item;
-//	}
-//	
-//	/**
-//	 * Pomocná metoda pro získání názvu souboru a koncovky
-//	 * @param fileData celý název soubru
-//	 * @return pole [název, koncovka]
-//	 */
-//	private static String[] fileNameSplit(String fileData) {
-//		String[] data = new String[]{new String(),new String()};
-//		int extension = 0;
-//		for (int i = 0; i < fileData.length(); i++) {
-//			if (fileData.charAt(i) == '.')
-//				extension = 1;
-//			else
-//				data[extension] = data[extension].concat(fileData.substring(i, i+1));
-//		}
-//		return data;
-//	}
-//	
-//	private void nacistJazyky(JMenu lang_menu) {
-//		final File lang_dir = new File("lang");
-//        final File[] lang_files = lang_dir.listFiles();
-//        for (int i = 0; i < lang_files.length; i++) {
-//        	final String file_data = lang_files[i].getName();
-//        	final String[] file_name = fileNameSplit(file_data);
-//			if (lang_files[i].isFile()
-//					&& file_name[1].compareTo("lng") == 0) {
-//				lang_menu.add(novyJazyk(file_name[0]));
-//			}
-//		}
-//	}
+	@Override
+	public void setVisible(boolean b) {
+		if (!b) {
+			if (GuiManager.EDITOR.isOpenedFiles()) {
+				FileEditor.WINDOW.setVisible(true);
+				boolean closing = true;
+				while (closing && GuiManager.EDITOR.isOpenedFiles()) {
+					closing = GuiManager.EDITOR.close();
+				}
+			}
+			if (!GuiManager.EDITOR.isOpenedFiles()) {
+				
+				FileEditor.WINDOW.setVisible(false);
+				
+				CONFIG.ex_fullscreen = getExtendedState();
+				CONFIG.ex_posx = getLocation().x;
+				CONFIG.ex_posy = getLocation().y;
+				CONFIG.ex_width = getWidth();
+				CONFIG.ex_height = getHeight();
+				CONFIG.lang = LANG("lang_short");
+				CONFIG.folder_input = GuiManager.EXPLORER.getInputPath();
+				CONFIG.folder_output = GuiManager.EXPLORER.getOutputPath();
+				CONFIG.save();
+				
+				LANGgererate(CONFIG.lang);
+				System.exit(0);
+			}
+		} else {
+			super.setVisible(b);
+		}
+	}
 }

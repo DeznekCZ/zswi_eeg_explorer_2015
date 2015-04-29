@@ -24,7 +24,7 @@ import cz.eeg.data.Channel;
 import cz.eeg.data.EegFile;
 import cz.eeg.data.Marker;
 import cz.eeg.io.FilesIO;
-import cz.eeg.ui.Application;
+import cz.eeg.ui.GuiManager;
 import cz.eeg.ui.fileeditor.Plotter;
 
 /**
@@ -245,7 +245,7 @@ public final class DialogManagement {
 		    		newName = gender+"_"+age+"_"+year+"_"+month+"_"+day;//TODO next field
 					if	(FilesIO.write(
 							file, 
-							new File(Application.EXPLORER.getOutputPath()), 
+							new File(GuiManager.EXPLORER.getOutputPath()), 
 							newName, 
 							overwrite)
 							)

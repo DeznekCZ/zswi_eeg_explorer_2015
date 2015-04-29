@@ -22,9 +22,10 @@ import javax.swing.filechooser.FileView;
 
 import cz.eeg.data.EegFile;
 import cz.eeg.io.FilesIO;
-import cz.eeg.tool.Config;
-import cz.eeg.ui.Application;
+import cz.eeg.Application;
+import cz.eeg.Config;
 import cz.eeg.ui.Explorer;
+import cz.eeg.ui.GuiManager;
 
 /**
  * Instances represents extendex {@link JFileChooser}.
@@ -90,7 +91,7 @@ public class FileBrowserPanel extends JFileChooser {
 			public void actionPerformed(ActionEvent actionEvent) {
 				String command = actionEvent.getActionCommand();
 				if (command.equals(JFileChooser.APPROVE_SELECTION)) {
-					Application.EDITOR.open(getSelectedFiles());
+					GuiManager.EDITOR.open(getSelectedFiles());
 				}
 			}
 		};
@@ -115,7 +116,7 @@ public class FileBrowserPanel extends JFileChooser {
 		        //We are interested in both event types
 		        if(propertyName.equals(JFileChooser.SELECTED_FILE_CHANGED_PROPERTY) ||
 		           propertyName.equals(JFileChooser.DIRECTORY_CHANGED_PROPERTY)){
-		        	Application.selectionFrame = vyber;
+		        	GuiManager.selectionFrame = vyber;
 		        }
 
 		 //Allow new events to be processed now

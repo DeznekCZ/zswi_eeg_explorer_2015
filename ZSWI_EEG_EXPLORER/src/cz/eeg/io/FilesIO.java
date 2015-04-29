@@ -138,15 +138,15 @@ public class FilesIO {
 				pathH =outPath.getAbsolutePath()+"/"+newName+".vhdr"; // ale je to cesta do input protoze neni predan output
 				pathM =outPath.getAbsolutePath()+"/"+newName+".vmrk";
 			}
-			EegFile newVhdr = linkedVhdr.clone();
-			newVhdr.setMarkerFile(new File(pathM));
-			newVhdr.setDataFile(new File(pathD));
+			//EegFile newVhdr = linkedVhdr.clone();
+			linkedVhdr.setMarkerFile(new File(pathM));
+			linkedVhdr.setDataFile(new File(pathD));
 			pw = new PrintWriter(pathH); //zapisuje header
-			pw.write(newVhdr.getVhdrData());
+			pw.write(linkedVhdr.getVhdrData());
 			pw.close();
 
 			pw = new PrintWriter(pathM); // zapisuje marker
-			pw.write(newVhdr.getVmrkData());
+			pw.write(linkedVhdr.getVmrkData());
 			pw.close();
 			return true;
 		} catch (IOException e) {

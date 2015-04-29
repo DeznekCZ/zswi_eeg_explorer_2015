@@ -7,7 +7,7 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 
-import cz.eeg.ui.Application;
+import cz.eeg.ui.GuiManager;
 
 /**
  * Internal class representing a edit button,
@@ -23,7 +23,7 @@ public class EditButton extends JButton {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				Application.EDITOR.edit();
+				GuiManager.EDITOR.edit();
 			}
 		});
 	}

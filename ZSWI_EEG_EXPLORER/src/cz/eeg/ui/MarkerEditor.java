@@ -1,7 +1,7 @@
 package cz.eeg.ui;
 
-import java.awt.Component;
-import java.awt.Dimension;
+import static cz.deznekcz.tool.Lang.LANG;
+
 import java.util.Iterator;
 import java.util.List;
 
@@ -10,7 +10,6 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
-import static cz.deznekcz.tool.Lang.*;
 import cz.eeg.data.Marker;
 import cz.eeg.ui.markereditor.EditableField;
 
@@ -46,7 +45,7 @@ public class MarkerEditor extends JFrame {
 	@Override
 	public void setVisible(boolean b) {
 		if (!b)
-			Application.EDITOR.repaint();
+			GuiManager.EDITOR.repaint();
 		super.setVisible(b);
 	}
 

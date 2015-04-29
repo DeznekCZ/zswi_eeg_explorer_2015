@@ -1,17 +1,13 @@
 package cz.eeg.io;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.nio.file.FileAlreadyExistsException;
 
-import org.junit.AfterClass;
 import org.junit.Test;
 
 import cz.eeg.data.EegFile;
-import cz.eeg.data.vhdrmerge.MergeVhdr;
 
 public class FilesIOTest {
 

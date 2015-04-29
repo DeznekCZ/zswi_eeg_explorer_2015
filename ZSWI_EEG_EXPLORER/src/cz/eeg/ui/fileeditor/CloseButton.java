@@ -5,7 +5,7 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 
-import cz.eeg.ui.Application;
+import cz.eeg.ui.GuiManager;
 
 /**
  * Internal class representing a close button,
@@ -24,7 +24,7 @@ public class CloseButton extends JButton {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				Application.EDITOR.close();
+				GuiManager.EDITOR.close();
 			}
 		});
 	}

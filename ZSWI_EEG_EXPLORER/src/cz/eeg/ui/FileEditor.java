@@ -3,7 +3,6 @@ package cz.eeg.ui;
 import static cz.deznekcz.tool.Lang.LANG;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.io.File;
 import java.util.ArrayList;
@@ -15,13 +14,14 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
+import cz.eeg.Application;
+import cz.eeg.Config;
 import cz.eeg.data.EegFile;
 import cz.eeg.io.FileReadingException;
 import cz.eeg.io.FilesIO;
-import cz.eeg.tool.Config;
 import cz.eeg.ui.dialog.DialogManagement;
-import cz.eeg.ui.fileeditor.MenuPanel;
 import cz.eeg.ui.fileeditor.EegFilePanel;
+import cz.eeg.ui.fileeditor.MenuPanel;
 
 /**
  * Instance of {@link FileEditor} represent an file editor
@@ -31,9 +31,12 @@ import cz.eeg.ui.fileeditor.EegFilePanel;
  */
 public class FileEditor extends JTabbedPane {
 
+	/** */
+	private static final long serialVersionUID = 3766108424601008291L;
+	
 	public final static Config CONFIG = Application.CONFIG;
 	/** Void tab for editor */
-	public static JPanel VOID_TAB = voidTab();
+	public static JPanel voidTab = initVoidTab();
 		
 	/** Window frame */
 	public final static JFrame WINDOW = new JFrame(){
@@ -54,7 +57,7 @@ public class FileEditor extends JTabbedPane {
 		
 		instance = this;
 		
-		add(voidTab());
+		add(initVoidTab());
 		
 		WINDOW.setLayout(new BorderLayout());
 		// Panel added to each VhdrFile
@@ -64,10 +67,10 @@ public class FileEditor extends JTabbedPane {
 		loadWindowLocation();
 	}
 	
-	private static JPanel voidTab() {
-		VOID_TAB = new MenuPanel(EegFile.voidFile());
-		VOID_TAB.setName(LANG("editor_no_file"));
-		return VOID_TAB;
+	private static JPanel initVoidTab() {
+		voidTab = new MenuPanel(EegFile.voidFile());
+		voidTab.setName(LANG("editor_no_file"));
+		return voidTab;
 	}
 
 	@Override
@@ -120,7 +123,7 @@ public class FileEditor extends JTabbedPane {
 			}
 			
 			if (openedFiles.size() > 0) {
-				remove(VOID_TAB);
+				remove(voidTab);
 			}	
 
 			if (listOfFiles == null || opened > 0)
@@ -174,7 +177,7 @@ public class FileEditor extends JTabbedPane {
 		}
 		
 		if (openedFiles.size() == 0) {
-			add(voidTab());
+			add(initVoidTab());
 		}
 
 		return closeAble;
@@ -193,7 +196,7 @@ public class FileEditor extends JTabbedPane {
 			}
 			WINDOW.setExtendedState(CONFIG.ed_fullscreen);
 		} else {
-			WINDOW.setLocationRelativeTo(Application.EXPLORER);
+			WINDOW.setLocationRelativeTo(GuiManager.EXPLORER);
 		}
 		
 		WINDOW.pack();
@@ -232,16 +235,9 @@ public class FileEditor extends JTabbedPane {
 	}
 
 	/**
-	 * Method saves the selected file to output
-	 * directory with a specific name
-	 * @param name name of file
+	 * Method calls a new {@link MarkerEditor} for editing markers
+	 * of currency selected {@link EegFile}
 	 */
-	public void saveAs(String name) {
-		int index = getSelectedIndex();
-		EegFile file = openedFiles.get(index);
-		//TODO soubor.ulozit(nazev);
-	}
-
 	public void edit() {
 		int index = getSelectedIndex();
 		EegFile file = openedFiles.get(index);

@@ -14,8 +14,7 @@ import javax.swing.JPanel;
 
 import cz.eeg.data.Channel;
 import cz.eeg.data.EegFile;
-import cz.eeg.ui.Application;
-import cz.eeg.ui.FileEditor;
+import cz.eeg.ui.GuiManager;
 import cz.eeg.ui.dialog.DialogManagement;
 
 /**
@@ -49,25 +48,9 @@ public class MenuPanel extends JPanel {
 			
 			s1.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent event) {
-					Application.WINDOW.requestFocus();
+					GuiManager.EXPLORER.requestFocus();
 				}
 			}); file.add(s1);
-			
-			//file.addSeparator();
-			
-			// Uložení
-/*
-			JMenuItem save = new JMenuItem(LANG("file_save"));
-			
-			save.addActionListener(new ActionListener() {
-				
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					//TODO Dialog.open(Dialog.SAVE);
-				}
-			});
-			
-			save.setEnabled(saveable);*/
 
 			JMenuItem saveAs = new JMenuItem(LANG("file_save_as"));
 			
@@ -89,7 +72,7 @@ public class MenuPanel extends JPanel {
 				
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					Application.EDITOR.close();
+					GuiManager.EDITOR.close();
 				}
 			});
 			

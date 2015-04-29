@@ -27,6 +27,7 @@ file_outdir=Output directory:
 file_save=Save
 file_save_as=Save as ...
 file_type=EEG "*.vhdr" file
+file_writing_failed=<file_writing_failed>
 file_wrong=File(s) is not readable:
 format_age=Age
 format_day=Day

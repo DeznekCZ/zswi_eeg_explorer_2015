@@ -10,7 +10,6 @@ public class Marker {
 	private String positionInDataPoints;
 	private String sizeInDataPoints;
 	private String channelNumber;
-	private EegFile ownerEeg;
 
 	public Marker(String line){
 		

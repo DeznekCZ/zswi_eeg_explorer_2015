@@ -138,7 +138,7 @@ public class FilesIO {
 				pathH =outPath.getAbsolutePath()+"/"+newName+".vhdr"; // ale je to cesta do input protoze neni predan output
 				pathM =outPath.getAbsolutePath()+"/"+newName+".vmrk";
 			}
-			EegFile newVhdr = read(linkedVhdr.getHeaderFile());
+			EegFile newVhdr = linkedVhdr.clone();
 			newVhdr.setMarkerFile(new File(pathM));
 			newVhdr.setDataFile(new File(pathD));
 			pw = new PrintWriter(pathH); //zapisuje header
@@ -149,7 +149,7 @@ public class FilesIO {
 			pw.write(newVhdr.getVmrkData());
 			pw.close();
 			return true;
-		} catch (IOException | FileReadingException e) {
+		} catch (IOException e) {
 			return false;
 		}
 

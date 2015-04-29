@@ -33,7 +33,7 @@ public class FileEditor extends JTabbedPane {
 
 	public final static Config CONFIG = Application.CONFIG;
 	/** Void tab for editor */
-	public final static JPanel VOID_TAB = new JPanel();
+	public static JPanel VOID_TAB = voidTab();
 		
 	/** Window frame */
 	public final static JFrame WINDOW = new JFrame(){
@@ -64,11 +64,9 @@ public class FileEditor extends JTabbedPane {
 		loadWindowLocation();
 	}
 	
-	private Component voidTab() {
+	private static JPanel voidTab() {
+		VOID_TAB = new MenuPanel(EegFile.voidFile());
 		VOID_TAB.setName(LANG("editor_no_file"));
-		VOID_TAB.setEnabled(false);
-		VOID_TAB.setLayout(new BorderLayout());
-		VOID_TAB.add(new MenuPanel(EegFile.voidFile()), BorderLayout.NORTH);
 		return VOID_TAB;
 	}
 

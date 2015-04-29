@@ -72,7 +72,6 @@ public class EegFile {
 	private File markerFile;
 	private String codePage;
 	private Channel[] channel;
-	private double [] [] data;
 	private List<Marker> markerList;
 
 	private boolean readable = true;
@@ -392,5 +391,25 @@ public class EegFile {
 
 	public boolean isPlotAble() {
 		return readable && channel != null && channel.length > 0;
+	}
+	
+	public EegFile clone() {
+		EegFile clone = new EegFile();
+		clone.setBinaryFormat(binaryFormat);
+		clone.setChannel(channel);
+		clone.setCodePage(codePage);
+		clone.setDataFile(dataFile);
+		clone.setDataFormat(dataFormat);
+		clone.setDataOrient(dataOrient);
+		clone.setEditing(editing);
+		clone.setHeaderFile(headerFile);
+		clone.setList(markerList);
+		clone.setMarkerFile(markerFile);
+		clone.setName(name);
+		clone.setNumberOfChannels(numberOfChannels);
+		clone.setReadable(readable);
+		clone.setSamplingInterval(samplingInterval);
+		clone.setTextData(textData);
+		return clone;
 	}
 }

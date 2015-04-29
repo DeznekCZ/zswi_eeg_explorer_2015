@@ -9,6 +9,7 @@ import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
+import javax.swing.text.DefaultCaret;
 
 import cz.eeg.data.EegFile;
 
@@ -43,10 +44,16 @@ public class EegFilePanel extends JPanel {
 			}
 		};
 
+		DefaultCaret caret; // no autoscroll
+		
 		panel.areaVhdr = new JTextArea(eegFile.getVhdrData());
+		caret = (DefaultCaret) panel.areaVhdr.getCaret();
+		caret.setUpdatePolicy(DefaultCaret.NEVER_UPDATE);
 		JScrollPane jspVhdr = new JScrollPane(panel.areaVhdr);
 		
 		panel.areaVmrk = new JTextArea(eegFile.getVmrkData());
+		caret = (DefaultCaret) panel.areaVmrk.getCaret();
+		caret.setUpdatePolicy(DefaultCaret.NEVER_UPDATE);
 		JScrollPane jspVmrk = new JScrollPane(panel.areaVmrk);
 		
 		splitPane.add(jspVhdr);

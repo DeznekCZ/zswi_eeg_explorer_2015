@@ -1,5 +1,6 @@
 package cz.eeg.ui;
 
+import java.awt.Component;
 import java.awt.Dimension;
 import java.util.Iterator;
 import java.util.List;
@@ -17,9 +18,11 @@ public class MarkerEditor extends JFrame {
 
 	/**  */
 	private static final long serialVersionUID = 1L;
+	private static MarkerEditor instance;
 
 	public MarkerEditor(List<Marker> list) {
 		super(LANG("marker_title"));
+		instance = this;
 		
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		
@@ -45,5 +48,9 @@ public class MarkerEditor extends JFrame {
 		if (!b)
 			Application.EDITOR.repaint();
 		super.setVisible(b);
+	}
+
+	public static MarkerEditor getInstance() {
+		return instance;
 	}
 }

@@ -1,29 +1,30 @@
 package cz.eeg.ui.dialog;
 
-import static cz.deznekcz.tool.Lang.*;
+import static cz.deznekcz.tool.Lang.LANG;
 
-import java.awt.FlowLayout;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.nio.file.FileAlreadyExistsException;
 import java.util.ArrayList;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JCheckBox;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.JTextPane;
+import javax.swing.event.AncestorEvent;
+import javax.swing.event.AncestorListener;
 
 import cz.eeg.data.Channel;
-import cz.eeg.data.Marker;
 import cz.eeg.data.EegFile;
-import cz.eeg.data.save.RenameAndSave;
+import cz.eeg.data.Marker;
 import cz.eeg.io.FilesIO;
 import cz.eeg.ui.Application;
-import cz.eeg.ui.FileEditor;
 import cz.eeg.ui.fileeditor.Plotter;
 
 /**
@@ -44,7 +45,7 @@ public final class DialogManagement {
 			saveAs((EegFile) params[0]);
 			break;
 		case EDIT:
-			editMarker((Marker) params[0], (Field) params[1]);
+			editMarker((Marker) params[0], (String) params[1], (String) params[2]);
 			break;
 		case PLOTING:
 			plot((EegFile) params[0]);
@@ -72,8 +73,11 @@ public final class DialogManagement {
 			myPanel.add(possibilities[i]);
 		}
 		
+		possibilities[0].addAncestorListener(new RequestFocusListener());
+		
 		JLabel message = new JLabel("");
 		message.setVisible(false);
+		myPanel.add(message);
 		
 		/*String s = (String)JOptionPane.showInputDialog(
 		                    null,
@@ -117,11 +121,66 @@ public final class DialogManagement {
 		}
 	}
 
-	private static void editMarker(Marker marker, Field field) {
-		if (field.getType() == Integer.class) {
+	private static void editMarker(Marker marker, String method, String initialValue) {
+		JPanel myPanel = new JPanel();
+		myPanel.setLayout(new BoxLayout(myPanel, BoxLayout.Y_AXIS));
+		
+		JTextPane label = new JTextPane();
+		label.setText(LANG("marker_description_edit"));
+		label.setEditable(false);
+		myPanel.add(label);
+		
+		JTextField value = new JTextField(initialValue);
+		value.addAncestorListener(new RequestFocusListener());
+		myPanel.add(value);
+		
+		JTextPane message = new JTextPane();
+		message.setText("");
+		message.setEditable(false);
+		message.setVisible(false);
+		myPanel.add(message);
+		
+		boolean fail = true;
+		while (fail) {
 			
-		} else if (field.getType() == String.class) {
+			int result = JOptionPane.showConfirmDialog(null, myPanel, 
+		               LANG("marker_edit"), JOptionPane.OK_CANCEL_OPTION);
 			
+			if (result == JOptionPane.OK_OPTION) {
+				try {
+					Method[] methods = marker.getClass().getDeclaredMethods();
+					Method calledMethod = null;
+					for (int i = 0; i < methods.length; i++) {
+						if (methods[i].getName().equals(method)) {
+							calledMethod = methods[i];
+							break;
+						}
+					}
+					if (calledMethod == null) {
+						JOptionPane.showMessageDialog(null,
+								LANG("method_not_exists", marker.getClass().getName(), method), 
+								LANG("error"), JOptionPane.ERROR_MESSAGE);
+					}
+					
+					if (calledMethod.getParameterTypes()[0] == int.class) {
+						calledMethod.invoke(marker, Integer.parseInt(value.getText()));
+						fail = false;
+					} else if (calledMethod.getParameterTypes()[0] == String.class) {
+						calledMethod.invoke(marker, value.getText());
+						fail = false;
+					} else {
+						message.setText(LANG("incompatible_parameter_format"));
+					}
+					
+				} catch (NumberFormatException e) {
+					message.setText(LANG("number_wrong_format"));
+				} catch (IllegalAccessException | IllegalArgumentException 
+					   | InvocationTargetException e) {
+					message.setText(LANG("method_not_accesible"));
+				}
+			} else {
+				fail = false;
+			}
 		}
 	}
 
@@ -279,3 +338,63 @@ public final class DialogManagement {
 	}
 	
 }
+
+/**
+ *  Convenience class to request focus on a component.
+ *
+ *  When the component is added to a realized Window then component will
+ *  request focus immediately, since the ancestorAdded event is fired
+ *  immediately.
+ *
+ *  When the component is added to a non realized Window, then the focus
+ *  request will be made once the window is realized, since the
+ *  ancestorAdded event will not be fired until then.
+ *
+ *  Using the default constructor will cause the listener to be removed
+ *  from the component once the AncestorEvent is generated. A second constructor
+ *  allows you to specify a boolean value of false to prevent the
+ *  AncestorListener from being removed when the event is generated. This will
+ *  allow you to reuse the listener each time the event is generated.
+ */
+class RequestFocusListener implements AncestorListener
+{
+	private boolean removeListener;
+
+	/*
+	 *  Convenience constructor. The listener is only used once and then it is
+	 *  removed from the component.
+	 */
+	public RequestFocusListener()
+	{
+		this(true);
+	}
+
+	/*
+	 *  Constructor that controls whether this listen can be used once or
+	 *  multiple times.
+	 *
+	 *  @param removeListener when true this listener is only invoked once
+	 *                        otherwise it can be invoked multiple times.
+	 */
+	public RequestFocusListener(boolean removeListener)
+	{
+		this.removeListener = removeListener;
+	}
+
+	@Override
+	public void ancestorAdded(AncestorEvent e)
+	{
+		JComponent component = e.getComponent();
+		component.requestFocusInWindow();
+
+		if (removeListener)
+			component.removeAncestorListener( this );
+	}
+
+	@Override
+	public void ancestorMoved(AncestorEvent e) {}
+
+	@Override
+	public void ancestorRemoved(AncestorEvent e) {}
+}
+

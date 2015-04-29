@@ -58,7 +58,7 @@ public class EditableField extends JPanel {
 				"1,0" );
 		field.add( new FixedPart(marker.getType()),
 				"2,0" );
-		field.add( new EditPart (marker.getDescription(), marker, "description"),
+		field.add( new EditPart (marker.getDescription(), marker, "setDescription", "getDescription"),
 				"3,0" );
 		field.add( new FixedPart(marker.getPositionInDataPoints()),
 				"4,0" );

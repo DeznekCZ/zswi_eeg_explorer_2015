@@ -216,7 +216,7 @@ public class Explorer extends JFrame {
 				CONFIG.folder_output = GuiManager.EXPLORER.getOutputPath();
 				CONFIG.save();
 				
-				LANGgererate(CONFIG.lang);
+				LANGgererate(CONFIG.lang); // call deprecated
 				System.exit(0);
 			}
 		} else {

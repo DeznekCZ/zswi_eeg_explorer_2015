@@ -1,13 +1,15 @@
 package cz.deznekcz.tool;
 
+import cz.deznekcz.util.EqualAble;
+
 /**
  * Instances of class {@link LangItem} represents a {@link String}
  * value of an {@link Lang} item defined by specific symbol 
  * 
  * @author Zdeněk Novotný (DeznekCZ)
- * @version 2.1
+ * @version 3.0
  */
-public class LangItem implements Comparable<LangItem>{
+public class LangItem implements Comparable<LangItem>, EqualAble{
 	private final String symbol;
 	private String value;
 	
@@ -59,10 +61,15 @@ public class LangItem implements Comparable<LangItem>{
 	}
 	
 	@Override
-	public boolean equals(Object obj) {
-		return obj != null 
-				&& obj instanceof LangItem
-				&& ((LangItem) obj).getSymbol().equals(this.getSymbol());
+	public boolean equalsTo(Object obj) {
+		return obj != null && (false
+				/* Ask by another instance */
+				|| (obj instanceof LangItem
+						&& ((LangItem) obj).getSymbol().equals(this.getSymbol()))
+				/* Ask by symbol */
+				|| (obj instanceof String
+						&& ((String) obj).equals(getSymbol()))
+		);
 	}
 
 	@Override

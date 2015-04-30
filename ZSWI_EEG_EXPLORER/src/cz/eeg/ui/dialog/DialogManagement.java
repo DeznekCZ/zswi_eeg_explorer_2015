@@ -32,7 +32,8 @@ public final class DialogManagement {
 	public static final int EDIT = 2;
 	public static final int MARKER_ERROR = 3;
 	public static final int PLOTING = 4;
-	public static final int SCENARIO = 5;
+	public static final int SCENARIO_ADD = 5;
+	public static final int SCENARIO_REMOVE = 6;
 
 	@SuppressWarnings("unchecked")
 	public static void open(int type, Object... params) {
@@ -46,8 +47,14 @@ public final class DialogManagement {
 		case PLOTING:
 			plot((EegFile) params[0]);
 			break;
-		case SCENARIO:
-			scenario((Out<String>) params[0]);
+		case SCENARIO_ADD:
+			if (params.length < 1)
+				addScenario(new Out<String>());
+			else
+				addScenario((Out<String>) params[0]);
+			break;
+		case SCENARIO_REMOVE:
+			removeScenario((String) params[0]);
 			break;
 		case MARKER_ERROR:
 			JOptionPane.showMessageDialog(
@@ -60,10 +67,28 @@ public final class DialogManagement {
 		}
 	}
 
-	private static void scenario(Out<String> output) {
+	private static void removeScenario(String name) {
 		boolean fail = true;
 		while (fail) {
-			String value = JOptionPane.showInputDialog(LANG("dialog_save_scenario_create"));
+			int value = JOptionPane.showConfirmDialog(null, 
+					LANG("dialog_save_scenario_delete", name),
+					LANG("explorer_scenario"),
+					JOptionPane.OK_CANCEL_OPTION
+					);
+			
+			if (value == JOptionPane.OK_OPTION) {
+				fail = false;
+				Scenario.remove(name);
+			} else {
+				fail = false;
+			}
+		}
+	}
+
+	private static void addScenario(Out<String> output) {
+		boolean fail = true;
+		while (fail) {
+			String value = JOptionPane.showInputDialog(LANG("dialog_save_scenario_add"));
 			
 			if (value != null && !value.equals("")) {
 				fail = false;

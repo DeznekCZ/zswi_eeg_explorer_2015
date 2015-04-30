@@ -97,7 +97,7 @@ public class Experiment {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				Out<String> out = new Out<String>();
-				DialogManagement.open(DialogManagement.SCENARIO, out);
+				DialogManagement.open(DialogManagement.SCENARIO_ADD, out);
 				reloadScenarios();
 				scenarioSelect.setSelectedItem(out.value());
 			}

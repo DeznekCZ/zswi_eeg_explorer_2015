@@ -42,6 +42,10 @@ public class Scenario { //TODO
 
 	public static void addScenario(String scenario) {
 		list.add(scenario);
+		saveList();
+	}
+
+	private static void saveList() {
 		try {
 			ObjectOutputStream os = new ObjectOutputStream(new FileOutputStream("scenarios.cfg"));
 			os.writeObject(list);
@@ -49,5 +53,10 @@ public class Scenario { //TODO
 		} catch (IOException e) {
 			
 		}
+	}
+
+	public static void remove(String scenario) {
+		list.remove(scenario);
+		saveList();
 	}
 }

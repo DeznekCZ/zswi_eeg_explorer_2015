@@ -16,10 +16,15 @@ import cz.deznekcz.tool.Lang;
 import cz.eeg.data.Channel;
 import cz.eeg.data.Marker;
 import cz.eeg.data.EegFile;
-
+/**
+ * Class working with files I/O operation
+ * reading files saving file etc.*/
 public class FilesIO {
 
-
+	/**
+	 * is readable - method that check if dataset is complete
+	 * @param vhdrPath - path to vhdr file
+	 * @return true or false if dataset is complete or not*/
 	public static boolean isReadable(File vhdrPath) {
 		try {
 			Scanner s = new Scanner(vhdrPath);
@@ -49,6 +54,10 @@ public class FilesIO {
 		return true;		
 	}
 
+	/**
+	 * reading datasets and return instance of loading dataset
+	 * @param vhdrPath path to vhdr file
+	 * @return instance of eegfile*/
 	public static EegFile read(File vhdrPath) throws FileNotFoundException, FileReadingException {
 		EegFile vh = new EegFile();
 		vh.setHeaderFile(vhdrPath);
@@ -116,7 +125,13 @@ public class FilesIO {
 
 		return vh;
 	}
-
+	/**
+	 * saving all dataset with new name
+	 * @param linkedVhdr instance of eegfile
+	 * @param outPath output path 
+	 * @param newName new name for dataset header,marker,binary file
+	 * @param overwrite if the dataset is can be overwrite
+	 * @return true or false if the saving is ok*/
 	public static boolean write(EegFile linkedVhdr,File outPath,String newName, boolean overwrite) throws FileAlreadyExistsException {
 
 		if (new File(outPath.getAbsolutePath()+"/"+newName+".vhdr").exists() && !overwrite)
@@ -159,6 +174,12 @@ public class FilesIO {
 	public static File backupDataFile(File dataFile) {
 		return dataFile;
 	}
+	
+	/**
+	 * saving only datafile with new name
+	 * @param choose type of binary file avg/eeg
+	 * @param newName new name binary file
+	 * @param vhdr instance of eegfile*/
 	public static boolean saveDataFile(int choose,String newName,EegFile vhdr) throws IOException{
 		FileOutputStream fos= new FileOutputStream(newName);
 		switch(choose){
@@ -189,6 +210,13 @@ public class FilesIO {
 		return false;
 	}
 
+	/**
+	 * merging binary files
+	 * @param numberOfChannels number of chanels both datasets
+	 * @param newName new name for binary file
+	 * @param vhdrInstances field of two instances eegfile
+	 * @return true or false if it saved clearly
+	 * */
 	public boolean mergeDataFiles(int numberOfChannels,String newName,EegFile... vhdrInstances) throws IOException{
 
 		try {
@@ -243,7 +271,10 @@ public class FilesIO {
 		return false;
 
 	}
-
+	/**
+	 * short value to byte array
+	 * @param value one value
+	 * @return field of byte in little endian*/
 	public static byte[] toByteArrayEeg(short value) {
 		byte[] bytes = new byte[4];
 		ByteBuffer bb= ByteBuffer.wrap(bytes);
@@ -251,6 +282,10 @@ public class FilesIO {
 		bb.putShort(value);
 		return bytes;
 	}
+	/**
+	 * double value to byte array
+	 * @param value one value
+	 * @return field of byte in little endian*/
 	public static byte[] toByteArrayAvg(double value) {
 		byte[] bytes = new byte[8];
 		ByteBuffer bb= ByteBuffer.wrap(bytes);
@@ -259,6 +294,12 @@ public class FilesIO {
 		return bytes;
 	}
 
+	/**
+	 * merging vhdr files
+	 * @param outPath outputh path
+	 * @param newName new name for merged vhdr
+	 * @param vhdrInstances two instances of vhdr
+	 * @return true or false if it saved clearly*/
 	public static boolean mergeVhdrs(File outPath,String newName,EegFile... vhdrInstances) throws VhdrMergeException, FileNotFoundException, FileReadingException {
 		EegFile merged;
 		if(vhdrInstances[0].getNumberOfChannels()!=vhdrInstances[1].getNumberOfChannels() 

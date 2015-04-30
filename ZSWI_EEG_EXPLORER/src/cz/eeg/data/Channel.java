@@ -2,7 +2,8 @@ package cz.eeg.data;
 
 
 /**
- * Třída reprezentující objekt jednoho kanálu (elektrody)*/
+ * Class reprezenting one channel
+ * */
 public class Channel {
 	private String channelNumber;
 	
@@ -11,6 +12,10 @@ public class Channel {
 	private double resolutionInUnit;
 	private String unit;
 	
+	/**
+	 * Constructor
+	 * @param inputLine line of one channel
+	 * */
 	public Channel(String inputLine){
 		String [] pole = inputLine.split("=",2);
 		channelNumber=pole[0];

@@ -316,4 +316,9 @@ public class FilesIO {
 
 		return true;
 	}
+	
+	// TODO
+	public static boolean isMergeable(EegFile target, EegFile source) {
+		return false;
+	}
 }

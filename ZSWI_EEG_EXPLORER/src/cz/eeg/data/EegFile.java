@@ -78,7 +78,6 @@ public class EegFile {
 	private boolean readable = true;
 	private boolean editing = false;
 
-	private String name;
 	private String textData;
 	
 	/* /**
@@ -140,10 +139,7 @@ public class EegFile {
 		this.readable = false;
 		this.textData = "";
 	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
+	
 	/**
 	 * field of chanels to String 
 	 * @return string 
@@ -294,7 +290,7 @@ public class EegFile {
 	}
 
 	public String getName() {
-		return name;
+		return headerFile.getName();
 	}
 
 	public File getDataFile() {
@@ -411,7 +407,6 @@ public class EegFile {
 		clone.setHeaderFile(headerFile);
 		clone.setList(markerList);
 		clone.setMarkerFile(markerFile);
-		clone.setName(name);
 		clone.setNumberOfChannels(numberOfChannels);
 		clone.setReadable(readable);
 		clone.setSamplingInterval(samplingInterval);

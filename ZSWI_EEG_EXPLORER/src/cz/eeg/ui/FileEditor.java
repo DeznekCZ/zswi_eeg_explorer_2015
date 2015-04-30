@@ -4,6 +4,7 @@ import static cz.deznekcz.tool.Lang.LANG;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Graphics;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -247,5 +248,13 @@ public class FileEditor extends JTabbedPane {
 		} catch (Exception e) {
 			DialogManagement.open(DialogManagement.MARKER_ERROR, e);
 		}
+	}
+	
+	@Override
+	public void paint(Graphics g) {
+		int index = getSelectedIndex();
+		EegFile file = openedFiles.get(index);
+		setTitleAt(index, file.getName());
+		super.paint(g);
 	}
 }

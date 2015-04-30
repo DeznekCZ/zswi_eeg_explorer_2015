@@ -19,7 +19,7 @@ public class EegFileTest extends EegFile {
 
 	@Before
 	public void setUp() throws Exception {
-		vhdrFile = FilesIO.read(new File("input/Masaryko002_20141124.vhdr"));
+		vhdrFile = FilesIO.read(new File("input/Masarykovo001_20141124.vhdr"));
 	}
 
 
@@ -27,12 +27,6 @@ public class EegFileTest extends EegFile {
 	@Test
 	public void testEegFile() {
 		assertNotNull(vhdrFile);
-	}
-
-	@Test
-	public void testSetName() {
-		vhdrFile.setName("Jmeno");
-		assertEquals("Jmeno", vhdrFile.getName());
 	}
 
 	@Test
@@ -119,8 +113,8 @@ public class EegFileTest extends EegFile {
 
 	@Test
 	public void testGetName() {
-		vhdrFile.setName("Jmeno");
-		assertEquals("Jmeno", vhdrFile.getName());
+		vhdrFile.setHeaderFile(new File("path/Jmeno.vhdr"));;
+		assertEquals("Jmeno.vhdr", vhdrFile.getName());
 	}
 
 	@Test

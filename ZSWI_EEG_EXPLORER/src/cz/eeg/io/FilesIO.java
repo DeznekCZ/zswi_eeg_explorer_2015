@@ -61,7 +61,6 @@ public class FilesIO {
 		EegFile vh = new EegFile();
 		vh.setHeaderFile(vhdrPath);
 		try {
-			vh.setName(vhdrPath.getName());
 			Scanner scanner = new Scanner(vhdrPath);
 			String line;
 			while (scanner.hasNextLine()){

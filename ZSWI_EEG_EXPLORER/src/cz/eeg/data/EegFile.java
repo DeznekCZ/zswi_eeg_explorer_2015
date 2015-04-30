@@ -143,7 +143,10 @@ public class EegFile {
 	public void setName(String name) {
 		this.name = name;
 	}
-
+	/**
+	 * field of chanels to String 
+	 * @return string 
+	 */
 	private String channelsToString(){
 		if (channel == null) return ";no channel\n";
 		String s="";
@@ -381,6 +384,8 @@ public class EegFile {
 		return textData;
 	}
 
+	/**return a long string from marker list
+	 * @return string of marker data*/
 	private String markersToString() {
 		String data = "";
 		for (Marker marker : markerList) {

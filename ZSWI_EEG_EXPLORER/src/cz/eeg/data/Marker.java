@@ -1,6 +1,8 @@
 package cz.eeg.data;
 
-
+/**
+ * Class reprezenting one marker
+ * */
 public class Marker {
 
 	private int markerNumber;
@@ -10,7 +12,10 @@ public class Marker {
 	private String positionInDataPoints;
 	private String sizeInDataPoints;
 	private String channelNumber;
-
+	/**
+	 * Constructor for one marker
+	 * @param line line with all information of marker
+	 * */
 	public Marker(String line){
 		
 		String [] lineF=line.split("=");

@@ -24,7 +24,9 @@ import cz.eeg.data.Channel;
 import cz.eeg.data.EegFile;
 import cz.eeg.data.Marker;
 import cz.eeg.io.FilesIO;
+import cz.eeg.reflect.Out;
 import cz.eeg.ui.GuiManager;
+import cz.eeg.ui.explorer.Scenario;
 import cz.eeg.ui.fileeditor.Plotter;
 
 /**
@@ -38,17 +40,21 @@ public final class DialogManagement {
 	public static final int EDIT = 2;
 	public static final int MARKER_ERROR = 3;
 	public static final int PLOTING = 4;
+	public static final int SCENARIO = 5;
 
 	public static void open(int type, Object... params) {
 		switch (type) {
 		case SAVE_AS:
-			saveAs((EegFile) params[0]);
+			SaveDialog.open((EegFile) params[0]);
 			break;
 		case EDIT:
 			editMarker((Marker) params[0], (String) params[1], (String) params[2]);
 			break;
 		case PLOTING:
 			plot((EegFile) params[0]);
+			break;
+		case SCENARIO:
+			scenario((Out<String>) params[0]);
 			break;
 		case MARKER_ERROR:
 			JOptionPane.showMessageDialog(
@@ -58,6 +64,21 @@ public final class DialogManagement {
 			/*type*/	JOptionPane.ERROR_MESSAGE);
 		default:
 			break;
+		}
+	}
+
+	private static void scenario(Out<String> output) {
+		boolean fail = true;
+		while (fail) {
+			String value = JOptionPane.showInputDialog(LANG("dialog_save_scenario_create"));
+			
+			if (value != null && !value.equals("")) {
+				fail = false;
+				Scenario.addScenario(value);
+				output.lock(value);
+			} else {
+				fail = false;
+			}
 		}
 	}
 
@@ -183,218 +204,4 @@ public final class DialogManagement {
 			}
 		}
 	}
-
-	private static void saveAs(EegFile file) {
-		JTextField yearField = new JTextField(4);
-	    JTextField monthField = new JTextField(2);
-	    JTextField dayField = new JTextField(2);
-	    JTextField genderField = new JTextField(1);
-	    JTextField ageField = new JTextField(3);
-	
-	    JPanel myPanel = new JPanel();
-	    myPanel.add(new JLabel(LANG("format_year") + ":"));
-	    myPanel.add(yearField);
-	    myPanel.add(Box.createVerticalStrut(1)); // a spacer
-	    myPanel.add(new JLabel(LANG("format_month") + ":"));
-	    myPanel.add(monthField);
-	    myPanel.add(Box.createVerticalStrut(1)); // a spacer
-	    myPanel.add(new JLabel(LANG("format_day") + ":"));
-	    myPanel.add(dayField);
-	    myPanel.add(Box.createVerticalStrut(1)); // a spacer
-	    myPanel.add(new JLabel(LANG("format_gender") + ":"));
-	    myPanel.add(genderField);
-	    myPanel.add(Box.createVerticalStrut(1)); // a spacer
-	    myPanel.add(new JLabel(LANG("format_age") + ":"));
-	    myPanel.add(ageField);
-	
-	    String wrongMessage = "";
-	    
-	    String lastName = "";
-	    boolean overwrite = false;
-	    
-	    while (true) {
-		    int result = JOptionPane.showConfirmDialog(null, myPanel, 
-		               LANG("editor_save"), JOptionPane.OK_CANCEL_OPTION);
-		    if (result == JOptionPane.OK_OPTION) {
-		    	
-		    	if (testYear(yearField.getText()) 
-		    			|| testMonth(monthField.getText())
-		    			|| testDay(dayField.getText(), monthField.getText())
-		    			|| testGender(genderField.getText())
-		    			|| testAge(ageField.getText())) {
-		    		wrongMessage = LANG("format_wrong");
-		    		continue;
-		    	}
-		    	
-		    	String year = String.format("%04d", Integer.parseInt(yearField.getText()));
-		    	String day = String.format("%02d", Integer.parseInt(dayField.getText()));
-		    	String month = String.format("%02d", Integer.parseInt(monthField.getText()));
-		    	String gender = genderField.getText();
-		    	String age = String.format("%03d", Integer.parseInt(ageField.getText()));
-		    	
-		    	//System.out.println(LANG.format_year + ": " + year);
-		    	//System.out.println(LANG.format_month + ": " + month);
-		    	//System.out.println(LANG.format_day + ": " + day);
-		    	//System.out.println(LANG.format_gender + ": " + gender);
-		    	//System.out.println(LANG.format_age + ": " + age);
-		    	//System.out.println(year+"-"+month+"-"+day+"-"+gender+"-"+age+".vhdr");
-		    	
-		    	String newName = "";
-		    	
-		    	try {
-		    		newName = gender+"_"+age+"_"+year+"_"+month+"_"+day;//TODO next field
-					if	(FilesIO.write(
-							file, 
-							new File(GuiManager.EXPLORER.getOutputPath()), 
-							newName, 
-							overwrite)
-							)
-						break;
-					
-					wrongMessage = LANG("file_writing_failed");
-					continue;
-				} catch (FileAlreadyExistsException e) {
-					wrongMessage = LANG("file_exists");
-					lastName = newName;
-					continue;
-				}
-		    } else {
-		    	break;
-		    }
-	    }
-	}
-	
-	private static boolean testMonth(String month) {
-		if (month == null || month.equals("")) 
-			return true; 
-		try {
-			int i = Integer.parseInt(month);
-			if (i < 1 || i > 12) {
-				return true;
-			}
-		} catch (NumberFormatException e) {
-			return true;
-		}
-		return false;
-	}
-
-	private static boolean testYear(String year) {
-		if (year == null || year.equals("")) 
-			return true; 
-		try {
-			int i = Integer.parseInt(year);
-			if (i < 1900) {
-				return true;
-			}
-		} catch (NumberFormatException e) {
-			return true;
-		}
-		return false;
-	}
-
-	private static boolean testDay(String day, String month) {
-		try {
-			int[] dayConst = new int[] {
-				31,29,31,30,31,30,31,31,30,31,30,31
-			};
-			int m = Integer.parseInt(month);
-			int d = Integer.parseInt(day);
-			if (m < 1 || m > 12) {
-				return true;
-			} else if (d < 1 || d > dayConst[(m-1)]) {
-				return true;
-			}
-		} catch (NumberFormatException e) {
-			return true;
-		}
-		return false;
-	}
-
-	private static boolean testGender(String gender) {
-		if (gender == null || gender.equals("")) 
-			return true;
-		switch (gender) {
-		case "m":
-		case "f":
-			return false;
-
-		default:
-			return true;
-		}
-	}
-
-	private static boolean testAge(String age) {
-		if (age == null || age.equals("")) 
-			return true;
-		try {
-			int i = Integer.parseInt(age);
-			if (i < 1) {
-				return true;
-			}
-		} catch (NumberFormatException e) {
-			return true;
-		}
-		return false;
-	}
-	
 }
-
-/**
- *  Convenience class to request focus on a component.
- *
- *  When the component is added to a realized Window then component will
- *  request focus immediately, since the ancestorAdded event is fired
- *  immediately.
- *
- *  When the component is added to a non realized Window, then the focus
- *  request will be made once the window is realized, since the
- *  ancestorAdded event will not be fired until then.
- *
- *  Using the default constructor will cause the listener to be removed
- *  from the component once the AncestorEvent is generated. A second constructor
- *  allows you to specify a boolean value of false to prevent the
- *  AncestorListener from being removed when the event is generated. This will
- *  allow you to reuse the listener each time the event is generated.
- */
-class RequestFocusListener implements AncestorListener
-{
-	private boolean removeListener;
-
-	/*
-	 *  Convenience constructor. The listener is only used once and then it is
-	 *  removed from the component.
-	 */
-	public RequestFocusListener()
-	{
-		this(true);
-	}
-
-	/*
-	 *  Constructor that controls whether this listen can be used once or
-	 *  multiple times.
-	 *
-	 *  @param removeListener when true this listener is only invoked once
-	 *                        otherwise it can be invoked multiple times.
-	 */
-	public RequestFocusListener(boolean removeListener)
-	{
-		this.removeListener = removeListener;
-	}
-
-	@Override
-	public void ancestorAdded(AncestorEvent e)
-	{
-		JComponent component = e.getComponent();
-		component.requestFocusInWindow();
-
-		if (removeListener)
-			component.removeAncestorListener( this );
-	}
-
-	@Override
-	public void ancestorMoved(AncestorEvent e) {}
-
-	@Override
-	public void ancestorRemoved(AncestorEvent e) {}
-}
-

@@ -78,6 +78,7 @@ public class FileEditor extends JTabbedPane {
 		
 		if (!b && WINDOW.isVisible()) {
 			saveWindowLocation();
+			GuiManager.EXPLORER.requestFocus();
 		} else if (b && !WINDOW.isVisible()) {
 			loadWindowLocation();
 		}

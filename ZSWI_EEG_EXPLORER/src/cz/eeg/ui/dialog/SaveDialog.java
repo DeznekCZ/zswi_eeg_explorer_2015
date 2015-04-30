@@ -3,13 +3,11 @@ package cz.eeg.ui.dialog;
 import static cz.deznekcz.tool.Lang.LANG;
 
 import java.awt.Dimension;
-import java.awt.Font;
 import java.nio.file.FileAlreadyExistsException;
 
 import javax.swing.BoxLayout;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JTextArea;
 
 import cz.eeg.data.EegFile;
 import cz.eeg.io.FilesIO;

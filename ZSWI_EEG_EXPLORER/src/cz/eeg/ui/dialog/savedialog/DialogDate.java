@@ -1,9 +1,10 @@
 package cz.eeg.ui.dialog.savedialog;
 
-import static java.util.Calendar.*;
-import java.text.SimpleDateFormat;
+import static java.util.Calendar.DAY_OF_MONTH;
+import static java.util.Calendar.MONTH;
+import static java.util.Calendar.YEAR;
+
 import java.util.Calendar;
-import java.util.Date;
 
 public class DialogDate {
 

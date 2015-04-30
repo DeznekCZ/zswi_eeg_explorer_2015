@@ -1,11 +1,9 @@
 package cz.eeg.ui.fileeditor;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.Graphics;
 
 import javax.swing.JPanel;
-import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTextArea;

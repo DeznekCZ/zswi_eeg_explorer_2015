@@ -2,19 +2,14 @@ package cz.eeg.ui.markereditor;
 
 import static cz.deznekcz.tool.Lang.LANG;
 
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
 import javax.swing.JOptionPane;
-import javax.swing.border.Border;
 
-import cz.eeg.data.Marker;
 import cz.eeg.ui.MarkerEditor;
 import cz.eeg.ui.dialog.DialogManagement;
 

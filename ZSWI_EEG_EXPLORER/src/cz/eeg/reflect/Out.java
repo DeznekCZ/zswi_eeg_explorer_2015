@@ -21,14 +21,14 @@ package cz.eeg.reflect;
  */
 public class Out<I> {
 
-	private I value;
+	private I instance;
 
 	/**
 	 * Method sets an instance of {@link I}
 	 * @param instance reference to instance
 	 */
 	public void lock(I instance) {
-		this.value = instance;
+		this.instance = instance;
 	}
 
 	/**
@@ -36,7 +36,7 @@ public class Out<I> {
 	 * @return reference to instance
 	 */
 	public I value() {
-		return value;
+		return instance;
 	}
 
 }

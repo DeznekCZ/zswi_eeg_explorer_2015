@@ -2,30 +2,22 @@ package cz.eeg.ui.dialog;
 
 import static cz.deznekcz.tool.Lang.LANG;
 
-import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.nio.file.FileAlreadyExistsException;
 import java.util.ArrayList;
 
-import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JCheckBox;
-import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
-import javax.swing.event.AncestorEvent;
-import javax.swing.event.AncestorListener;
 
 import cz.eeg.data.Channel;
 import cz.eeg.data.EegFile;
 import cz.eeg.data.Marker;
-import cz.eeg.io.FilesIO;
 import cz.eeg.reflect.Out;
-import cz.eeg.ui.GuiManager;
 import cz.eeg.ui.explorer.Scenario;
 import cz.eeg.ui.fileeditor.Plotter;
 
@@ -42,6 +34,7 @@ public final class DialogManagement {
 	public static final int PLOTING = 4;
 	public static final int SCENARIO = 5;
 
+	@SuppressWarnings("unchecked")
 	public static void open(int type, Object... params) {
 		switch (type) {
 		case SAVE_AS:

@@ -1,9 +1,6 @@
 package cz.eeg;
 
 import static cz.deznekcz.tool.Lang.LANGload;
-
-import java.io.File;
-
 import cz.eeg.ui.GuiManager;
 
 /**

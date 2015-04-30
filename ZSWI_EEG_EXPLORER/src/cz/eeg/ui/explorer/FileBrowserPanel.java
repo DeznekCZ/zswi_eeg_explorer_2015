@@ -1,6 +1,6 @@
 package cz.eeg.ui.explorer;
 
-import static cz.deznekcz.tool.Lang.*;
+import static cz.deznekcz.tool.Lang.LANG;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -20,11 +20,11 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.filechooser.FileSystemView;
 import javax.swing.filechooser.FileView;
 
-import cz.eeg.data.EegFile;
-import cz.eeg.io.FilesIO;
 import cz.eeg.Application;
 import cz.eeg.Config;
+import cz.eeg.io.FilesIO;
 import cz.eeg.ui.Explorer;
+import cz.eeg.ui.FileEditor;
 import cz.eeg.ui.GuiManager;
 
 /**

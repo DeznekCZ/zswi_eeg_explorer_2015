@@ -12,10 +12,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-import cz.deznekcz.tool.Lang;
 import cz.eeg.data.Channel;
-import cz.eeg.data.Marker;
 import cz.eeg.data.EegFile;
+import cz.eeg.data.Marker;
 /**
  * Class working with files I/O operation
  * reading files saving file etc.*/

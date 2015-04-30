@@ -3,7 +3,6 @@ package cz.eeg.ui.dialog.savedialog;
 import static cz.deznekcz.tool.Lang.LANG;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.io.File;
 

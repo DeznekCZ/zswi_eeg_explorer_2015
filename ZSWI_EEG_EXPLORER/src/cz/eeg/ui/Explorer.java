@@ -1,9 +1,10 @@
 package cz.eeg.ui;
 
-import static cz.deznekcz.tool.Lang.*;
+import static cz.deznekcz.tool.Lang.LANG;
+import static cz.deznekcz.tool.Lang.LANGgererate;
+import static cz.deznekcz.tool.Lang.LANGlined;
 
 import java.awt.BorderLayout;
-import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Insets;
@@ -11,7 +12,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 
-import javax.swing.*;
+import javax.swing.Box;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JSplitPane;
+import javax.swing.JTextArea;
 
 import cz.eeg.Application;
 import cz.eeg.Config;
@@ -112,15 +120,6 @@ public class Explorer extends JFrame {
 			final JMenu help = new JMenu(LANG("credits"));
 			menuLista.add(help);
 	        {
-	        	// Jazyky
-
-				final JMenu languages = new JMenu(LANG("lang"));
-				languages.setEnabled(false);
-				help.add(languages);
-
-				//TODO nacistJazyky(languages);
-	        	
-				help.addSeparator();
 	        	// O programu
 
 				final JMenuItem about = new JMenuItem(LANG("credits_about"));
@@ -192,6 +191,7 @@ public class Explorer extends JFrame {
 		super.paint(g);
 	}
 	
+	@SuppressWarnings("deprecation")
 	@Override
 	public void setVisible(boolean b) {
 		if (!b) {

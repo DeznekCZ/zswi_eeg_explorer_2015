@@ -1,9 +1,10 @@
 package cz.eeg.data;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.List;
-import java.util.Scanner;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
 
 import cz.eeg.io.BinaryData;
 

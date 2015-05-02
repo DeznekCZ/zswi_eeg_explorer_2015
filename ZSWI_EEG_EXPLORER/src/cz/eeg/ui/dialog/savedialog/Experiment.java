@@ -96,7 +96,7 @@ public class Experiment {
 		scenarioButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				Out<String> out = new Out<String>();
+				Out<String> out = new Out<String>((String) scenarioSelect.getSelectedItem());
 				DialogManagement.open(DialogManagement.SCENARIO_ADD, out);
 				reloadScenarios();
 				scenarioSelect.setSelectedItem(out.value());

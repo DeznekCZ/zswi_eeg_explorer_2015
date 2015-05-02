@@ -24,6 +24,20 @@ public class Out<I> {
 	private I instance;
 
 	/**
+	 * Constructor links an external instance
+	 * @param defaultInstance instance of {@link T}
+	 */
+	public Out(I defaultInstance) {
+		instance = defaultInstance;
+	}
+	
+	/**
+	 * Constructor without linked instance
+	 */
+	public Out() {
+	}
+
+	/**
 	 * Method sets an instance of {@link I}
 	 * @param instance reference to instance
 	 */

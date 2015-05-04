@@ -315,6 +315,22 @@ public class FilesIO {
 
 		return true;
 	}
+	public static boolean mergeVmrks(File outpath,String newName,EegFile... vhdrInstances){
+		int lastMarkerNumber=vhdrInstances[0].getMarkerList().get(vhdrInstances[0].getMarkerList().size()-1).getMarkerNumber();
+		String lastPosition=vhdrInstances[0].getMarkerList().get(vhdrInstances[0].getMarkerList().size()-1).getPositionInDataPoints();
+		List<Marker> mk=vhdrInstances[1].getMarkerList();
+		System.out.println(lastPosition+" " +lastMarkerNumber);
+		for (Marker marker : mk) {
+			if(marker.getMarkerNumber()>0){
+				marker.setMarkerNumber(marker.getMarkerNumber()+lastMarkerNumber);
+				long position=Long.parseLong(marker.getPositionInDataPoints())+Long.parseLong(lastPosition);
+				marker.setPositionInDataPoints(Long.toString(position));
+				System.out.println(marker.toString());
+			}
+			
+		}
+		return true;
+	}
 	
 	// TODO
 	public static boolean isMergeable(EegFile target, EegFile source) {

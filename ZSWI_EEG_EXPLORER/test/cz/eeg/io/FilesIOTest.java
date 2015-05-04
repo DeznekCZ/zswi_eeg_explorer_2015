@@ -62,6 +62,20 @@ public class FilesIOTest {
 	}
 
 	@Test
+	public void testMergeVmrks(){
+		EegFile i1;
+		EegFile i2;
+		try {
+			i1 = FilesIO.read(new File("input/Masarykovo003_20141124.vhdr"));
+			i2 = FilesIO.read(new File("input/Masarykovo001_20141124.vhdr"));
+			assertTrue(fi.mergeVmrks(new File("output"), "no", i1,i2));
+		} catch (FileReadingException | IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}	
+	}
+	
+	@Test
 	public void testMergeVhdrs() {
 		try {
 			EegFile i1 = FilesIO.read(new File("input/Masaryko002_20141124-1.vhdr"));

@@ -334,6 +334,11 @@ public class FilesIO {
 	
 	// TODO
 	public static boolean isMergeable(EegFile target, EegFile source) {
+		if(source.getNumberOfChannels()==target.getNumberOfChannels() 
+				&& source.getSamplingInterval()==target.getSamplingInterval())
+		{
+			return true;
+		}
 		return false;
 	}
 }

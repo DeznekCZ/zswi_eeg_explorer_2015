@@ -215,7 +215,7 @@ public class FilesIO {
 	 * @param vhdrInstances field of two instances eegfile
 	 * @return true or false if it saved clearly
 	 * */
-	public boolean mergeDataFiles(int numberOfChannels,String newName,EegFile... vhdrInstances) throws IOException{
+	public static boolean mergeDataFiles(int numberOfChannels,String newName,EegFile... vhdrInstances) throws IOException{
 
 		try {
 			FileOutputStream fos= new FileOutputStream(newName);
@@ -298,38 +298,62 @@ public class FilesIO {
 	 * @param newName new name for merged vhdr
 	 * @param vhdrInstances two instances of vhdr
 	 * @return true or false if it saved clearly*/
-	public static boolean mergeVhdrs(File outPath,String newName,EegFile... vhdrInstances) throws VhdrMergeException, FileNotFoundException, FileReadingException {
+	public static EegFile mergeVhdrs(File outPath,String newName,EegFile... vhdrInstances) throws VhdrMergeException, FileNotFoundException, FileReadingException {
 		EegFile merged;
-		if(vhdrInstances[0].getNumberOfChannels()!=vhdrInstances[1].getNumberOfChannels() 
-				|| 	!vhdrInstances[0].getBinaryFormat().equals(vhdrInstances[1].getBinaryFormat())
-				){
+		if(vhdrInstances[0].getNumberOfChannels()!=vhdrInstances[1].getNumberOfChannels())
+				{
 			throw new VhdrMergeException();
 		}else{
 			
 			merged = read(vhdrInstances[0].getHeaderFile());
 			merged.setDataFile(new File(outPath.getAbsolutePath()+"/"+newName+".eeg"));
 			merged.setMarkerFile(new File(outPath.getAbsolutePath()+"/"+newName+".vmrk"));
+			merged.setHeaderFile(new File(outPath.getAbsolutePath()+"/"+newName+".vhdr"));
 			
-		}
-
-
-		return true;
-	}
-	public static boolean mergeVmrks(File outpath,String newName,EegFile... vhdrInstances){
-		int lastMarkerNumber=vhdrInstances[0].getMarkerList().get(vhdrInstances[0].getMarkerList().size()-1).getMarkerNumber();
-		String lastPosition=vhdrInstances[0].getMarkerList().get(vhdrInstances[0].getMarkerList().size()-1).getPositionInDataPoints();
-		List<Marker> mk=vhdrInstances[1].getMarkerList();
-		System.out.println(lastPosition+" " +lastMarkerNumber);
-		for (Marker marker : mk) {
-			if(marker.getMarkerNumber()>0){
-				marker.setMarkerNumber(marker.getMarkerNumber()+lastMarkerNumber);
-				long position=Long.parseLong(marker.getPositionInDataPoints())+Long.parseLong(lastPosition);
-				marker.setPositionInDataPoints(Long.toString(position));
-				System.out.println(marker.toString());
+			EegFile mergedvmrk=mergeVmrks(vhdrInstances);
+			merged.setList(mergedvmrk.getMarkerList());
+			try {
+				boolean mergedData=mergeDataFiles(merged.getNumberOfChannels(),"temp/tmp.eeg",vhdrInstances);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 			
 		}
-		return true;
+
+		return merged;
+		
+	}
+	public static EegFile mergeVmrks(EegFile... vhdrInstances){
+		int lastMarkerNumber=vhdrInstances[0].getMarkerList().get(vhdrInstances[0].getMarkerList().size()-1).getMarkerNumber();
+		String lastPosition=vhdrInstances[0].getMarkerList().get(vhdrInstances[0].getMarkerList().size()-1).getPositionInDataPoints();
+		List<Marker> mk1=vhdrInstances[0].getMarkerList();
+		List<Marker> mk2=vhdrInstances[1].getMarkerList();
+		List<Marker> mkn = new ArrayList<Marker>();
+		for (Marker marker : mk1) {
+			mkn.add(marker);
+		}
+		for (Marker marker : mk2) {
+			if(marker.getMarkerNumber()>0){
+				marker.setMarkerNumber(marker.getMarkerNumber()-1+lastMarkerNumber);
+				long position=Long.parseLong(marker.getPositionInDataPoints())+Long.parseLong(lastPosition);
+				marker.setPositionInDataPoints(Long.toString(position));
+				mkn.add(marker);
+			}
+			
+		}
+		vhdrInstances[0].setList(mkn);
+		
+		
+		
+		return vhdrInstances[0];
+	}
+	
+	/**
+	 * Merguje tak ze dostane upravenou instanci EEGFILE a zapise do slozky temp soubor tmp (datovy)*/
+	public static EegFile mergeTMP(EegFile target, EegFile source) throws FileNotFoundException, VhdrMergeException, FileReadingException {
+		File tmp=new File("./temp");
+		return mergeVhdrs(tmp, "tmp", target,source); 
 	}
 	
 	// TODO

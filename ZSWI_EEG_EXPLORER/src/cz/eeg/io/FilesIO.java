@@ -307,8 +307,8 @@ public class FilesIO {
 			
 			merged = read(vhdrInstances[0].getHeaderFile());
 			merged.setDataFile(new File(outPath.getAbsolutePath()+"/"+newName+".eeg"));
-			merged.setMarkerFile(new File(outPath.getAbsolutePath()+"/"+newName+".vmrk"));
-			merged.setHeaderFile(new File(outPath.getAbsolutePath()+"/"+newName+".vhdr"));
+			//merged.setMarkerFile(new File(outPath.getAbsolutePath()+"/"+newName+".vmrk"));
+			//merged.setHeaderFile(new File(outPath.getAbsolutePath()+"/"+newName+".vhdr"));
 			
 			EegFile mergedvmrk=mergeVmrks(vhdrInstances);
 			merged.setList(mergedvmrk.getMarkerList());
@@ -354,6 +354,41 @@ public class FilesIO {
 	public static EegFile mergeTMP(EegFile target, EegFile source) throws FileNotFoundException, VhdrMergeException, FileReadingException {
 		File tmp=new File("./temp");
 		return mergeVhdrs(tmp, "tmp", target,source); 
+	}
+	
+	//uklada soubor do vystupni cesty s novym nazvem a vybere z tempu dany soubor
+	
+	public static boolean saveMerged(File outPath,String newName,EegFile vhdr) throws FileNotFoundException{
+		File f = vhdr.getDataFile();
+		String suffix;
+		if(f.getName().endsWith("eeg")){
+			suffix="eeg";
+			vhdr.setDataFile(new File(outPath.getAbsolutePath()+"/"+newName+".eeg"));
+		}else{
+			suffix="avg";
+			vhdr.setDataFile(new File(outPath.getAbsolutePath()+"/"+newName+".avg"));
+		}
+		File pathH= new File(outPath.getAbsolutePath()+"/"+newName+".vhdr");
+		vhdr.setMarkerFile(new File(outPath.getAbsolutePath()+"/"+newName+".avg"));
+		save(pathH, vhdr.getVhdrData());
+		File pathM= new File(outPath.getAbsolutePath()+"/"+newName+".vmrk");
+		save(pathM, vhdr.getVmrkData());
+		 
+		
+		
+	      File f1 = new File(outPath.getAbsolutePath()+"/"+newName+"."+suffix);
+	      boolean bool = false;
+	     
+	         bool = f.renameTo(f1);
+	         
+	     
+		return bool;
+	}
+	
+	private static void save(File name,String message) throws FileNotFoundException{
+		PrintWriter pw = new PrintWriter(name);
+		pw.write(message);
+		pw.close();
 	}
 	
 	// TODO

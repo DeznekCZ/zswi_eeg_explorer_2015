@@ -11,7 +11,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
 
-import cz.eeg.reflect.Out;
+import cz.deznekcz.reflect.Out;
 import cz.eeg.ui.dialog.DialogManagement;
 import cz.eeg.ui.dialog.SaveDialog;
 import cz.eeg.ui.explorer.Scenario;

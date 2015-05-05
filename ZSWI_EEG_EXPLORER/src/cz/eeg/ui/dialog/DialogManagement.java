@@ -14,10 +14,10 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 
+import cz.deznekcz.reflect.Out;
 import cz.eeg.data.Channel;
 import cz.eeg.data.EegFile;
 import cz.eeg.data.Marker;
-import cz.eeg.reflect.Out;
 import cz.eeg.ui.explorer.Scenario;
 import cz.eeg.ui.fileeditor.Plotter;
 

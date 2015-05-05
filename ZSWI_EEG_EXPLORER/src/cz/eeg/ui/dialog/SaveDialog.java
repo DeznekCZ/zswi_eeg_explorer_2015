@@ -11,6 +11,7 @@ import javax.swing.JPanel;
 
 import cz.eeg.data.EegFile;
 import cz.eeg.io.FilesIO;
+import cz.eeg.ui.GuiManager;
 import cz.eeg.ui.dialog.savedialog.Experiment;
 import cz.eeg.ui.dialog.savedialog.Result;
 import cz.eeg.ui.dialog.savedialog.Subject;
@@ -39,7 +40,7 @@ public class SaveDialog {
 		while (fail) {
 			//JOptionPane.showOptionDialog(parentComponent, message, title, 
 			//        optionType, messageType, icon, options, initialValue);
-			int option = JOptionPane.showOptionDialog(null, body, 
+			int option = JOptionPane.showOptionDialog(GuiManager.EDITOR, body, 
 					LANG("ploting_select_channel"),
 					0, JOptionPane.QUESTION_MESSAGE,
 					null, options, null);

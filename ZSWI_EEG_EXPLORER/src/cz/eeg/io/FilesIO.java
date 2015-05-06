@@ -20,6 +20,8 @@ import cz.eeg.data.Marker;
  * reading files saving file etc.*/
 public class FilesIO {
 
+	private static int[] positionTmp={0,0,0,0,0,0,0,0,0,0};
+	
 	/**
 	 * is readable - method that check if dataset is complete
 	 * @param vhdrPath - path to vhdr file
@@ -353,10 +355,10 @@ public class FilesIO {
 	 * Merguje tak ze dostane upravenou instanci EEGFILE a zapise do slozky temp soubor tmp (datovy)*/
 	public static EegFile mergeTMP(EegFile target, EegFile source) throws FileNotFoundException, VhdrMergeException, FileReadingException {
 		File tmp=new File("./temp");
-		return mergeVhdrs(tmp, "tmp", target,source); 
+		return mergeVhdrs(tmp, "tmp"+isFreespace(), target,source); 
 	}
 	
-	//uklada soubor do vystupni cesty s novym nazvem a vybere z tempu dany soubor
+	//navic
 	
 	public static boolean saveMerged(File outPath,String newName,EegFile vhdr) throws FileNotFoundException{
 		File f = vhdr.getDataFile();
@@ -390,11 +392,21 @@ public class FilesIO {
 		pw.write(message);
 		pw.close();
 	}
+	//konec casti ktera je navic
+	
+	public static int isFreespace(){
+		for(int i=0;i<positionTmp.length;i++){
+			if(positionTmp[i]==0){
+				return i;
+			}
+		}
+		return 0;
+	}
 	
 	// TODO
 	public static boolean isMergeable(EegFile target, EegFile source) {
 		if(source.getNumberOfChannels()==target.getNumberOfChannels() 
-				&& source.getSamplingInterval()==target.getSamplingInterval())
+				&& source.getSamplingInterval()==target.getSamplingInterval() || isFreespace()>0 )
 		{
 			return true;
 		}

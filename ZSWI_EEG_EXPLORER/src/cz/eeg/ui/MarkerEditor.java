@@ -10,6 +10,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
+import cz.eeg.data.EegFile;
 import cz.eeg.data.Marker;
 import cz.eeg.ui.markereditor.EditableField;
 
@@ -19,7 +20,7 @@ public class MarkerEditor extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private static MarkerEditor instance;
 
-	public MarkerEditor(List<Marker> list) {
+	public MarkerEditor(EegFile file) {
 		super(LANG("marker_title"));
 		instance = this;
 		
@@ -29,8 +30,10 @@ public class MarkerEditor extends JFrame {
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 		JScrollPane jsp = new JScrollPane(panel);
 		
+		List<Marker> list = file.getMarkerList();
+		
 		for (Iterator<Marker> iterator = list.iterator(); iterator.hasNext();) {
-			panel.add(EditableField.from(iterator.next()));
+			panel.add(EditableField.from(iterator.next(), file));
 		}
 		
 		add(jsp);
@@ -43,10 +46,10 @@ public class MarkerEditor extends JFrame {
 	}
 	
 	@Override
-	public void setVisible(boolean b) {
-		if (!b)
-			GuiManager.EDITOR.repaint();
-		super.setVisible(b);
+	public void setVisible(boolean flag) {
+		if (!flag)
+			GuiManager.repaint();
+		super.setVisible(flag);
 	}
 
 	public static MarkerEditor getInstance() {

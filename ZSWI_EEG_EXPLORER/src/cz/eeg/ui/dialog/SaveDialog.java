@@ -9,6 +9,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import cz.deznekcz.reflect.Out;
 import cz.eeg.data.EegFile;
 import cz.eeg.io.FilesIO;
 import cz.eeg.ui.GuiManager;
@@ -20,7 +21,7 @@ public class SaveDialog {
 
 	public static final Dimension DIMENSION = new Dimension(200, 20);;
 
-	static void open(EegFile file) {
+	static void open(EegFile file, Out<Boolean> saved) {
 		
 		JPanel body = new JPanel();
 		body.setLayout(new BoxLayout(body, BoxLayout.Y_AXIS));
@@ -54,12 +55,14 @@ public class SaveDialog {
 					if (overwrite == JOptionPane.YES_OPTION) {
 						try {
 							FilesIO.write(file, Result.outputPath(), Result.get(), true);
+							saved.lock(true);
 							fail = false;
 						} catch (FileAlreadyExistsException e) {}
 					}
 				} else {
 					try {
 						FilesIO.write(file, Result.outputPath(), Result.get(), false);
+						saved.lock(true);
 						fail = false;
 					} catch (FileAlreadyExistsException e) {}
 				}

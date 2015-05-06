@@ -5,6 +5,8 @@ import static cz.deznekcz.tool.Lang.LANG;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -14,6 +16,8 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
+import javax.swing.event.AncestorEvent;
+import javax.swing.event.AncestorListener;
 
 import cz.eeg.Application;
 import cz.eeg.Config;
@@ -86,6 +90,18 @@ public class FileEditor extends JTabbedPane {
 	}
 
 	/**
+	 * Method open an instance of {@link EegFile}
+	 * as new panel
+	 * @param instancedEegFile instance of {@link EegFile}
+	 */
+	public void open(EegFile instancedEegFile) {
+		addTab(instancedEegFile.getName(), EegFilePanel.create(instancedEegFile));
+		
+		openedFiles.add(instancedEegFile);
+		setSelectedIndex(getTabCount()-1);
+	}
+	
+	/**
 	 * Method open the {@link FileEditor}. Opens new files if is selected
 	 * in focused selection frame.
 	 * @param listOfFiles
@@ -107,9 +123,7 @@ public class FileEditor extends JTabbedPane {
 						throw new FileReadingException("Non reading");
 					}
 					
-					addTab(vhdrSoubor.getName(), EegFilePanel.create(vhdrSoubor));
-					openedFiles.add(vhdrSoubor);
-					setSelectedIndex(getTabCount()-1);
+					open(vhdrSoubor);
 					opened ++;
 					
 				} catch (Exception e) {
@@ -119,9 +133,7 @@ public class FileEditor extends JTabbedPane {
 			}
 			
 			if (nonReadable.size() > 0) {
-				JOptionPane.showMessageDialog(null,
-						LANG("file_wrong") + list(nonReadable), 
-						LANG("error"), JOptionPane.ERROR_MESSAGE);
+				DialogManagement.open(DialogManagement.ERROR, LANG("file_wrong") + list(nonReadable));
 			}
 			
 			if (openedFiles.size() > 0) {
@@ -167,10 +179,15 @@ public class FileEditor extends JTabbedPane {
 			int index = getSelectedIndex();
 			EegFile soubor = openedFiles.get(index);
 			
-			int option = JOptionPane.showConfirmDialog(null, 
-					LANG("file_close", soubor.getName()), LANG("file"), JOptionPane.OK_CANCEL_OPTION);
-			
-			if (option == JOptionPane.OK_OPTION) {
+			if (soubor.needSave() &&
+				JOptionPane.OK_OPTION == 
+					JOptionPane.showConfirmDialog(null, 
+							LANG("file_close", soubor.getName()), 
+							LANG("file"), JOptionPane.OK_CANCEL_OPTION)
+				) {
+				openedFiles.remove(index);
+				remove(index);
+			} else if (!soubor.needSave()){
 				openedFiles.remove(index);
 				remove(index);
 			} else {
@@ -244,17 +261,14 @@ public class FileEditor extends JTabbedPane {
 		int index = getSelectedIndex();
 		EegFile file = openedFiles.get(index);
 		try {
-			new MarkerEditor(file.getMarkerList());
+			new MarkerEditor(file);
 		} catch (Exception e) {
-			DialogManagement.open(DialogManagement.MARKER_ERROR, e);
+			DialogManagement.open(DialogManagement.ERROR, 
+					LANG("marker_reading_error", e.getMessage()));
 		}
 	}
-	
-	@Override
-	public void paint(Graphics g) {
-		int index = getSelectedIndex();
-		EegFile file = openedFiles.get(index);
-		setTitleAt(index, file.getName());
-		super.paint(g);
+
+	public List<EegFile> getOpenedFiles() {
+		return openedFiles;
 	}
 }

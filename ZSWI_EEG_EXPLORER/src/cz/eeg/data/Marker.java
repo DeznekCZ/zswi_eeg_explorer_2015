@@ -82,4 +82,14 @@ public class Marker {
 				markerNumber, type, description, positionInDataPoints,
 				sizeInDataPoints, channelNumber);
 	}
+
+	public Marker copy(int markerNumber, long positionInDataPoints) {
+		if (markerNumber == -1) {
+			return new Marker(this.toString());
+		}
+		Marker mk = new Marker(this.toString());
+		mk.setMarkerNumber(this.markerNumber + markerNumber);
+		mk.setPositionInDataPoints(Long.toString(positionInDataPoints));
+		return mk;
+	}
 }

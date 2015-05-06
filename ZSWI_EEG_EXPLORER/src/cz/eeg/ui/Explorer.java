@@ -83,7 +83,7 @@ public class Explorer extends JFrame {
 
 				editor.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent event) {
-						GuiManager.EDITOR.open(null);
+						GuiManager.EDITOR.open((File[]) null);
 					}
 				});
 				file.add(editor);
@@ -210,10 +210,10 @@ public class Explorer extends JFrame {
 		SPLIT.add(VYSTUPNI_VYBER);
 		
 
-		//TODO frame splitter settings
+		///TODO frame splitter settings
 		SPLIT.setDividerLocation(CONFIG.ex_width / 2);
 		SPLIT.setDividerSize(3);
-		SPLIT.setEnabled(false);
+		SPLIT.setEnabled(false);//*/
 		
 		setSize(new Dimension(CONFIG.ex_width, CONFIG.ex_height));
 		if (CONFIG.isSet()) {
@@ -249,7 +249,6 @@ public class Explorer extends JFrame {
 		super.paint(g);
 	}
 	
-	@SuppressWarnings("deprecation")
 	@Override
 	public void setVisible(boolean b) {
 		if (!b) {
@@ -274,7 +273,7 @@ public class Explorer extends JFrame {
 				CONFIG.folder_output = GuiManager.EXPLORER.getOutputPath();
 				CONFIG.save();
 				
-				LANGgererate(CONFIG.lang); // call deprecated
+				LANGgererate();
 				System.exit(0);
 			}
 		} else {

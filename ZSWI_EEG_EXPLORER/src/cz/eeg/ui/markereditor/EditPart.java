@@ -10,6 +10,8 @@ import java.lang.reflect.Method;
 
 import javax.swing.JOptionPane;
 
+import cz.eeg.data.EegFile;
+import cz.eeg.data.Marker;
 import cz.eeg.ui.MarkerEditor;
 import cz.eeg.ui.dialog.DialogManagement;
 
@@ -20,11 +22,20 @@ public class EditPart extends Part {
 	private Method getterMethod;
 	private Object object;
 
+	/**
+	 * 
+	 * @param value
+	 * @param object
+	 * @param setterMethod
+	 * @param getterMethod
+	 * @param file
+	 */
 	public EditPart(
 			final Object value, 
-			final Object object, 
+			final Marker object, 
 			final String setterMethod, 
-			final String getterMethod) {
+			final String getterMethod,
+			final EegFile file) {
 		super(value.toString());
 
 		this.object = object;
@@ -50,7 +61,7 @@ public class EditPart extends Part {
 				
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					DialogManagement.open(DialogManagement.EDIT, object, setterMethod, value);
+					DialogManagement.open(DialogManagement.EDIT_MARKER, object, setterMethod, value, file);
 					MarkerEditor.getInstance().repaint();
 				}
 			});

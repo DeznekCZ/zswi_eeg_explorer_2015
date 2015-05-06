@@ -30,20 +30,20 @@ import cz.eeg.ui.listeners.RequestFocusListener;
 public final class DialogManagement {
 	
 	public final static int SAVE_AS = 1;
-	public static final int EDIT = 2;
-	public static final int MARKER_ERROR = 3;
+	public static final int EDIT_MARKER = 2;
 	public static final int PLOTING = 4;
 	public static final int SCENARIO_ADD = 5;
 	public static final int SCENARIO_REMOVE = 6;
+	public static final int ERROR = 7;
 
 	@SuppressWarnings("unchecked")
 	public static void open(int type, Object... params) {
 		switch (type) {
 		case SAVE_AS:
-			SaveDialog.open((EegFile) params[0]);
+			SaveDialog.open((EegFile) params[0], (Out<Boolean>) params[1]);
 			break;
-		case EDIT:
-			editMarker((Marker) params[0], (String) params[1], (String) params[2]);
+		case EDIT_MARKER:
+			editMarker((Marker) params[0], (String) params[1], (String) params[2], (EegFile) params[3]);
 			break;
 		case PLOTING:
 			plot((EegFile) params[0]);
@@ -57,12 +57,10 @@ public final class DialogManagement {
 		case SCENARIO_REMOVE:
 			removeScenario((String) params[0]);
 			break;
-		case MARKER_ERROR:
-			JOptionPane.showMessageDialog(
-			/*frame*/	null, // null == new
-			/*message*/	LANG("marker_reading_error", ((Exception) params[0]).getMessage()), 
-			/*title*/	LANG("error"), 
-			/*type*/	JOptionPane.ERROR_MESSAGE);
+		case ERROR:
+			JOptionPane.showMessageDialog(null,
+					params[0].toString(), 
+					LANG("error"), JOptionPane.ERROR_MESSAGE);
 		default:
 			break;
 		}
@@ -161,7 +159,7 @@ public final class DialogManagement {
 		}
 	}
 
-	private static void editMarker(Marker marker, String method, String initialValue) {
+	private static void editMarker(Marker marker, String method, String initialValue, EegFile ownerEeg) {
 		JPanel myPanel = new JPanel();
 		myPanel.setLayout(new BoxLayout(myPanel, BoxLayout.Y_AXIS));
 		
@@ -204,9 +202,11 @@ public final class DialogManagement {
 					
 					if (calledMethod.getParameterTypes()[0] == int.class) {
 						calledMethod.invoke(marker, Integer.parseInt(value.getText()));
+						ownerEeg.edited();
 						fail = false;
 					} else if (calledMethod.getParameterTypes()[0] == String.class) {
 						calledMethod.invoke(marker, value.getText());
+						ownerEeg.edited();
 						fail = false;
 					} else {
 						message.setText(LANG("incompatible_parameter_format"));

@@ -3,17 +3,24 @@ package cz.eeg.ui.fileeditor;
 import static cz.deznekcz.tool.Lang.LANG;
 
 import java.awt.BorderLayout;
+import java.util.List;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 
 import javax.swing.Box;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.event.MenuEvent;
+import javax.swing.event.MenuListener;
 
+import cz.deznekcz.reflect.Out;
 import cz.eeg.data.Channel;
 import cz.eeg.data.EegFile;
+import cz.eeg.io.FilesIO;
 import cz.eeg.ui.GuiManager;
 import cz.eeg.ui.dialog.DialogManagement;
 
@@ -32,12 +39,12 @@ public class MenuPanel extends JPanel {
 		setLayout(new BorderLayout());
 		//PANEL_TLACITEK.add(new CloseButton(), BorderLayout.EAST);
 		
-		// Soubor menu
+		// menu bar
 
 		final JMenuBar menuBar = new JMenuBar();
 		add(menuBar, BorderLayout.NORTH);
 		
-		// Soubor menu
+		// file menu
 
 		final JMenu file = new JMenu(LANG("file"));
 		menuBar.add(file);
@@ -58,7 +65,11 @@ public class MenuPanel extends JPanel {
 				
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					DialogManagement.open(DialogManagement.SAVE_AS, vhdrFile);
+					Out<Boolean> out = new Out<>(false);
+					DialogManagement.open(DialogManagement.SAVE_AS, vhdrFile, out);
+					if (out.value()) {
+						GuiManager.EDITOR.setTitleAt(GuiManager.EDITOR.getSelectedIndex(), vhdrFile.getName());
+					}
 				}
 			});
 			
@@ -79,6 +90,8 @@ public class MenuPanel extends JPanel {
 			close.setEnabled(vhdrFile.isReadable());
 			file.add(close);
 		}
+		
+		// plotter menu
 		
 		final JMenu data = new JMenu(LANG("menu_data"));
 		menuBar.add(data);
@@ -128,7 +141,51 @@ public class MenuPanel extends JPanel {
 			data.add(allChannels);
 		}
 		
-		// Zaviraci tlacitko
+		// merge menu
+		
+		final JMenu merge = new JMenu(LANG("merge_file"));
+		menuBar.add(merge);
+		
+		{
+			merge.addMenuListener(new MenuListener() {
+				
+				@Override
+			    public void menuSelected(MenuEvent e) {
+					merge.removeAll();
+					List<EegFile> files = GuiManager.EDITOR.getOpenedFiles();
+			
+					for (EegFile file : files) {
+						if (FilesIO.isMergeable(vhdrFile, file)) {
+							merge.add(MergeItem.from(vhdrFile, file));
+						}
+					}
+					
+					if (merge.getItemCount() == 0) {
+						merge.add(MergeItem.voidItem());
+					}
+			    }
+
+			    @Override
+			    public void menuDeselected(MenuEvent e) {
+			        //System.out.println("menuDeselected");
+			    }
+
+			    @Override
+			    public void menuCanceled(MenuEvent e) {
+			        //System.out.println("menuCanceled");
+			    }
+			});
+			/*
+			merge.addActionListener(new ActionListener() {
+				
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					
+				}
+			});*/
+		}
+		
+		// buttons
         
 		menuBar.add(Box.createHorizontalGlue());
 		

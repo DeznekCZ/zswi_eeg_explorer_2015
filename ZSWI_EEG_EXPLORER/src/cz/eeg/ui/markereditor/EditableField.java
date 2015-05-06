@@ -3,6 +3,7 @@ package cz.eeg.ui.markereditor;
 import javax.swing.JPanel;
 
 import layout.TableLayout;
+import cz.eeg.data.EegFile;
 import cz.eeg.data.Marker;
 
 
@@ -20,7 +21,7 @@ public class EditableField extends JPanel {
 	 * @param marker
 	 * @return
 	 */
-	public static EditableField from(Marker marker) {
+	public static EditableField from(Marker marker, EegFile file) {
 		EditableField field = new EditableField();
 		// Mk2=Stimulus,S  7,13417,0,0
 		
@@ -36,7 +37,7 @@ public class EditableField extends JPanel {
 				"1,0" );
 		field.add( new FixedPart(marker.getType()),
 				"2,0" );
-		field.add( new EditPart (marker.getDescription(), marker, "setDescription", "getDescription"),
+		field.add( new EditPart (marker.getDescription(), marker, "setDescription", "getDescription", file),
 				"3,0" );
 		field.add( new FixedPart(marker.getPositionInDataPoints()),
 				"4,0" );

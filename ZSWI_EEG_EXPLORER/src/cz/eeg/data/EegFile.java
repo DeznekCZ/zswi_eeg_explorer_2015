@@ -48,10 +48,10 @@ public class EegFile {
 			.append("\nNumberOfChannels=%d")
 			.append("\n; Sampling interval in microseconds")
 			.append("\nSamplingInterval=%d")
-			.append("\nSegmentationType=MARKERBASED")
-			.append("\nSegmentDataPoints=1100")
-			.append("\nAveraged=YES")
-			.append("\nAveragedSegments=8")
+			//.append("\nSegmentationType=MARKERBASED")
+			//.append("\nSegmentDataPoints=1100")
+			//.append("\nAveraged=YES")
+			//.append("\nAveragedSegments=8")
 			.append("\n\n[Binary Infos]")
 			.append("\nBinaryFormat=%s")
 			.append("\n\n[Channel Infos]")
@@ -76,68 +76,19 @@ public class EegFile {
 	private List<Marker> markerList;
 
 	private boolean readable = true;
+	/**  */
 	private boolean editing = false;
 
 	private String textData;
-	
-	/* /**
-	 * Constructor reads a new *.vhdr file
-	 * @param inputF pointer to {@link File}
-	 * @param fullReading true - check only existency of marker and data file
-	 */
-/*	public Vhdr(File inputF, boolean fullReading) {
-		headerFile = inputF;
-		
-		setName(inputF.getName());
-		
-		try {
-			if (fullReading) {
-				
-				//openFile(inputF);
-				
-				//String s=inputF.getAbsolutePath().replaceAll(".vhdr", ".vmrk");
-				//vm = new Vmrk(s);
-				vm = new Vmrk(markerFile);
-				
-			} else {
-				//viewFile(inputF); 
-			}
-		} catch (Exception e) {
-			readable = false;
-		}
-		/*	EEGDataTransformer dt = new EEGDataTransformer();
-		double[] d,j,k;
-		
-			
-			try {
-				d = dt.readBinaryData(inputF.getAbsolutePath(), 1);
-				for(int i=0;i<d.length;i++){
-					System.out.print(d[i]+" ");
-				}
-				System.out.println();
-				System.out.println(d.length);
-				j = dt.readBinaryData(inputF.getAbsolutePath(), 2);
-				for(int i=0;i<j.length;i++){
-					System.out.print(j[i]+" ");
-				}
-				System.out.println();
-				System.out.println(j.length);
-				k = dt.readBinaryData(inputF.getAbsolutePath(), 3);
-				for(int i=0;i<k.length;i++){
-					System.out.print(k[i]+" ");
-				}
-				System.out.println();
-				System.out.println(k.length);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			*/
-/*	}*/
+	/** Need save */
+	private boolean needSave;
+	private boolean temporary;
+	private String symbolicName;
 	
 	public EegFile() {
 		this.readable = false;
 		this.textData = "";
+		this.temporary = false;
 	}
 	
 	/**
@@ -170,7 +121,6 @@ public class EegFile {
 		
 	}*/ // metoda dodána do FILESIO
 	
-
 	/*private void openFile(File file) throws FileNotFoundException{
 			//InputStream ips=new FileInputStream(file); 
 			//InputStreamReader ipsr=new InputStreamReader(ips);
@@ -202,7 +152,7 @@ public class EegFile {
 				while(line.startsWith(";")){
 					channelInfo+=line+"\n";
 					line=s.nextLine();
-					
+		
 				}
 				channel=new Channel[numberOfChannels];
 				for(int j=0;j<numberOfChannels;j++){
@@ -216,7 +166,7 @@ public class EegFile {
 		s.close();
 
 	}*/
-
+	
 	public boolean isReadable() {
 		return readable;
 	}
@@ -265,15 +215,15 @@ public class EegFile {
 	}
 
 	public boolean isEditable() {
-		return readable; //TODO need function
+		return readable;
 	}
 
 	public boolean isSaveable() {
-		return readable && true; //TODO need function
+		return readable;
 	}
 
 	public boolean isCloseable() {
-		return readable && true; //OK is able
+		return readable;
 	}
 
 
@@ -290,7 +240,10 @@ public class EegFile {
 	}
 
 	public String getName() {
-		return headerFile.getName();
+		return ( isTemporary()
+				?	symbolicName
+				:	headerFile.getName()
+				);
 	}
 
 	public File getDataFile() {
@@ -412,5 +365,29 @@ public class EegFile {
 		clone.setSamplingInterval(samplingInterval);
 		clone.setTextData(textData);
 		return clone;
+	}
+
+	public void edited() {
+		this.needSave = true;
+	}
+
+	public void saved() {
+		this.needSave = false;
+	}
+
+	public boolean needSave() {
+		return needSave;
+	}
+
+	public void setTemporary(boolean temporary) {
+		this.temporary = temporary;
+	}
+
+	public boolean isTemporary() {
+		return temporary;
+	}
+
+	public void setSymbolicName(String symbolicName) {
+		this.symbolicName = symbolicName;
 	}
 }

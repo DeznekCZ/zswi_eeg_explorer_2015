@@ -20,7 +20,7 @@ import cz.eeg.data.Marker;
  * reading files saving file etc.*/
 public class FilesIO {
 
-	private static int[] positionTmp={0,0,0,0,0,0,0,0,0,0};
+	private static boolean[] positionTmp={true,true,true,true,true,true,true,true,true,true};
 	
 	/**
 	 * is readable - method that check if dataset is complete
@@ -144,12 +144,20 @@ public class FilesIO {
 			String pathD=null;
 			if(linkedVhdr.getDataFile().getName().endsWith(".avg")){
 				pathD=outPath.getAbsolutePath()+"/"+newName+".avg";
-				if(!saveDataFile(2,pathD,linkedVhdr)){return false;}
+				if(linkedVhdr.isTemporary()){
+					linkedVhdr.getDataFile().renameTo(new File(pathD));
+					linkedVhdr.setTemporary(false);
+					freeTemporary(linkedVhdr.getDataFile());
+				}else if(!saveDataFile(2,pathD,linkedVhdr)){return false;}
 				pathH =outPath.getAbsolutePath()+"/"+newName+".vhdr"; // ale je to cesta do input protoze neni predan output
 				pathM =outPath.getAbsolutePath()+"/"+newName+".vmrk"; 
 			}if(linkedVhdr.getDataFile().getName().endsWith(".eeg")){
 				pathD=outPath.getAbsolutePath()+"/"+newName+".eeg";
-				if(!saveDataFile(1,pathD,linkedVhdr)){return false;}
+				if(linkedVhdr.isTemporary()){
+					linkedVhdr.getDataFile().renameTo(new File(pathD));
+					linkedVhdr.setTemporary(false);
+					freeTemporary(linkedVhdr.getDataFile());
+				}else if(!saveDataFile(1,pathD,linkedVhdr)){return false;}
 				pathH =outPath.getAbsolutePath()+"/"+newName+".vhdr"; // ale je to cesta do input protoze neni predan output
 				pathM =outPath.getAbsolutePath()+"/"+newName+".vmrk";
 			}
@@ -163,6 +171,8 @@ public class FilesIO {
 			pw = new PrintWriter(pathM); // zapisuje marker
 			pw.write(linkedVhdr.getVmrkData());
 			pw.close();
+			
+			linkedVhdr.saved();
 			return true;
 		} catch (IOException e) {
 			return false;
@@ -217,7 +227,7 @@ public class FilesIO {
 	 * @param vhdrInstances field of two instances eegfile
 	 * @return true or false if it saved clearly
 	 * */
-	public static boolean mergeDataFiles(int numberOfChannels,String newName,EegFile... vhdrInstances) throws IOException{
+	public static boolean mergeDataFiles(int numberOfChannels,File newName,EegFile... vhdrInstances) throws IOException{
 
 		try {
 			FileOutputStream fos= new FileOutputStream(newName);
@@ -300,66 +310,76 @@ public class FilesIO {
 	 * @param newName new name for merged vhdr
 	 * @param vhdrInstances two instances of vhdr
 	 * @return true or false if it saved clearly*/
-	public static EegFile mergeVhdrs(File outPath,String newName,EegFile... vhdrInstances) throws VhdrMergeException, FileNotFoundException, FileReadingException {
+	public static EegFile mergeVhdrs(File outPath,String newName,EegFile... vhdrInstances) throws VhdrMergeException, IOException, FileReadingException {
 		EegFile merged;
 		if(vhdrInstances[0].getNumberOfChannels()!=vhdrInstances[1].getNumberOfChannels())
 				{
-			throw new VhdrMergeException();
+			throw new VhdrMergeException("wrong_channels");
 		}else{
 			
-			merged = read(vhdrInstances[0].getHeaderFile());
-			merged.setDataFile(new File(outPath.getAbsolutePath()+"/"+newName+".eeg"));
+			//merged = read(vhdrInstances[0].getHeaderFile());
+			merged = vhdrInstances[0].clone();
+			if(merged.getDataFileName().endsWith("eeg")){
+				merged.setDataFile(new File(outPath.getAbsolutePath()+"/"+newName+".eeg"));
+			} else if(merged.getDataFileName().endsWith("avg")){
+				merged.setDataFile(new File(outPath.getAbsolutePath()+"/"+newName+".avg"));
+			} else {
+				throw new VhdrMergeException("wrong_file_type");
+			}
 			//merged.setMarkerFile(new File(outPath.getAbsolutePath()+"/"+newName+".vmrk"));
 			//merged.setHeaderFile(new File(outPath.getAbsolutePath()+"/"+newName+".vhdr"));
 			
-			EegFile mergedvmrk=mergeVmrks(vhdrInstances);
-			merged.setList(mergedvmrk.getMarkerList());
-			try {
-				boolean mergedData=mergeDataFiles(merged.getNumberOfChannels(),"temp/tmp.eeg",vhdrInstances);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			merged.setList(mergeVmrks(vhdrInstances));
 			
+			if (!mergeDataFiles(
+					merged.getNumberOfChannels(),
+					merged.getDataFile(),
+					vhdrInstances))
+				throw new VhdrMergeException("data_merge_failed");
 		}
-
+		merged.setTemporary(true);
 		return merged;
 		
 	}
-	public static EegFile mergeVmrks(EegFile... vhdrInstances){
+	public static List<Marker> mergeVmrks(EegFile... vhdrInstances){
 		int lastMarkerNumber=vhdrInstances[0].getMarkerList().get(vhdrInstances[0].getMarkerList().size()-1).getMarkerNumber();
 		String lastPosition=vhdrInstances[0].getMarkerList().get(vhdrInstances[0].getMarkerList().size()-1).getPositionInDataPoints();
 		List<Marker> mk1=vhdrInstances[0].getMarkerList();
 		List<Marker> mk2=vhdrInstances[1].getMarkerList();
 		List<Marker> mkn = new ArrayList<Marker>();
 		for (Marker marker : mk1) {
-			mkn.add(marker);
+			mkn.add(marker.copy(-1, 0L));
 		}
 		for (Marker marker : mk2) {
 			if(marker.getMarkerNumber()>0){
-				marker.setMarkerNumber(marker.getMarkerNumber()-1+lastMarkerNumber);
-				long position=Long.parseLong(marker.getPositionInDataPoints())+Long.parseLong(lastPosition);
-				marker.setPositionInDataPoints(Long.toString(position));
-				mkn.add(marker);
+				long position=
+						Long.parseLong(marker.getPositionInDataPoints())
+					+   Long.parseLong(lastPosition);
+				mkn.add(marker.copy(lastMarkerNumber, position));
 			}
 			
 		}
-		vhdrInstances[0].setList(mkn);
 		
-		
-		
-		return vhdrInstances[0];
+		return mkn;
 	}
 	
 	/**
 	 * Merguje tak ze dostane upravenou instanci EEGFILE a zapise do slozky temp soubor tmp (datovy)*/
-	public static EegFile mergeTMP(EegFile target, EegFile source) throws FileNotFoundException, VhdrMergeException, FileReadingException {
+	public static EegFile mergeTMP(EegFile target, EegFile source) throws IOException, VhdrMergeException, FileReadingException {
 		File tmp=new File("./temp");
-		return mergeVhdrs(tmp, "tmp"+isFreespace(), target,source); 
+		int j = isFreespace();
+		if(j > -1){
+			positionTmp[j]=false;
+			EegFile merged = mergeVhdrs(tmp, "tmp"+j, target,source);
+			merged.setSymbolicName("tmp"+j);
+			return merged;
+		} else {
+			throw new VhdrMergeException("full_temp_space");
+		}
 	}
 	
 	//navic
-	
+	@Deprecated
 	public static boolean saveMerged(File outPath,String newName,EegFile vhdr) throws FileNotFoundException{
 		File f = vhdr.getDataFile();
 		String suffix;
@@ -387,6 +407,7 @@ public class FilesIO {
 		return bool;
 	}
 	
+	@Deprecated
 	private static void save(File name,String message) throws FileNotFoundException{
 		PrintWriter pw = new PrintWriter(name);
 		pw.write(message);
@@ -396,17 +417,26 @@ public class FilesIO {
 	
 	public static int isFreespace(){
 		for(int i=0;i<positionTmp.length;i++){
-			if(positionTmp[i]==0){
+			if(positionTmp[i]){
 				return i;
 			}
 		}
-		return 0;
+		return -1;
+	}
+	
+	public static void freeTemporary(File fileName) {
+		int index = fileName.getName().charAt(3) - '0';
+		positionTmp[index] = true;
+		fileName.delete();
 	}
 	
 	// TODO
 	public static boolean isMergeable(EegFile target, EegFile source) {
-		if(source.getNumberOfChannels()==target.getNumberOfChannels() 
-				&& source.getSamplingInterval()==target.getSamplingInterval() || isFreespace()>0 )
+		if(
+			   !source.equals(target)
+			&&  source.getNumberOfChannels()==target.getNumberOfChannels() 
+			&&  source.getSamplingInterval()==target.getSamplingInterval()
+			&&  isFreespace() > -1 )
 		{
 			return true;
 		}

@@ -3,9 +3,12 @@ package cz.eeg.ui;
 import java.awt.KeyEventDispatcher;
 import java.awt.KeyboardFocusManager;
 import java.awt.event.KeyEvent;
+import java.io.File;
 
+import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 
+import cz.deznekcz.tool.Loader;
 import cz.eeg.ui.explorer.FileBrowserPanel;
 
 /**
@@ -14,6 +17,11 @@ import cz.eeg.ui.explorer.FileBrowserPanel;
  * @author IT Crowd
  */
 public class GuiManager {
+	
+	static {
+		//Loader.start(ImageIO.read(new File("res/loading.png")));
+	}
+	
 	/** Frame of explorer {@link Application} */
 	public final static Explorer EXPLORER = new Explorer();
 	/** Instance of {@link FileEditor}, {@link JFrame} linked by {@link FileEditor#WINDOW} */
@@ -26,29 +34,16 @@ public class GuiManager {
 	public static KeyboardFocusManager focusManager =
 	         KeyboardFocusManager.getCurrentKeyboardFocusManager();
 	
-	
-	static {
-		focusManager.addKeyEventDispatcher(
-				new KeyEventDispatcher() {
-				    public boolean dispatchKeyEvent(KeyEvent e) {
-				        if(GuiManager.EXPLORER.isActive()
-				        		&& e.getID() == KeyEvent.KEY_PRESSED 
-				        		&& e.getKeyCode() == KeyEvent.VK_ENTER
-				        		&& GuiManager.selectionFrame != null
-				        		&& !GuiManager.selectionFrame.getSelectedFile().isDirectory()) {
-				            GuiManager.EDITOR.open(GuiManager.selectionFrame.getSelectedFiles());
-				        }
-				        return false;
-				    }
-				}
-			);
-	}
-
 	/**
 	 * Method starts Graphical user inteface
 	 */
 	public static void start() {
 		// This method initialize static variables
 		// EXPLORER instance creates a new GUI window
+	}
+
+	public static void repaint() {
+		EXPLORER.getParent().repaint();
+		EDITOR.getParent().repaint();
 	}
 }

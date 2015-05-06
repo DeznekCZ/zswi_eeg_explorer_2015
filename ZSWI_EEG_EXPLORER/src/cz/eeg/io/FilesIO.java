@@ -1,6 +1,7 @@
 package cz.eeg.io;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -191,6 +192,11 @@ public class FilesIO {
 	 * @param newName new name binary file
 	 * @param vhdr instance of eegfile*/
 	public static boolean saveDataFile(int choose,String newName,EegFile vhdr) throws IOException{
+		
+		
+		
+		
+		
 		FileOutputStream fos= new FileOutputStream(newName);
 		switch(choose){
 		case 1 :
@@ -220,6 +226,22 @@ public class FilesIO {
 		return false;
 	}
 
+	public static void mergeData(EegFile instance,FileOutputStream fos)throws IOException{
+		File input = instance.getDataFile();
+	    
+        FileInputStream fis = new FileInputStream(input);
+        byte[] fileBytes = new byte[(int) input.length()];
+        int bytesRead = fis.read(fileBytes, 0,(int)  input.length());
+        assert(bytesRead == fileBytes.length);
+        assert(bytesRead == (int) input.length());
+        fos.write(fileBytes);
+        fos.flush();
+        fileBytes = null;
+        fis.close();
+ 
+	}
+	
+	
 	/**
 	 * merging binary files
 	 * @param numberOfChannels number of chanels both datasets
@@ -228,58 +250,12 @@ public class FilesIO {
 	 * @return true or false if it saved clearly
 	 * */
 	public static boolean mergeDataFiles(int numberOfChannels,File newName,EegFile... vhdrInstances) throws IOException{
-
-		try {
-			FileOutputStream fos= new FileOutputStream(newName);
-			if(vhdrInstances[0].getDataFileName().endsWith(".eeg")){
-				BinaryData.read(vhdrInstances[0].getHeaderFile(), numberOfChannels);
-				for(int i = 0;i<BinaryData.getDat()[0].length;i++){
-					for (int k=0;k<vhdrInstances[0].getNumberOfChannels();k++){
-						short d1=(short)(BinaryData.getDat()[k][i]);
-						byte [] zapis= toByteArrayEeg(d1);
-						fos.write(zapis);
-					}
-				}
-				BinaryData.read(vhdrInstances[1].getHeaderFile(), numberOfChannels);
-				for(int i = 0;i<BinaryData.getDat()[0].length;i++){
-					for (int k=0;k<vhdrInstances[0].getNumberOfChannels();k++){
-						short d2=(short)(BinaryData.getDat()[k][i]);
-						byte [] zapis= toByteArrayEeg(d2);
-						fos.write(zapis);
-					}
-				}
-				fos.close();
-				return true;
-			}else{
-				if(vhdrInstances[0].getDataFileName().endsWith(".avg")){
-					BinaryData.read(vhdrInstances[0].getHeaderFile(), vhdrInstances[0].getNumberOfChannels());
-					for(int i = 0;i<BinaryData.getDat()[0].length;i++){
-						for (int k=0;k<vhdrInstances[0].getNumberOfChannels();k++){
-							short d1=(short)(BinaryData.getDat()[k][i]);
-							byte [] zapis= toByteArrayAvg(d1);
-							fos.write(zapis);
-						}
-					}
-					BinaryData.read(vhdrInstances[1].getHeaderFile(), vhdrInstances[1].getNumberOfChannels());
-					for(int i = 0;i<BinaryData.getDat()[0].length;i++){
-						for (int k=0;k<vhdrInstances[1].getNumberOfChannels();k++){
-							short d2=(short)(BinaryData.getDat()[k][i]);
-							byte [] zapis= toByteArrayAvg(d2);
-							fos.write(zapis);
-						}
-					}
-					fos.close();
-					return true;
-				}
-			}
-
-			fos.close();
-		} catch (FileNotFoundException e) {
-			return false;
-		}
-
-		return false;
-
+		FileOutputStream fos = new FileOutputStream(newName,true);
+		mergeData(vhdrInstances[0],fos);
+		mergeData(vhdrInstances[1], fos);
+	     fos.close();
+		  fos = null;
+		return true;
 	}
 	/**
 	 * short value to byte array

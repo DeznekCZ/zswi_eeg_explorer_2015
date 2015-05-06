@@ -20,7 +20,7 @@ public class Application {
 	
 	/** Authors */
 	public final static String AUTHOR = "IT Crowd\n"
-				+"Zdeněk Novotný, Michal Sakáč, Václav Trykar, Václav Zoubek";
+				+"Zdeněk Novotný, Michal Sakáč, Václav Zoubek";
 	
 	
 	/** Method main, runs an {@link Application} */

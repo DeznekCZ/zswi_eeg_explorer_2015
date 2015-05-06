@@ -1,4 +1,4 @@
-package cz.eeg.ui.dialog;
+package cz.eeg.ui.listeners;
 
 import javax.swing.JComponent;
 import javax.swing.event.AncestorEvent;

@@ -20,6 +20,7 @@ import cz.eeg.data.EegFile;
 import cz.eeg.data.Marker;
 import cz.eeg.ui.explorer.Scenario;
 import cz.eeg.ui.fileeditor.Plotter;
+import cz.eeg.ui.listeners.RequestFocusListener;
 
 /**
  * File handling dialog class

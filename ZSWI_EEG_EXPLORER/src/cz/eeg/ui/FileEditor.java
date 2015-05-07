@@ -185,6 +185,9 @@ public class FileEditor extends JTabbedPane {
 							LANG("file_close", soubor.getName()), 
 							LANG("file"), JOptionPane.OK_CANCEL_OPTION)
 				) {
+				if (soubor.isTemporary()) {
+					FilesIO.freeTemporary(soubor);
+				}
 				openedFiles.remove(index);
 				remove(index);
 			} else if (!soubor.needSave()){

@@ -152,7 +152,7 @@ public class FilesIO {
 				if(linkedVhdr.isTemporary()){
 					linkedVhdr.getDataFile().renameTo(new File(pathD));
 					linkedVhdr.setTemporary(false);
-					freeTemporary(linkedVhdr.getDataFile());
+					freeTemporary(linkedVhdr);
 				}else if(!saveDataFile(2,pathD,linkedVhdr)){return false;}
 				pathH =outPath.getAbsolutePath()+"/"+newName+".vhdr"; // ale je to cesta do input protoze neni predan output
 				pathM =outPath.getAbsolutePath()+"/"+newName+".vmrk"; 
@@ -161,12 +161,13 @@ public class FilesIO {
 				if(linkedVhdr.isTemporary()){
 					linkedVhdr.getDataFile().renameTo(new File(pathD));
 					linkedVhdr.setTemporary(false);
-					freeTemporary(linkedVhdr.getDataFile());
+					freeTemporary(linkedVhdr);
 				}else if(!saveDataFile(1,pathD,linkedVhdr)){return false;}
 				pathH =outPath.getAbsolutePath()+"/"+newName+".vhdr"; // ale je to cesta do input protoze neni predan output
 				pathM =outPath.getAbsolutePath()+"/"+newName+".vmrk";
 			}
 			//EegFile newVhdr = linkedVhdr.clone();
+			linkedVhdr.setHeaderFile(new File(pathH));
 			linkedVhdr.setMarkerFile(new File(pathM));
 			linkedVhdr.setDataFile(new File(pathD));
 			pw = new PrintWriter(pathH); //zapisuje header
@@ -404,10 +405,10 @@ public class FilesIO {
 		return -1;
 	}
 	
-	public static void freeTemporary(File fileName) {
-		int index = fileName.getName().charAt(3) - '0';
+	public static void freeTemporary(EegFile fileName) {
+		int index = fileName.getDataFile().getName().charAt(3) - '0';
 		positionTmp[index] = true;
-		fileName.delete();
+		fileName.getDataFile().delete();
 	}
 	
 	// TODO

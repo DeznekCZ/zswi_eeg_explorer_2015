@@ -376,7 +376,7 @@ public class EegFile {
 	}
 
 	public boolean needSave() {
-		return needSave;
+		return needSave || temporary;
 	}
 
 	public void setTemporary(boolean temporary) {

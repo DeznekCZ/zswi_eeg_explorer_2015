@@ -10,7 +10,7 @@ public class Marker {
 	private String description;
 
 	private String positionInDataPoints;
-	private String sizeInDataPoints;
+	private String sizeInDataPoints=null;
 	private String channelNumber;
 	/**
 	 * Constructor for one marker

@@ -23,6 +23,10 @@ public class FilesIO {
 
 	private static boolean[] positionTmp={true,true,true,true,true,true,true,true,true,true};
 	
+	public static void setPositionTmp(boolean[] positionTmp) {
+		FilesIO.positionTmp = positionTmp;
+	}
+
 	/**
 	 * is readable - method that check if dataset is complete
 	 * @param vhdrPath - path to vhdr file

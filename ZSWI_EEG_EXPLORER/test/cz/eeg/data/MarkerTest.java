@@ -14,7 +14,15 @@ public class MarkerTest  {
 	public void testGetMarkerNumber() {
 		assertEquals(6,mk.getMarkerNumber());
 	}
+	
 
+	
+	@Test
+	public void testSetChannelNumber(){
+		Marker mk1=new Marker("Mk6=Stimulus,S  6,19469,0,0");
+		mk1.setChannelNumber("10");
+		assertEquals("10",mk1.getChannelNumber());
+	}
 	@Test
 	public void testGetType() {
 		assertEquals("Stimulus",mk.getType());

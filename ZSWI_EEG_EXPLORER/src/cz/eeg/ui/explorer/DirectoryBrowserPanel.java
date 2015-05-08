@@ -3,12 +3,17 @@ package cz.eeg.ui.explorer;
 import static cz.deznekcz.tool.Lang.LANG;
 
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.LinkOption;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.util.Stack;
 
 import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
@@ -17,6 +22,7 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTextField;
 import javax.swing.ListCellRenderer;
@@ -57,49 +63,67 @@ public class DirectoryBrowserPanel extends JPanel implements ItemListener {
 			}
 		};
 		combo.setRenderer(renderer);
+		combo.setPreferredSize(new Dimension(250, 25));
 		
 		reloadComboBox();
 		combo.addItemListener(this);
 		
 		add(combo);
+		
 		input = new JTextField(currentDirectory.getAbsolutePath());
+		input.setMinimumSize(new Dimension(300, 30));
 		input.setEditable(false);
-		add(input);
+		add(new JScrollPane(input));
 	}
 
 	private void reloadComboBox() {
 		combo.removeAllItems();
 		DefaultComboBoxModel<FileElement> model = new DefaultComboBoxModel<>();
 		
-		FileElement currentFileElement = new FileElement(currentDirectory, 1);
-		
 		addDiscs(model);
 		
+		FileElement currentFileElement;
+		
 		if (currentDirectory != null) {
+			int parentCount = 0;
+			File parent = currentDirectory.getParentFile();
+			Stack<File> stack = new Stack<>();
+			while (parent != null) {
+				parentCount++;
+				stack.add(parent);
+				parent = parent.getParentFile();
+			}
+			
+			currentFileElement = new FileElement(currentDirectory, parentCount+1);
 			
 			model.addElement(FileElement.separator());
 			
-			File parent = currentDirectory.getParentFile();
-			if (parent != null) {
-				model.addElement(new FileElement(parent, 0));
+			for (int i = parentCount - 1; i >= 0; i--) {
+				model.addElement(new FileElement(stack.pop(), parentCount-i));
 			}
 			model.addElement(currentFileElement);
 			
 			File[] files = currentDirectory.listFiles(new FileFilter() {
 				@Override
 				public boolean accept(File pathname) {
-					return pathname.isDirectory() && !pathname.isHidden();
+					return  pathname.isDirectory()
+						&& !pathname.isHidden()
+						&& !pathname.getName().contains(".");
 				}
 			});
 			
-			for (File file : files) {
-				model.addElement(new FileElement(file, 2));
+			if (files != null) {
+				for (File file : files) {
+					model.addElement(new FileElement(file, parentCount + 2));
+				}
 			}
+			
 		} else {
+			currentFileElement = new FileElement(currentDirectory, 1);
 			model.addElement(currentFileElement);
 		}
 		
-	    model.setSelectedItem(currentFileElement);
+		model.setSelectedItem(currentFileElement);
 	    combo.setModel(model);
 	}
 	

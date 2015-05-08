@@ -49,7 +49,7 @@ public class FileElement extends JPanel {
 			public void paintIcon(Component c, Graphics g, int x, int y) {
 				Graphics2D g2 = (Graphics2D) g;
 				AffineTransform dt = g2.getTransform();
-				g2.translate(trans, 0);
+				g2.translate(trans/2, 0);
 				icon.paintIcon(c, g2, x, y);
 				g2.setTransform(dt);
 			}
@@ -57,7 +57,7 @@ public class FileElement extends JPanel {
 			@Override
 			public int getIconWidth() {
 				// TODO Auto-generated method stub
-				return icon.getIconWidth() + trans;
+				return icon.getIconWidth() + trans/2;
 			}
 			
 			@Override

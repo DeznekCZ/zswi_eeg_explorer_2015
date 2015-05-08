@@ -82,8 +82,13 @@ public class FileEditor extends JFrame {
 	/** List of openned files */
 	private List<EegFile> openedFiles = new ArrayList<EegFile>();
 
-	public static class MyTabbedPaneUI extends javax.swing.plaf.basic.BasicTabbedPaneUI {
-		
+	/**
+	 * Preparation for new look of {@link JTabbedPane}
+	 * <br><b>TODO</b>
+	 * @author IT Crowd
+	 */
+	public static class CustomTabbedPaneUI extends javax.swing.plaf.basic.BasicTabbedPaneUI {
+		// TODO does need now implement
 	}
 	
 	/**
@@ -91,7 +96,7 @@ public class FileEditor extends JFrame {
 	 */
 	public FileEditor() {
 		
-		TABS.setUI(new MyTabbedPaneUI());
+		TABS.setUI(new CustomTabbedPaneUI());
 		
 		TABS.setTabPlacement(JTabbedPane.TOP);
 		//TABS.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
@@ -256,6 +261,7 @@ public class FileEditor extends JFrame {
 	 * from instance of class {@link Config}
 	 */
 	private void loadWindowLocation() {
+		setMinimumSize(new Dimension(600, 480));
 		setPreferredSize(new Dimension(CONFIG.ed_width, CONFIG.ed_height));
 		if (CONFIG.isSet()) {
 			setLocation(CONFIG.ed_posx, CONFIG.ed_posy);

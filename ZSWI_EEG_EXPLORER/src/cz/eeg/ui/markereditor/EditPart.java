@@ -24,27 +24,27 @@ public class EditPart extends Part {
 	private Object object;
 
 	/**
-	 * 
-	 * @param value
-	 * @param object
-	 * @param setterMethod
-	 * @param getterMethod
-	 * @param file
+	 * Editable part of {@link EditableField}
+	 * @param value value of {@link EditPart}
+	 * @param marker instance of changed {@link Marker}
+	 * @param setterMethod name of setter method
+	 * @param getterMethod name of getter method
+	 * @param eegFile instance of {@link EegFile} that owns marker
 	 */
 	public EditPart(
 			final Object value, 
-			final Marker object, 
+			final Marker marker, 
 			final String setterMethod, 
 			final String getterMethod,
-			final EegFile file) {
+			final EegFile eegFile) {
 		super(value.toString());
 
-		this.object = object;
+		this.object = marker;
 		
 		//setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		
 		try {
-			Method[] methods = object.getClass().getDeclaredMethods();
+			Method[] methods = marker.getClass().getDeclaredMethods();
 			this.getterMethod = null;
 			for (int i = 0; i < methods.length; i++) {
 				if (methods[i].getName().equals(getterMethod)) {
@@ -54,7 +54,7 @@ public class EditPart extends Part {
 			}
 			if (this.getterMethod == null) {
 				JOptionPane.showMessageDialog(null,
-						LANG("method_not_exists", object.getClass().getName(), getterMethod), 
+						LANG("method_not_exists", marker.getClass().getName(), getterMethod), 
 						LANG("error"), JOptionPane.ERROR_MESSAGE);
 			}
 			
@@ -62,7 +62,7 @@ public class EditPart extends Part {
 				
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					DialogManagement.open(DialogType.MARKER_EDIT, object, setterMethod, value, file);
+					DialogManagement.open(DialogType.MARKER_EDIT, marker, setterMethod, value, eegFile);
 					MarkerEditor.getInstance().repaint();
 				}
 			});

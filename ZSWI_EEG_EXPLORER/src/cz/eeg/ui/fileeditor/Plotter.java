@@ -11,16 +11,21 @@ import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
+import cz.deznekcz.tool.Loader;
 import cz.eeg.data.Channel;
 import cz.eeg.data.EegFile;
 import cz.eeg.io.BinaryData;
 
 public class Plotter {
 
-	private static ChartPanel graphPanel;
-	private static JFrame frame;
+	private ChartPanel graphPanel;
+	private JFrame frame;
 	
 	public static void open(EegFile vhdrFile, int... index) {
+		new Plotter(vhdrFile, index);
+	}
+	
+	private Plotter(EegFile vhdrFile, int... index) {
 		if (frame == null) {
 			frame = new JFrame();
 			frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
@@ -47,12 +52,15 @@ public class Plotter {
 		
 		frame.setTitle(LANG("plotter", vhdrFile.getName(), channelList));
 		
+		Loader.start(LANG("graph_loading"), "");
+		
 		graphPanel.setChart(
 				createGraph(
-						prepareDataSet(vhdrFile, index)));
+						prepareDataSet(vhdrFile, index), vhdrFile));
 		
 		frame.setVisible(true);
 		
+		Loader.abort();
 	}
 	
 	private static XYSeriesCollection prepareDataSet(EegFile vhdrFile, int[] index) {
@@ -77,11 +85,11 @@ public class Plotter {
 		return values;
 	}
 
-	private static JFreeChart createGraph(XYSeriesCollection data) {
+	private static JFreeChart createGraph(XYSeriesCollection data, EegFile eeg) {
 		JFreeChart graph = ChartFactory.createXYLineChart(
 				"", 
-				LANG("plot_time_label"), 
-				LANG("plot_strength_label"), 
+				LANG("plot_time_label", "ms"), 
+				LANG("plot_strength_label", eeg.getChannel()[0].getUnit()), 
 				data, 
 				PlotOrientation.VERTICAL, 
 				true, true, false); // legend, tooltips, urls

@@ -2,21 +2,20 @@ package cz.eeg.ui.explorer;
 
 import static cz.deznekcz.tool.Lang.LANG;
 
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
+import java.util.Arrays;
 
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
+import javax.swing.InputMap;
 import javax.swing.JFileChooser;
+import javax.swing.KeyStroke;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.filechooser.FileSystemView;
@@ -26,7 +25,6 @@ import cz.deznekcz.tool.Lang;
 import cz.eeg.Application;
 import cz.eeg.Config;
 import cz.eeg.io.FilesIO;
-import cz.eeg.ui.Explorer;
 import cz.eeg.ui.FileEditor;
 import cz.eeg.ui.GuiManager;
 
@@ -74,18 +72,14 @@ public class FileBrowserPanel extends JFileChooser {
 		setFileSelectionMode(FILES_AND_DIRECTORIES);
 		setMultiSelectionEnabled(true);
 		
-		final FileBrowserPanel vyber = this;
-		
-		final ActionListener actionListener = new ActionListener() {
+		this.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent actionEvent) {
 				String command = actionEvent.getActionCommand();
-				if (type == INPUT 
-						&& command.equals(JFileChooser.APPROVE_SELECTION)) {
+				if (command.equals(JFileChooser.APPROVE_SELECTION)) {
 					GuiManager.EDITOR.open(getSelectedFiles());
 				}
 			}
-		};
-		this.addActionListener(actionListener);
+		});
 		
 		addPropertyChangeListener(new PropertyChangeListener() {
 
@@ -121,7 +115,7 @@ public class FileBrowserPanel extends JFileChooser {
 		    }
 		  }); 
 	}
-
+	
 	private FileFilter buildFilter() {
 		return new FileFilter() {
 			
@@ -139,7 +133,7 @@ public class FileBrowserPanel extends JFileChooser {
 				return 	(	!f.isDirectory()
 						&&	EXTENSION.accept(f)
 						)
-					||  (   f.isDirectory()
+					||  (   f.isDirectory() && !f.isHidden()
 						&& !f.getAbsolutePath().equals(
 								FilesIO.TEMP_DIRRECTORY.getAbsolutePath())
 						&& !f.getAbsolutePath().equals(

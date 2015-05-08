@@ -21,6 +21,7 @@ public class ExplorerButton {
 	public final static JButton OPEN_SELECTED = initOpen();
 	public final static JButton DELETE_SELECTED = initDelete();
 	public final static JButton COPY_SELECTED = initCopy();
+	public final static JButton SET_OUTPUT = initOutput();
 
 	private static JButton initOpen() {
 		return initButton(
@@ -30,6 +31,20 @@ public class ExplorerButton {
 					@Override
 					public void actionPerformed(ActionEvent e) {
 						GuiManager.EDITOR.open(FileBrowserPanel.PANEL.getSelectedFiles());
+					}
+				});
+	}
+
+	private static JButton initOutput() {
+		return initButton(
+				"explorer_button_output",
+				true,
+				new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						DirectoryBrowserPanel.PANEL.setCurrentDirectory(
+								FileBrowserPanel.PANEL.getCurrentDirectory()
+							);
 					}
 				});
 	}

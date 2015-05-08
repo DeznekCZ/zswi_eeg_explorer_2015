@@ -22,10 +22,12 @@ import javax.swing.text.html.HTMLEditorKit;
 
 import org.w3c.dom.Document;
 
+import cz.deznekcz.tool.Lang;
+
 public class AboutDialog {
 
 	public static void open()  {
-		String path = "resources/about.html";
+		String path = "resources/about_"+LANG("lang_short")+".html";
 		try {
 		FileInputStream fstream = new FileInputStream(path);
 		DataInputStream in = new DataInputStream(fstream);

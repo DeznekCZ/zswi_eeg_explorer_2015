@@ -4,15 +4,10 @@ import static cz.deznekcz.tool.Lang.LANG;
 
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.io.File;
 import java.io.FileFilter;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.LinkOption;
-import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Stack;
 
 import javax.swing.BorderFactory;
@@ -21,15 +16,24 @@ import javax.swing.DefaultListCellRenderer;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JList;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
+import javax.swing.JSplitPane;
 import javax.swing.JTextField;
 import javax.swing.ListCellRenderer;
 
+import cz.deznekcz.tool.Lang;
 import cz.eeg.Application;
+import cz.eeg.io.FilesIO;
+import cz.eeg.ui.GuiManager;
 
-public class DirectoryBrowserPanel extends JPanel implements ItemListener {
+/**
+ * Singleton instance of {@link DirectoryBrowserPanel}
+ * represents selection window of output directory
+ *
+ * @author IT Crowd
+ */
+public class DirectoryBrowserPanel extends JSplitPane implements ItemListener {
 
 	/** */ private static final long serialVersionUID = 8141452098194695196L;
 
@@ -42,8 +46,10 @@ public class DirectoryBrowserPanel extends JPanel implements ItemListener {
 	private JTextField input;
 	
 	public DirectoryBrowserPanel() {
+		super(JSplitPane.HORIZONTAL_SPLIT);
+		setDividerSize(0);
+		
 		setBorder(BorderFactory.createTitledBorder(LANG("explorer_output_panel")));
-		setLayout(new FlowLayout(FlowLayout.LEFT));
 		
 		combo = new JComboBox<>();
 		ListCellRenderer<FileElement> renderer = new ListCellRenderer<FileElement>() {
@@ -63,7 +69,7 @@ public class DirectoryBrowserPanel extends JPanel implements ItemListener {
 			}
 		};
 		combo.setRenderer(renderer);
-		combo.setPreferredSize(new Dimension(250, 25));
+		combo.setPreferredSize(new Dimension(250, 30));
 		
 		reloadComboBox();
 		combo.addItemListener(this);
@@ -71,9 +77,12 @@ public class DirectoryBrowserPanel extends JPanel implements ItemListener {
 		add(combo);
 		
 		input = new JTextField(currentDirectory.getAbsolutePath());
-		input.setMinimumSize(new Dimension(300, 30));
 		input.setEditable(false);
-		add(new JScrollPane(input));
+		JScrollPane jsp = new JScrollPane(input);
+		jsp.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+		jsp.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
+		
+		add(jsp);
 	}
 
 	private void reloadComboBox() {
@@ -105,9 +114,14 @@ public class DirectoryBrowserPanel extends JPanel implements ItemListener {
 			
 			File[] files = currentDirectory.listFiles(new FileFilter() {
 				@Override
-				public boolean accept(File pathname) {
-					return  pathname.isDirectory()
-						&& !pathname.isHidden();
+				public boolean accept(File f) {
+					return  f.isDirectory() && !f.isHidden()
+						&& !f.getAbsolutePath().equals(
+								FilesIO.TEMP_DIRRECTORY.getAbsolutePath())
+						&& !f.getAbsolutePath().equals(
+								GuiManager.RESOURCE_DIRRECTORY.getAbsolutePath())
+						&& !f.getAbsolutePath().equals(
+								Lang.FOLDER.getAbsolutePath());
 				}
 			});
 			
@@ -149,16 +163,16 @@ public class DirectoryBrowserPanel extends JPanel implements ItemListener {
 			reloadComboBox();
 			return;
 		}
-		changeDirectory(item.getDirectory());
-		reloadComboBox();
+		setCurrentDirectory(item.getDirectory());
 	}
 
 	public File getCurrentDirectory() {
 		return currentDirectory;
 	}
 	
-	public void changeDirectory(File f) {
+	public void setCurrentDirectory(File f) {
 		currentDirectory = f;
 		input.setText(currentDirectory.toString());
+		reloadComboBox();
 	}
 }

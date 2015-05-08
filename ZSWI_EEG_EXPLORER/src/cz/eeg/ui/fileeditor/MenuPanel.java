@@ -58,6 +58,9 @@ public class MenuPanel extends JPanel {
 		if (instanceOfFile.length == 1) {
 			final EegFile vhdrFile = instanceOfFile[0];
 			
+			// back button
+			menuBar.add(new BackButton(true));
+			
 			// file menu
 			menuBar.add(fileMenu(vhdrFile));
 			
@@ -79,6 +82,8 @@ public class MenuPanel extends JPanel {
 			menuBar.add(close);
 			close.setEnabled(vhdrFile.isCloseable());
 		} else {
+			// back button
+			menuBar.add(new BackButton(false));
 			
 			// explorer file menu
 			menuBar.add(explorerMenu());

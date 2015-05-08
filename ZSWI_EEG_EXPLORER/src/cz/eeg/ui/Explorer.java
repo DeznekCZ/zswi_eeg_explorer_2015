@@ -50,6 +50,7 @@ public class Explorer extends JPanel {
 		buttonPanel.add( ExplorerButton.OPEN_SELECTED ); 
 		buttonPanel.add( ExplorerButton.COPY_SELECTED ); 
 		buttonPanel.add( ExplorerButton.DELETE_SELECTED ); 
+		buttonPanel.add( ExplorerButton.SET_OUTPUT ); 
 		add(buttonPanel, BorderLayout.SOUTH);
 		
 		setFocusable(true);

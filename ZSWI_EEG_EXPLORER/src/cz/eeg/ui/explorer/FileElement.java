@@ -24,7 +24,7 @@ public class FileElement extends JPanel {
 			return;
 		} 
 		this.name = directory.getName();
-		if (this.name.length() == 0) {
+		if (this.name.length() == 0 || this.name.charAt(0) == ':') {
 			this.name = directory.toString();
 		}
 		this.directory = directory;

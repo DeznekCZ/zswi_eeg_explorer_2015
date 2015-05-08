@@ -24,7 +24,7 @@ public class LangTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
-		LANGgererate(); //USE TO CLEAR
+		LANGgenerate(); //USE TO CLEAR
 		
 		LANGload("spanish");
 	}
@@ -37,7 +37,7 @@ public class LangTest {
 		LANG("data_2");
 		LANG("data_3");
 		
-		LANGgererate();
+		LANGgenerate();
 		assertEquals(loadFile("lang/spanish.lng"), LANGlist());
 		
 		assertEquals("<data_1>", LANG("data_1"));
@@ -45,7 +45,7 @@ public class LangTest {
 
 	@Test
 	public void testGenerate() {
-		assertEquals(true, LANGgererate());
+		assertEquals(true, LANGgenerate());
 	}
 	
 	@Test

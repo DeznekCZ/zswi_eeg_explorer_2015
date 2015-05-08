@@ -21,11 +21,9 @@ public class GuiManager {
 	static {
 		//Loader.start(ImageIO.read(new File("res/loading.png")));
 	}
-	
-	/** Frame of explorer {@link Application} */
-	public final static Explorer EXPLORER = new Explorer();
+
 	/** Instance of {@link FileEditor}, {@link JFrame} linked by {@link FileEditor#WINDOW} */
-	public final static FileEditor EDITOR = new FileEditor();
+	public final static FileEditor EDITOR;
 	
 	/** Currency focused {@link FileBrowserPanel} frame */
 	public static FileBrowserPanel selectionFrame = null;
@@ -34,16 +32,30 @@ public class GuiManager {
 	public static KeyboardFocusManager focusManager =
 	         KeyboardFocusManager.getCurrentKeyboardFocusManager();
 	
+	static {
+		EDITOR = new FileEditor();
+		focusManager.addKeyEventDispatcher(new KeyEventDispatcher() {
+			
+			@Override
+			public boolean dispatchKeyEvent(KeyEvent e) {
+				if (	e.getKeyCode() == KeyEvent.VK_ENTER
+					&&	FileBrowserPanel.PANEL.hasFocus()) {
+					GuiManager.EDITOR.open(FileBrowserPanel.PANEL.getSelectedFiles());
+					return true;
+				}
+				return false;
+			}
+		});
+	}
+	
 	/**
 	 * Method starts Graphical user inteface
 	 */
 	public static void start() {
-		// This method initialize static variables
-		// EXPLORER instance creates a new GUI window
+		EDITOR.setVisible(true);
 	}
 
 	public static void repaint() {
-		EXPLORER.getParent().repaint();
 		EDITOR.getParent().repaint();
 	}
 }

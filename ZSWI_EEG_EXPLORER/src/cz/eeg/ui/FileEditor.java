@@ -1,23 +1,53 @@
 package cz.eeg.ui;
 
 import static cz.deznekcz.tool.Lang.LANG;
+import static cz.deznekcz.tool.Lang.LANGgenerate;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Insets;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.awt.event.ContainerEvent;
+import java.awt.event.ContainerListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.swing.BoxLayout;
+import javax.swing.Icon;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
+import javax.swing.WindowConstants;
 import javax.swing.event.AncestorEvent;
 import javax.swing.event.AncestorListener;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import javax.swing.plaf.basic.BasicTabbedPaneUI.TabbedPaneLayout;
+import javax.swing.text.View;
 
 import cz.eeg.Application;
 import cz.eeg.Config;
@@ -25,6 +55,7 @@ import cz.eeg.data.EegFile;
 import cz.eeg.io.FileReadingException;
 import cz.eeg.io.FilesIO;
 import cz.eeg.ui.dialog.DialogManagement;
+import cz.eeg.ui.explorer.FileBrowserPanel;
 import cz.eeg.ui.fileeditor.EegFilePanel;
 import cz.eeg.ui.fileeditor.MenuPanel;
 
@@ -34,58 +65,76 @@ import cz.eeg.ui.fileeditor.MenuPanel;
  *
  * @author IT Crowd
  */
-public class FileEditor extends JTabbedPane {
+public class FileEditor extends JFrame {
 
 	/** */
 	private static final long serialVersionUID = 3766108424601008291L;
 	
 	public final static Config CONFIG = Application.CONFIG;
 	/** Void tab for editor */
-	public static JPanel voidTab = initVoidTab();
+	public final static JPanel EXPLORER_TAB = new Explorer();
 		
-	/** Window frame */
-	public final static JFrame WINDOW = new JFrame(){
-		private static final long serialVersionUID = 1L;
-
-		@Override public void setVisible(boolean arg0) { instance.setVisible(arg0); super.setVisible(arg0); };
-	};
-	/** Intenal instace of {@link FileEditor}, is needed for visibility control */
-	private static FileEditor instance;
+	/** Tabs frame */
+	public final static JTabbedPane TABS = new JTabbedPane();
 	
 	/** List of openned files */
 	private List<EegFile> openedFiles = new ArrayList<EegFile>();
+
+	public static class MyTabbedPaneUI extends javax.swing.plaf.basic.BasicTabbedPaneUI {
+		
+	}
 	
 	/**
-	 * Default constructor of instaces of class {@link FileEditor}
+	 * Default constructor of instances of class {@link FileEditor}
 	 */
 	public FileEditor() {
 		
-		instance = this;
+		TABS.setUI(new MyTabbedPaneUI());
 		
-		add(initVoidTab());
+		TABS.setTabPlacement(JTabbedPane.TOP);
+		//TABS.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
 		
-		WINDOW.setLayout(new BorderLayout());
+		TABS.addChangeListener(new ChangeListener() {
+			
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				int index = TABS.getSelectedIndex();
+				
+				TABS.setSelectedIndex(index);
+				if (openedFiles.size() == 0 || index == 0) {
+					FileEditor.this.setTitle(LANG("window_title"));
+				} else {
+					FileEditor.this.setTitle(LANG("file") + ": " + TABS.getTitleAt(index));
+				}
+			}
+		});
+		
+		TABS.add(EXPLORER_TAB);
+		
+		setDefaultCloseOperation(HIDE_ON_CLOSE);
+		
+		setLayout(new BorderLayout());
 		// Panel added to each VhdrFile
 		// WINDOW.add(MENU_PANEL, BorderLayout.NORTH);
-		WINDOW.add(this, BorderLayout.CENTER);
+		add(TABS, BorderLayout.CENTER);
 		
 		loadWindowLocation();
-	}
-	
-	private static JPanel initVoidTab() {
-		voidTab = new MenuPanel(EegFile.voidFile());
-		voidTab.setName(LANG("editor_no_file"));
-		return voidTab;
 	}
 
 	@Override
 	public void setVisible(boolean b) {
 		
-		if (!b && WINDOW.isVisible()) {
+		if (!b) {
 			saveWindowLocation();
-			GuiManager.EXPLORER.requestFocus();
-		} else if (b && !WINDOW.isVisible()) {
+			while(isOpenedFiles() && close());
+			if (!isOpenedFiles()) {
+				CONFIG.folder_input = FileBrowserPanel.PANEL.getCurrentDirectory().getAbsolutePath();
+				
+				Application.exit();
+			}
+		} else if (b) {
 			loadWindowLocation();
+			super.setVisible(b);
 		}
 	}
 
@@ -95,10 +144,10 @@ public class FileEditor extends JTabbedPane {
 	 * @param instancedEegFile instance of {@link EegFile}
 	 */
 	public void open(EegFile instancedEegFile) {
-		addTab(instancedEegFile.getName(), EegFilePanel.create(instancedEegFile));
+		TABS.addTab(instancedEegFile.getName(), EegFilePanel.create(instancedEegFile));
 		
 		openedFiles.add(instancedEegFile);
-		setSelectedIndex(getTabCount()-1);
+		TABS.setSelectedIndex(TABS.getTabCount()-1);
 	}
 	
 	/**
@@ -135,17 +184,7 @@ public class FileEditor extends JTabbedPane {
 			if (nonReadable.size() > 0) {
 				DialogManagement.open(DialogManagement.ERROR, LANG("file_wrong") + list(nonReadable));
 			}
-			
-			if (openedFiles.size() > 0) {
-				remove(voidTab);
-			}	
-
-			if (listOfFiles == null || opened > 0)
-				WINDOW.setVisible(true);
-			return;
 		}
-		
-		WINDOW.setVisible(true);
 	}
 	
 	/**
@@ -172,37 +211,42 @@ public class FileEditor extends JTabbedPane {
 	 * 			false - file is not closed
 	 */
 	public boolean close() {
-		boolean closeAble = true;
 		
 		if (isOpenedFiles()) {
-			WINDOW.setVisible(true);
-			int index = getSelectedIndex();
-			EegFile soubor = openedFiles.get(index);
-			
-			if (soubor.needSave() &&
-				JOptionPane.OK_OPTION == 
-					JOptionPane.showConfirmDialog(null, 
-							LANG("file_close", soubor.getName()), 
-							LANG("file"), JOptionPane.OK_CANCEL_OPTION)
-				) {
-				if (soubor.isTemporary()) {
-					FilesIO.freeTemporary(soubor);
-				}
-				openedFiles.remove(index);
-				remove(index);
-			} else if (!soubor.needSave()){
-				openedFiles.remove(index);
-				remove(index);
-			} else {
-				closeAble = false;
+			int index = TABS.getSelectedIndex();
+			if (index == 0) {
+				index = 1;
 			}
+			int fileIndex = index - 1;
+			EegFile soubor = openedFiles.get(fileIndex);
+			
+			if (soubor.needSave()) {
+				
+				boolean closed = JOptionPane.OK_OPTION == 
+						JOptionPane.showConfirmDialog(null, 
+								LANG("file_close", soubor.getName()), 
+								LANG("file"), JOptionPane.OK_CANCEL_OPTION);
+				if (closed) {
+					if (soubor.isTemporary()) {
+						FilesIO.freeTemporary(soubor);
+					}
+					openedFiles.remove(fileIndex);
+					TABS.remove(index);
+					return true; // file is successfully closed
+				} else {
+					return false; // file can't be closed
+				}
+				
+			} else { // does not need save
+				openedFiles.remove(fileIndex);
+				TABS.remove(index);
+				return true; // file is successfully closed
+			}
+		} else {
+			return true; // nothing to close - closing is successful
 		}
 		
-		if (openedFiles.size() == 0) {
-			add(initVoidTab());
-		}
-
-		return closeAble;
+		
 	}
 	
 	/**
@@ -210,18 +254,16 @@ public class FileEditor extends JTabbedPane {
 	 * from instance of class {@link Config}
 	 */
 	private void loadWindowLocation() {
-		WINDOW.setPreferredSize(new Dimension(CONFIG.ed_width, CONFIG.ed_height));
+		setPreferredSize(new Dimension(CONFIG.ed_width, CONFIG.ed_height));
 		if (CONFIG.isSet()) {
-			WINDOW.setLocation(CONFIG.ed_posx, CONFIG.ed_posy);
+			setLocation(CONFIG.ed_posx, CONFIG.ed_posy);
 			if ((CONFIG.ed_fullscreen & JFrame.MAXIMIZED_BOTH) != JFrame.MAXIMIZED_BOTH) {
 				setPreferredSize(new Dimension(CONFIG.ed_width, CONFIG.ed_height));
 			}
-			WINDOW.setExtendedState(CONFIG.ed_fullscreen);
-		} else {
-			WINDOW.setLocationRelativeTo(GuiManager.EXPLORER);
+			setExtendedState(CONFIG.ed_fullscreen);
 		}
 		
-		WINDOW.pack();
+		pack();
 	}
 	
 	/**
@@ -230,21 +272,11 @@ public class FileEditor extends JTabbedPane {
 	 * from instance of class {@link Config}
 	 */
 	private void saveWindowLocation() {
-		CONFIG.ed_fullscreen = WINDOW.getExtendedState();
-		CONFIG.ed_posx = WINDOW.getLocation().x;
-		CONFIG.ed_posy = WINDOW.getLocation().y;
-		CONFIG.ed_width = WINDOW.getWidth();
-		CONFIG.ed_height = WINDOW.getHeight();
-	}
-	
-	@Override
-	public void setSelectedIndex(int index) {
-		super.setSelectedIndex(index);
-		if (openedFiles.size() == 0) {
-			WINDOW.setTitle(LANG("editor_title"));
-		} else {
-			WINDOW.setTitle(LANG("file") + ": " + getTitleAt(index));
-		}
+		CONFIG.ed_fullscreen = getExtendedState();
+		CONFIG.ed_posx = getLocation().x;
+		CONFIG.ed_posy = getLocation().y;
+		CONFIG.ed_width = getWidth();
+		CONFIG.ed_height = getHeight();
 	}
 
 	/**
@@ -261,7 +293,7 @@ public class FileEditor extends JTabbedPane {
 	 * of currency selected {@link EegFile}
 	 */
 	public void edit() {
-		int index = getSelectedIndex();
+		int index = TABS.getSelectedIndex() - 1;
 		EegFile file = openedFiles.get(index);
 		try {
 			new MarkerEditor(file);

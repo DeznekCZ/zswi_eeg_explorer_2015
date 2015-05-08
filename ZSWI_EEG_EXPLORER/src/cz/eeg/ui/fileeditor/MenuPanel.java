@@ -3,11 +3,15 @@ package cz.eeg.ui.fileeditor;
 import static cz.deznekcz.tool.Lang.LANG;
 
 import java.awt.BorderLayout;
+import java.util.ArrayList;
 import java.util.List;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.awt.event.ContainerEvent;
+import java.awt.event.ContainerListener;
+import java.io.File;
 
 import javax.swing.Box;
 import javax.swing.JMenu;
@@ -21,8 +25,11 @@ import cz.deznekcz.reflect.Out;
 import cz.eeg.data.Channel;
 import cz.eeg.data.EegFile;
 import cz.eeg.io.FilesIO;
+import cz.eeg.ui.FileEditor;
 import cz.eeg.ui.GuiManager;
 import cz.eeg.ui.dialog.DialogManagement;
+import cz.eeg.ui.explorer.FileBrowserPanel;
+import cz.eeg.ui.explorer.Scenario;
 
 /**
  * Internal class representing a menu panel
@@ -35,19 +42,147 @@ public class MenuPanel extends JPanel {
 	/** */
 	private static final long serialVersionUID = 1L;
 
-	public MenuPanel(final EegFile vhdrFile) {
+	/**
+	 * 
+	 * @param vhdrFile is not an array, allows only 0 or 1 parameter
+	 */
+	public MenuPanel(EegFile... instanceOfFile) {
 		setLayout(new BorderLayout());
-		//PANEL_TLACITEK.add(new CloseButton(), BorderLayout.EAST);
 		
 		// menu bar
 
 		final JMenuBar menuBar = new JMenuBar();
 		add(menuBar, BorderLayout.NORTH);
 		
-		// file menu
+		if (instanceOfFile.length == 1) {
+			final EegFile vhdrFile = instanceOfFile[0];
+			
+			// file menu
+			menuBar.add(fileMenu(vhdrFile));
+			
+			// plotter menu
+			menuBar.add(plotterMenu(vhdrFile));
+			
+			// merge menu
+			menuBar.add(mergeMenu(vhdrFile));
+			
+			// buttons
+	        menuBar.add(Box.createHorizontalGlue());
+			
+			EditButton edit = new EditButton();
+			menuBar.add(edit);
+			edit.setEnabled(vhdrFile.isEditable());
+			
+			CloseButton close = new CloseButton();
+			menuBar.add(close);
+			close.setEnabled(vhdrFile.isCloseable());
+		} else {
+			
+			// explorer file menu
+			menuBar.add(explorerMenu());
+			
+			// scenario menu
+			menuBar.add(scenarioMenu());
+		}
+	}
+
+	private JMenu scenarioMenu() {
+		final JMenu scenario = new JMenu(LANG("explorer_scenario"));
+		{
+			final JMenuItem addScen = new JMenuItem(LANG("explorer_scenario_add"));
+			addScen.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					DialogManagement.open(DialogManagement.SCENARIO_ADD);
+				}
+			});
+			scenario.add(addScen);
+			
+			final ActionListener deleter = new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					String name = ((JMenuItem) e.getSource()).getText();
+					DialogManagement.open(DialogManagement.SCENARIO_REMOVE, name);
+				}
+			};
+			
+			final JMenu list = new JMenu(LANG("explorer_scenario_delete"));
+			ArrayList<String> scenarios = Scenario.getList();
+			if (scenarios.size() == 0) {
+				list.setEnabled(false);
+			}
+			list.addMenuListener(new MenuListener() {
+				@Override
+				public void menuSelected(MenuEvent e) {
+					list.removeAll();
+					ArrayList<String> scenarios = Scenario.getList();
+					for (int i = 0; i < scenarios.size(); i++) {
+						JMenuItem menuItem = new JMenuItem(scenarios.get(i));
+						menuItem.addActionListener(deleter);
+						list.add(menuItem);
+					}
+					list.setEnabled(scenarios.size() > 0);
+				}
+				@Override public void menuDeselected(MenuEvent e) {}
+				@Override public void menuCanceled(MenuEvent e) {}
+			});;
+			scenario.add(list);
+		}
+		return scenario;
+	}
+
+	private JMenu explorerMenu() {
 
 		final JMenu file = new JMenu(LANG("file"));
-		menuBar.add(file);
+		
+		final JMenuItem editor = new JMenuItem(LANG("explorer_open"));
+
+		editor.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent event) {
+				GuiManager.EDITOR.open( (File[]) // if is the list null
+						FileBrowserPanel.PANEL.getSelectedFiles());
+			}
+		});
+		
+		file.addMenuListener(new MenuListener() {
+			
+			@Override
+			public void menuSelected(MenuEvent e) {
+				editor.setEnabled(FileBrowserPanel.PANEL.getSelectedFile() != null);
+			}
+			
+			@Override
+			public void menuDeselected(MenuEvent e) {
+				
+			}
+			
+			@Override
+			public void menuCanceled(MenuEvent e) {
+				
+			}
+		});
+		
+		file.add(editor);
+        
+        file.addSeparator();
+        
+		// exit explorer
+
+		final JMenuItem exit = new JMenuItem(LANG("exit"));
+		exit.repaint();
+
+		exit.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent event) {
+				GuiManager.EDITOR.setVisible(false);
+			}
+		});
+		file.add(exit);
+
+		return file;
+	}
+
+	private JMenu fileMenu(final EegFile vhdrFile) {
+		final JMenu file = new JMenu(LANG("file"));
 		{
 			// Soubor item
 
@@ -55,7 +190,7 @@ public class MenuPanel extends JPanel {
 			
 			s1.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent event) {
-					GuiManager.EXPLORER.requestFocus();
+					FileEditor.TABS.setSelectedIndex(0);
 				}
 			}); file.add(s1);
 
@@ -68,7 +203,7 @@ public class MenuPanel extends JPanel {
 					Out<Boolean> out = new Out<>(false);
 					DialogManagement.open(DialogManagement.SAVE_AS, vhdrFile, out);
 					if (out.value()) {
-						GuiManager.EDITOR.setTitleAt(GuiManager.EDITOR.getSelectedIndex(), vhdrFile.getName());
+						FileEditor.TABS.setTitleAt(FileEditor.TABS.getSelectedIndex(), vhdrFile.getName());
 					}
 				}
 			});
@@ -90,11 +225,11 @@ public class MenuPanel extends JPanel {
 			close.setEnabled(vhdrFile.isReadable());
 			file.add(close);
 		}
-		
-		// plotter menu
-		
+		return file;
+	}
+
+	private JMenu plotterMenu(final EegFile vhdrFile) {
 		final JMenu data = new JMenu(LANG("menu_data"));
-		menuBar.add(data);
 		
 		if (!vhdrFile.isPlotAble()) {
 			JMenuItem noChannels = new JMenuItem(LANG("menu_data_no_channels"));
@@ -140,11 +275,11 @@ public class MenuPanel extends JPanel {
 			});
 			data.add(allChannels);
 		}
-		
-		// merge menu
-		
+		return data;
+	}
+
+	private JMenu mergeMenu(final EegFile vhdrFile) {
 		final JMenu merge = new JMenu(LANG("merge_file"));
-		menuBar.add(merge);
 		
 		{
 			merge.addMenuListener(new MenuListener() {
@@ -175,26 +310,11 @@ public class MenuPanel extends JPanel {
 			        //System.out.println("menuCanceled");
 			    }
 			});
-			/*
-			merge.addActionListener(new ActionListener() {
-				
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					
-				}
-			});*/
 		}
-		
-		// buttons
-        
-		menuBar.add(Box.createHorizontalGlue());
-		
-		EditButton edit = new EditButton();
-		menuBar.add(edit);
-		edit.setEnabled(vhdrFile.isEditable());
-		
-		CloseButton close = new CloseButton();
-		menuBar.add(close);
-		close.setEnabled(vhdrFile.isCloseable());
+		return merge;
+	}
+
+	public static JPanel explorerMenuPanel() {
+		return new MenuPanel();
 	}
 }

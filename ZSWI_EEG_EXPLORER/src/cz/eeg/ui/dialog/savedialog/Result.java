@@ -5,11 +5,14 @@ import static cz.deznekcz.tool.Lang.LANG;
 import java.awt.Color;
 import java.awt.Font;
 import java.io.File;
+import java.io.IOException;
 
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import cz.eeg.ui.dialog.DialogManagement;
 import cz.eeg.ui.dialog.SaveDialog;
+import cz.eeg.ui.explorer.DirectoryBrowserPanel;
 import cz.eeg.ui.explorer.FileBrowserPanel;
 
 public class Result {
@@ -76,7 +79,15 @@ public class Result {
 	}
 
 	public static File outputPath() {
-		return FileBrowserPanel.OUTPUT_SELECT.getCurrentDirectory();
+		try {
+			return DirectoryBrowserPanel.PANEL.getCurrentDirectory();
+		} catch (IOException e) {
+			DialogManagement.open(DialogManagement.ERROR, e.getMessage());
+			
+			File unsaved = new File("unsaved");
+			unsaved.mkdir();
+			return unsaved;
+		}
 	}
 
 	public static String get() {

@@ -66,7 +66,7 @@ public class Lang {
 	public static void LANGload(String langName) {
 		try {
 			if (instance != null) {
-				LANGgererate();
+				LANGgenerate();
 				SYMBOLS.clear();
 			}
 			instance = new Lang(langName);
@@ -83,7 +83,7 @@ public class Lang {
 			scanner.close();
 			
 		} catch (FileNotFoundException e) {
-			LANGgererate();
+			LANGgenerate();
 		}
 	}
 
@@ -93,7 +93,7 @@ public class Lang {
 	 *  - method rewrite previous version of {@link Lang} file
 	 * @return true/false
 	 */
-	public static boolean LANGgererate() {
+	public static boolean LANGgenerate() {
 		try {
 			File f = new File("lang");
 			if (!f.exists()) {
@@ -109,19 +109,6 @@ public class Lang {
 		} catch (FileNotFoundException e) {
 			return false;
 		}
-	}
-
-	/**
-	 * Generates a {@link Lang} file with used symbols.
-	 * <br><font color="red">WARNING!</font>
-	 *  - method rewrite previous version of {@link Lang} file
-	 * @param langName {@link String} value
-	 * @return true/false
-	 */
-	@Deprecated
-	public static boolean LANGgererate(String langName) {
-		instance.langName = langName;
-		return LANGgererate();
 	}
 	
 	/**

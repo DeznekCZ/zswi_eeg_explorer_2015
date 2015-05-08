@@ -14,6 +14,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 
+import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -42,14 +43,14 @@ public class FileBrowserPanel extends JFileChooser {
 	public final static Config CONFIG = Application.CONFIG;
 	public static final int INPUT = 1;
 	public static final int OUTPUT = 2;
-	public static final FileBrowserPanel INPUT_SELECT = new FileBrowserPanel(new File("input"), FileBrowserPanel.INPUT);
-	public static final FileBrowserPanel OUTPUT_SELECT = new FileBrowserPanel(new File("output"), FileBrowserPanel.OUTPUT);
+	public static final FileBrowserPanel PANEL = new FileBrowserPanel(new File("input"), FileBrowserPanel.INPUT);
 
 	//public static final File TEMT_DIRRECTORY = new File("temp");
 	
 	public FileBrowserPanel(File slozka, final int type) {
 		super(slozka);
 		
+		setBorder(BorderFactory.createTitledBorder(LANG("explorer_input_panel")));
 		setControlButtonsAreShown(false);
 		
 		setAcceptAllFileFilterUsed(false);
@@ -61,7 +62,7 @@ public class FileBrowserPanel extends JFileChooser {
 				if (!f.isDirectory() && !FilesIO.isReadable(f)) {
 					return new BlockedIcon(this, ikona);
 				} else if (f.isDirectory() && type == OUTPUT
-						&& f.equals(INPUT_SELECT.getCurrentDirectory())) {
+						&& f.equals(PANEL.getCurrentDirectory())) {
 					return new BlockedIcon(this, ikona);
 				} else if (f.isDirectory()
 						&& f.equals(Explorer.TEMT_DIRRECTORY)) {
@@ -76,7 +77,7 @@ public class FileBrowserPanel extends JFileChooser {
 				if (type == OUTPUT)
 					return !(f.isDirectory()
 		        		&& (
-		        			f.equals(INPUT_SELECT.getCurrentDirectory())
+		        			f.equals(PANEL.getCurrentDirectory())
 		        		 || f.equals(Explorer.TEMT_DIRRECTORY)
 		        		)); 
 				else return super.isTraversable(f);

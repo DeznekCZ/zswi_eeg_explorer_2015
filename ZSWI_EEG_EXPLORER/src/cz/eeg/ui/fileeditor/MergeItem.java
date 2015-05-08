@@ -13,6 +13,7 @@ import cz.eeg.io.FileReadingException;
 import cz.eeg.io.FilesIO;
 import cz.eeg.ui.GuiManager;
 import cz.eeg.ui.dialog.DialogManagement;
+import cz.eeg.ui.dialog.DialogType;
 
 public class MergeItem {
 
@@ -25,7 +26,7 @@ public class MergeItem {
 				try {
 					GuiManager.EDITOR.open(FilesIO.mergeTMP(target, source));
 				} catch (IOException | FileReadingException e1) {
-					DialogManagement.open(DialogManagement.ERROR, e1.getMessage());
+					DialogManagement.open(DialogType.ERROR, e1.getMessage());
 				}
 			}
 		});

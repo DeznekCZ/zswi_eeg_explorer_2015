@@ -14,6 +14,7 @@ import cz.eeg.data.EegFile;
 import cz.eeg.data.Marker;
 import cz.eeg.ui.MarkerEditor;
 import cz.eeg.ui.dialog.DialogManagement;
+import cz.eeg.ui.dialog.DialogType;
 
 public class EditPart extends Part {
 
@@ -61,7 +62,7 @@ public class EditPart extends Part {
 				
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					DialogManagement.open(DialogManagement.EDIT_MARKER, object, setterMethod, value, file);
+					DialogManagement.open(DialogType.MARKER_EDIT, object, setterMethod, value, file);
 					MarkerEditor.getInstance().repaint();
 				}
 			});

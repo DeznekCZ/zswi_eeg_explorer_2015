@@ -13,6 +13,7 @@ import javax.swing.JPanel;
 
 import cz.deznekcz.reflect.Out;
 import cz.eeg.ui.dialog.DialogManagement;
+import cz.eeg.ui.dialog.DialogType;
 import cz.eeg.ui.dialog.SaveDialog;
 import cz.eeg.ui.explorer.Scenario;
 
@@ -97,7 +98,7 @@ public class Experiment {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				Out<String> out = new Out<String>((String) scenarioSelect.getSelectedItem());
-				DialogManagement.open(DialogManagement.SCENARIO_ADD, out);
+				DialogManagement.open(DialogType.SCENARIO_ADD, out);
 				reloadScenarios();
 				scenarioSelect.setSelectedItem(out.value());
 			}

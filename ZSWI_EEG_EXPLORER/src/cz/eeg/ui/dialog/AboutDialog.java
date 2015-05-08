@@ -51,7 +51,7 @@ public class AboutDialog {
 		
 		br.close();
 		} catch (IOException e) {
-			DialogManagement.open(DialogManagement.ERROR, LANG("credits_about_html_not_exists", path));
+			DialogManagement.open(DialogType.ERROR, LANG("credits_about_html_not_exists", path));
 		}
 	}
 	

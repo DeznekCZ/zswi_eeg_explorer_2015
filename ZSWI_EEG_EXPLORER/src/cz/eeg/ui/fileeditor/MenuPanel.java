@@ -28,6 +28,7 @@ import cz.eeg.io.FilesIO;
 import cz.eeg.ui.FileEditor;
 import cz.eeg.ui.GuiManager;
 import cz.eeg.ui.dialog.DialogManagement;
+import cz.eeg.ui.dialog.DialogType;
 import cz.eeg.ui.explorer.FileBrowserPanel;
 import cz.eeg.ui.explorer.Scenario;
 
@@ -101,7 +102,7 @@ public class MenuPanel extends JPanel {
 		
 		about.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
-				DialogManagement.open(DialogManagement.ABOUT);
+				DialogManagement.open(DialogType.ABOUT);
 			}
 		});
 		return help;
@@ -114,7 +115,7 @@ public class MenuPanel extends JPanel {
 			addScen.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					DialogManagement.open(DialogManagement.SCENARIO_ADD);
+					DialogManagement.open(DialogType.SCENARIO_ADD);
 				}
 			});
 			scenario.add(addScen);
@@ -123,7 +124,7 @@ public class MenuPanel extends JPanel {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					String name = ((JMenuItem) e.getSource()).getText();
-					DialogManagement.open(DialogManagement.SCENARIO_REMOVE, name);
+					DialogManagement.open(DialogType.SCENARIO_REMOVE, name);
 				}
 			};
 			
@@ -222,7 +223,7 @@ public class MenuPanel extends JPanel {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					Out<Boolean> out = new Out<>(false);
-					DialogManagement.open(DialogManagement.SAVE_AS, vhdrFile, out);
+					DialogManagement.open(DialogType.FILE_SAVE, vhdrFile, out);
 					if (out.value()) {
 						FileEditor.TABS.setTitleAt(FileEditor.TABS.getSelectedIndex(), vhdrFile.getName());
 					}
@@ -262,7 +263,7 @@ public class MenuPanel extends JPanel {
 			select.addActionListener(new ActionListener() {		
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					DialogManagement.open(DialogManagement.PLOTING, vhdrFile);
+					DialogManagement.open(DialogType.GRAPH_PLOT, vhdrFile);
 				}
 			});
 			//select.setEnabled(false);

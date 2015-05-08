@@ -1,7 +1,6 @@
 package cz.eeg.ui.dialog;
 
 import static cz.deznekcz.tool.Lang.LANG;
-import static cz.deznekcz.tool.Lang.LANGlined;
 
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
@@ -17,7 +16,6 @@ import javax.swing.JTextField;
 import javax.swing.JTextPane;
 
 import cz.deznekcz.reflect.Out;
-import cz.eeg.Application;
 import cz.eeg.data.Channel;
 import cz.eeg.data.EegFile;
 import cz.eeg.data.Marker;
@@ -27,54 +25,31 @@ import cz.eeg.ui.fileeditor.Plotter;
 import cz.eeg.ui.listeners.RequestFocusListener;
 
 /**
- * File handling dialog class
+ * {@link DialogManagement} class provides a dialog frames
+ * with specific actions in {@link DialogType}
+ * 
  * @author IT Crowd
  *
  */
 public final class DialogManagement {
-	
-	/** Parameters: 
-	 * <br>- {@link EegFile} instance to save 
-	 * <br>- {@link Out}&lt;{@link Boolean}&gt; return able value (true - save successful) */
-	public static final int SAVE_AS = 1;
-	/** Parameters:
-	 * <br>- {@link Marker} instance to edit
-	 * <br>- {@link String} name of setter method
-	 * <br>- {@link String} default value
-	 * <br>- {@link EegFile} instance that owns marker */
-	public static final int EDIT_MARKER = 2;
-	/** Parameters:
-	 * <br>- {@link File[]} list of files */
-	public static final int DELETE = 3;
-	/** Parameters:
-	 * <br>- {@link EegFile} instance with data to plot */
-	public static final int PLOTING = 4;
-	/** Parameters:
-	 * <br>- {@link Out}&lt;{@link Boolean}&gt; return able value (new created name of scenario) */
-	public static final int SCENARIO_ADD = 5;
-	/** Parameters:
-	 * <br>- {@link String} name of scenario to remove */
-	public static final int SCENARIO_REMOVE = 6;
-	/** Parameters:
-	 * <br>- {@link String} error message */
-	public static final int ERROR = 7;
-	/** Parameters:
-	 * <br>- none */
-	public static final int ABOUT = 0;
-
+	/**
+	 * Opens an dialog by type
+	 * @param type select type by {@link DialogManagement}.&lt;type&gt;
+	 * @param params parameters of type of Dialog
+	 */
 	@SuppressWarnings("unchecked")
-	public static void open(int type, Object... params) {
+	public static void open(DialogType type, Object... params) {
 		switch (type) {
-		case SAVE_AS:
+		case FILE_SAVE:
 			SaveDialog.open((EegFile) params[0], (Out<Boolean>) params[1]);
 			break;
-		case EDIT_MARKER:
+		case MARKER_EDIT:
 			editMarker((Marker) params[0], (String) params[1], (String) params[2], (EegFile) params[3]);
 			break;
-		case PLOTING:
+		case GRAPH_PLOT:
 			plot((EegFile) params[0]);
 			break;
-		case DELETE:
+		case FILE_DELETE:
 			delete((File[]) params[0]);
 			break;
 		case SCENARIO_ADD:

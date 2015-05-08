@@ -15,6 +15,7 @@ import cz.eeg.io.FileReadingException;
 import cz.eeg.io.FilesIO;
 import cz.eeg.ui.GuiManager;
 import cz.eeg.ui.dialog.DialogManagement;
+import cz.eeg.ui.dialog.DialogType;
 
 public class ExplorerButton {
 	public final static JButton OPEN_SELECTED = initOpen();
@@ -45,7 +46,7 @@ public class ExplorerButton {
 							if (FilesIO.isReadable(file)) {
 								try {
 									EegFile eegFile = FilesIO.read(file);
-									DialogManagement.open(DialogManagement.SAVE_AS, eegFile, new Out<Boolean>());
+									DialogManagement.open(DialogType.FILE_SAVE, eegFile, new Out<Boolean>());
 								} catch (FileNotFoundException
 										| FileReadingException e1) {
 								}
@@ -62,7 +63,7 @@ public class ExplorerButton {
 				new ActionListener() {
 					@Override
 					public void actionPerformed(ActionEvent e) {
-						DialogManagement.open(DialogManagement.DELETE, 
+						DialogManagement.open(DialogType.FILE_DELETE, 
 						/* must be one parameter */ (Object) FileBrowserPanel.PANEL.getSelectedFiles());
 					}
 				});

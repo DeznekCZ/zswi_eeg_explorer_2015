@@ -18,6 +18,7 @@ import static cz.deznekcz.tool.Lang.LANGgenerate;
 
 
 
+
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -55,6 +56,7 @@ import cz.eeg.data.EegFile;
 import cz.eeg.io.FileReadingException;
 import cz.eeg.io.FilesIO;
 import cz.eeg.ui.dialog.DialogManagement;
+import cz.eeg.ui.dialog.DialogType;
 import cz.eeg.ui.explorer.FileBrowserPanel;
 import cz.eeg.ui.fileeditor.EegFilePanel;
 import cz.eeg.ui.fileeditor.MenuPanel;
@@ -182,7 +184,7 @@ public class FileEditor extends JFrame {
 			}
 			
 			if (nonReadable.size() > 0) {
-				DialogManagement.open(DialogManagement.ERROR, LANG("file_wrong") + list(nonReadable));
+				DialogManagement.open(DialogType.ERROR, LANG("file_wrong") + list(nonReadable));
 			}
 		}
 	}
@@ -298,7 +300,7 @@ public class FileEditor extends JFrame {
 		try {
 			new MarkerEditor(file);
 		} catch (Exception e) {
-			DialogManagement.open(DialogManagement.ERROR, 
+			DialogManagement.open(DialogType.ERROR, 
 					LANG("marker_reading_error", e.getMessage()));
 		}
 	}

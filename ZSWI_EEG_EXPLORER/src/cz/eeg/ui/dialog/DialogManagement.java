@@ -1,7 +1,9 @@
 package cz.eeg.ui.dialog;
 
 import static cz.deznekcz.tool.Lang.LANG;
+import static cz.deznekcz.tool.Lang.LANGlined;
 
+import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -15,9 +17,11 @@ import javax.swing.JTextField;
 import javax.swing.JTextPane;
 
 import cz.deznekcz.reflect.Out;
+import cz.eeg.Application;
 import cz.eeg.data.Channel;
 import cz.eeg.data.EegFile;
 import cz.eeg.data.Marker;
+import cz.eeg.ui.GuiManager;
 import cz.eeg.ui.explorer.Scenario;
 import cz.eeg.ui.fileeditor.Plotter;
 import cz.eeg.ui.listeners.RequestFocusListener;
@@ -29,12 +33,34 @@ import cz.eeg.ui.listeners.RequestFocusListener;
  */
 public final class DialogManagement {
 	
-	public final static int SAVE_AS = 1;
+	/** Parameters: 
+	 * <br>- {@link EegFile} instance to save 
+	 * <br>- {@link Out}&lt;{@link Boolean}&gt; return able value (true - save successful) */
+	public static final int SAVE_AS = 1;
+	/** Parameters:
+	 * <br>- {@link Marker} instance to edit
+	 * <br>- {@link String} name of setter method
+	 * <br>- {@link String} default value
+	 * <br>- {@link EegFile} instance that owns marker */
 	public static final int EDIT_MARKER = 2;
+	/** Parameters:
+	 * <br>- {@link File[]} list of files */
+	public static final int DELETE = 3;
+	/** Parameters:
+	 * <br>- {@link EegFile} instance with data to plot */
 	public static final int PLOTING = 4;
+	/** Parameters:
+	 * <br>- {@link Out}&lt;{@link Boolean}&gt; return able value (new created name of scenario) */
 	public static final int SCENARIO_ADD = 5;
+	/** Parameters:
+	 * <br>- {@link String} name of scenario to remove */
 	public static final int SCENARIO_REMOVE = 6;
+	/** Parameters:
+	 * <br>- {@link String} error message */
 	public static final int ERROR = 7;
+	/** Parameters:
+	 * <br>- none */
+	public static final int ABOUT = 0;
 
 	@SuppressWarnings("unchecked")
 	public static void open(int type, Object... params) {
@@ -48,11 +74,17 @@ public final class DialogManagement {
 		case PLOTING:
 			plot((EegFile) params[0]);
 			break;
+		case DELETE:
+			delete((File[]) params[0]);
+			break;
 		case SCENARIO_ADD:
 			if (params.length < 1)
 				addScenario(new Out<String>());
 			else
 				addScenario((Out<String>) params[0]);
+			break;
+		case ABOUT:
+			AboutDialog.open();
 			break;
 		case SCENARIO_REMOVE:
 			removeScenario((String) params[0]);
@@ -63,6 +95,41 @@ public final class DialogManagement {
 					LANG("error"), JOptionPane.ERROR_MESSAGE);
 		default:
 			break;
+		}
+	}
+
+	private static void delete(File[] files) {
+		for (int i = 0; i < files.length; i++) {
+			File file = files[i];
+
+			boolean fail = true;
+			while (fail) {
+				int value = JOptionPane.showConfirmDialog(null, 
+						LANG("explorer_dialog_delete", file.getName()),
+						LANG("explorer_button_delete"),
+						JOptionPane.OK_CANCEL_OPTION
+						);
+				
+				if (value == JOptionPane.OK_OPTION) {
+					if (file.getName().endsWith(".vhdr")) {
+						boolean successful = true;
+						String filename = file.getName();
+						File vmrk = new File(filename.replace(".vhdr", ".vmrk"));
+						successful &= (vmrk.exists() ? vmrk.delete() : true);
+						File eeg = new File(filename.replace(".eeg", ".eeg"));
+						successful &= (eeg.exists() ? eeg.delete() : true);
+						File avg = new File(filename.replace(".avg", ".avg"));
+						successful &= (avg.exists() ? avg.delete() : true);
+						System.out.println((successful ? "delete_successful" : "delete_error" ));
+						
+						GuiManager.repaint();
+					}
+					file.delete();
+					fail = false;
+				} else {
+					fail = false;
+				}
+			}
 		}
 	}
 
@@ -159,7 +226,7 @@ public final class DialogManagement {
 		}
 	}
 
-	private static void editMarker(Marker marker, String method, String initialValue, EegFile ownerEeg) {
+	private static void editMarker(Marker marker, String setterMethod, String initialValue, EegFile ownerEeg) {
 		JPanel myPanel = new JPanel();
 		myPanel.setLayout(new BoxLayout(myPanel, BoxLayout.Y_AXIS));
 		
@@ -189,14 +256,14 @@ public final class DialogManagement {
 					Method[] methods = marker.getClass().getDeclaredMethods();
 					Method calledMethod = null;
 					for (int i = 0; i < methods.length; i++) {
-						if (methods[i].getName().equals(method)) {
+						if (methods[i].getName().equals(setterMethod)) {
 							calledMethod = methods[i];
 							break;
 						}
 					}
 					if (calledMethod == null) {
 						JOptionPane.showMessageDialog(null,
-								LANG("method_not_exists", marker.getClass().getName(), method), 
+								LANG("method_not_exists", marker.getClass().getName(), setterMethod), 
 								LANG("error"), JOptionPane.ERROR_MESSAGE);
 					}
 					

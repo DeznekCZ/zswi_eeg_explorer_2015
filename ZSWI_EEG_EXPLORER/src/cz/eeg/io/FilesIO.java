@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+import cz.deznekcz.reflect.Out;
 import cz.eeg.data.Channel;
 import cz.eeg.data.EegFile;
 import cz.eeg.data.Marker;
@@ -21,6 +22,14 @@ import cz.eeg.data.Marker;
  * reading files saving file etc.*/
 public class FilesIO {
 
+	public static final File TEMP_DIRRECTORY = new File("temp");
+	
+	static {
+		if (!TEMP_DIRRECTORY.exists()) {
+			TEMP_DIRRECTORY.mkdir();
+		}
+	}
+	
 	private static boolean[] positionTmp={true,true,true,true,true,true,true,true,true,true};
 	
 	public static void setPositionTmp(boolean[] positionTmp) {
@@ -347,7 +356,7 @@ public class FilesIO {
 	/**
 	 * Merguje tak ze dostane upravenou instanci EEGFILE a zapise do slozky temp soubor tmp (datovy)*/
 	public static EegFile mergeTMP(EegFile target, EegFile source) throws IOException, VhdrMergeException, FileReadingException {
-		File tmp=new File("./temp");
+		File tmp=TEMP_DIRRECTORY;
 		int j = isFreespace();
 		if(j > -1){
 			positionTmp[j]=false;
@@ -412,15 +421,17 @@ public class FilesIO {
 	}
 	
 	// TODO
-	public static boolean isMergeable(EegFile target, EegFile source) {
-		if(
-			   !source.equals(target)
+	public static boolean isMergeable(EegFile target, EegFile source, Out<String> error) {
+		if (   !source.equals(target)
 			&&  source.getNumberOfChannels()==target.getNumberOfChannels() 
-			&&  source.getSamplingInterval()==target.getSamplingInterval()
-			&&  isFreespace() > -1 )
+			&&  source.getSamplingInterval()==target.getSamplingInterval())	
 		{
+			if (isFreespace() == -1) {
+				error.lock("full_temp_space");
+				return false;
+			}
 			return true;
 		}
-		return false;
+		return false; 
 	}
 }

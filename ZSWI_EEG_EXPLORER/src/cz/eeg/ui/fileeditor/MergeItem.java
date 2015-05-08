@@ -32,8 +32,10 @@ public class MergeItem {
 		return menuItem;
 	}
 
-	public static JMenuItem voidItem() {
-		return new JMenuItem(LANG("merge_no_mergeables"));
+	public static JMenuItem voidItem(String type) {
+		JMenuItem menuItem = new JMenuItem(LANG(type));
+		menuItem.setEnabled(false);
+		return menuItem;
 	}
 
 }

@@ -17,10 +17,12 @@ import java.io.File;
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.filechooser.FileSystemView;
 import javax.swing.filechooser.FileView;
 
+import cz.deznekcz.tool.Lang;
 import cz.eeg.Application;
 import cz.eeg.Config;
 import cz.eeg.io.FilesIO;
@@ -43,10 +45,8 @@ public class FileBrowserPanel extends JFileChooser {
 	public final static Config CONFIG = Application.CONFIG;
 	public static final int INPUT = 1;
 	public static final int OUTPUT = 2;
-	public static final FileBrowserPanel PANEL = new FileBrowserPanel(new File("input"), FileBrowserPanel.INPUT);
+	public static final FileBrowserPanel PANEL = new FileBrowserPanel(new File(CONFIG.folder_input), FileBrowserPanel.INPUT);
 
-	//public static final File TEMT_DIRRECTORY = new File("temp");
-	
 	public FileBrowserPanel(File slozka, final int type) {
 		super(slozka);
 		
@@ -54,36 +54,24 @@ public class FileBrowserPanel extends JFileChooser {
 		setControlButtonsAreShown(false);
 		
 		setAcceptAllFileFilterUsed(false);
-		setFileFilter(new FileNameExtensionFilter(LANG("file_type"), new String[] {"vhdr"}));
+		setFileFilter(buildFilter());
 		setFileView(new FileView() {
 			@Override
 			public Icon getIcon(File f) {
-				Icon ikona = FileSystemView.getFileSystemView().getSystemIcon(f);
+				Icon icon = FileSystemView.getFileSystemView().getSystemIcon(f);
 				if (!f.isDirectory() && !FilesIO.isReadable(f)) {
-					return new BlockedIcon(this, ikona);
-				} else if (f.isDirectory() && type == OUTPUT
-						&& f.equals(PANEL.getCurrentDirectory())) {
-					return new BlockedIcon(this, ikona);
-				} else if (f.isDirectory()
-						&& f.equals(Explorer.TEMT_DIRRECTORY)) {
-					return new BlockedIcon(this, ikona);
+					return new BlockedIcon(this, icon);
 				} else {
-					return ikona;
+					return icon;
 				}
 			}
 
 			@Override
 		    public Boolean isTraversable(File f) {
-				if (type == OUTPUT)
-					return !(f.isDirectory()
-		        		&& (
-		        			f.equals(PANEL.getCurrentDirectory())
-		        		 || f.equals(Explorer.TEMT_DIRRECTORY)
-		        		)); 
-				else return super.isTraversable(f);
+				return super.isTraversable(f);// || !f.equals(FilesIO.TEMP_DIRRECTORY);
 		    }
 		});
-		setFileSelectionMode(FILES_ONLY);
+		setFileSelectionMode(FILES_AND_DIRECTORIES);
 		setMultiSelectionEnabled(true);
 		
 		final FileBrowserPanel vyber = this;
@@ -118,13 +106,49 @@ public class FileBrowserPanel extends JFileChooser {
 		        //We are interested in both event types
 		        if(propertyName.equals(JFileChooser.SELECTED_FILE_CHANGED_PROPERTY) ||
 		           propertyName.equals(JFileChooser.DIRECTORY_CHANGED_PROPERTY)){
-		        	GuiManager.selectionFrame = vyber;
+		        	boolean file = FileBrowserPanel.PANEL.getSelectedFile() != null
+		        			&& FileBrowserPanel.PANEL.getSelectedFile().isFile();
+		        	boolean folder = FileBrowserPanel.PANEL.getSelectedFile() != null
+		        			&& FileBrowserPanel.PANEL.getSelectedFile().isDirectory();
+		        	
+		        	ExplorerButton.OPEN_SELECTED.setEnabled(file);
+		        	ExplorerButton.COPY_SELECTED.setEnabled(file);
+		        	ExplorerButton.DELETE_SELECTED.setEnabled(folder || file);
 		        }
 
 		 //Allow new events to be processed now
 		     handlingEvent=false;
 		    }
 		  }); 
+	}
+
+	private FileFilter buildFilter() {
+		return new FileFilter() {
+			
+			
+			private final FileNameExtensionFilter EXTENSION =
+					new FileNameExtensionFilter("", new String[] {"vhdr"});
+
+			@Override
+			public String getDescription() {
+				return LANG("file_type");
+			}
+			
+			@Override
+			public boolean accept(File f) {
+				return 	(	!f.isDirectory()
+						&&	EXTENSION.accept(f)
+						)
+					||  (   f.isDirectory()
+						&& !f.getAbsolutePath().equals(
+								FilesIO.TEMP_DIRRECTORY.getAbsolutePath())
+						&& !f.getAbsolutePath().equals(
+								GuiManager.RESOURCE_DIRRECTORY.getAbsolutePath())
+						&& !f.getAbsolutePath().equals(
+								Lang.FOLDER.getAbsolutePath())
+						);
+			}
+		};
 	}
 	
 	

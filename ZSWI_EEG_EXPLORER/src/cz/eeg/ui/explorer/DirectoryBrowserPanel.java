@@ -94,11 +94,11 @@ public class DirectoryBrowserPanel extends JPanel implements ItemListener {
 				parent = parent.getParentFile();
 			}
 			
-			currentFileElement = new FileElement(currentDirectory, parentCount+1);
+			currentFileElement = new FileElement(currentDirectory, parentCount);
 			
 			model.addElement(FileElement.separator());
 			
-			for (int i = parentCount - 1; i >= 0; i--) {
+			for (int i = parentCount; i > 0; i--) {
 				model.addElement(new FileElement(stack.pop(), parentCount-i));
 			}
 			model.addElement(currentFileElement);
@@ -107,14 +107,13 @@ public class DirectoryBrowserPanel extends JPanel implements ItemListener {
 				@Override
 				public boolean accept(File pathname) {
 					return  pathname.isDirectory()
-						&& !pathname.isHidden()
-						&& !pathname.getName().contains(".");
+						&& !pathname.isHidden();
 				}
 			});
 			
 			if (files != null) {
 				for (File file : files) {
-					model.addElement(new FileElement(file, parentCount + 2));
+					model.addElement(new FileElement(file, parentCount + 1));
 				}
 			}
 			
@@ -154,9 +153,7 @@ public class DirectoryBrowserPanel extends JPanel implements ItemListener {
 		reloadComboBox();
 	}
 
-	public File getCurrentDirectory() throws IOException {
-		if (currentDirectory == null) 
-			throw new IOException(LANG("explorer_null_directory"));
+	public File getCurrentDirectory() {
 		return currentDirectory;
 	}
 	

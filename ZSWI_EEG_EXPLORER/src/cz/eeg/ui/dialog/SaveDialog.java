@@ -42,7 +42,7 @@ public class SaveDialog {
 			//JOptionPane.showOptionDialog(parentComponent, message, title, 
 			//        optionType, messageType, icon, options, initialValue);
 			int option = JOptionPane.showOptionDialog(GuiManager.EDITOR, body, 
-					LANG("ploting_select_channel"),
+					LANG("dialog_save_title", file.getName()),
 					0, JOptionPane.QUESTION_MESSAGE,
 					null, options, null);
 			if (option == 0) {

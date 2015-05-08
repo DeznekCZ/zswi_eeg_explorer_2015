@@ -79,15 +79,7 @@ public class Result {
 	}
 
 	public static File outputPath() {
-		try {
-			return DirectoryBrowserPanel.PANEL.getCurrentDirectory();
-		} catch (IOException e) {
-			DialogManagement.open(DialogManagement.ERROR, e.getMessage());
-			
-			File unsaved = new File("unsaved");
-			unsaved.mkdir();
-			return unsaved;
-		}
+		return DirectoryBrowserPanel.PANEL.getCurrentDirectory();
 	}
 
 	public static String get() {

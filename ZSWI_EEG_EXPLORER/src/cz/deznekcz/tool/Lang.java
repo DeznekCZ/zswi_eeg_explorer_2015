@@ -43,6 +43,10 @@ public class Lang {
 	
 	/** List of used symbols */
 	private final static List<LangItem> SYMBOLS;
+
+	/** Directory of all language files */
+	public static final File FOLDER = new File("lang");
+	
 	/** Load default language */
 	static {
 		SYMBOLS = new EqualArrayList<LangItem>();
@@ -95,9 +99,8 @@ public class Lang {
 	 */
 	public static boolean LANGgenerate() {
 		try {
-			File f = new File("lang");
-			if (!f.exists()) {
-				f.mkdir();
+			if (!FOLDER.exists()) {
+				FOLDER.mkdir();
 			}
 		
 			PrintStream out = new PrintStream("lang/"+instance.langName+".lng");

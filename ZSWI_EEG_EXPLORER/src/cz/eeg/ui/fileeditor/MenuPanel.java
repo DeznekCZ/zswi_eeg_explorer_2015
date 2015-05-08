@@ -66,9 +66,10 @@ public class MenuPanel extends JPanel {
 			// merge menu
 			menuBar.add(mergeMenu(vhdrFile));
 			
-			// buttons
+			// fill
 	        menuBar.add(Box.createHorizontalGlue());
 			
+	        // buttons
 			EditButton edit = new EditButton();
 			menuBar.add(edit);
 			edit.setEnabled(vhdrFile.isEditable());
@@ -80,10 +81,30 @@ public class MenuPanel extends JPanel {
 			
 			// explorer file menu
 			menuBar.add(explorerMenu());
-			
+
 			// scenario menu
 			menuBar.add(scenarioMenu());
+
+			// fill
+	        menuBar.add(Box.createHorizontalGlue());
+	        
+			// scenario menu
+			menuBar.add(helpMenu());
 		}
+	}
+
+	private JMenu helpMenu() {
+		final JMenu help = new JMenu(LANG("credits"));
+		
+		final JMenuItem about = new JMenuItem(LANG("credits_about"));
+		help.add(about);
+		
+		about.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent event) {
+				DialogManagement.open(DialogManagement.ABOUT);
+			}
+		});
+		return help;
 	}
 
 	private JMenu scenarioMenu() {
@@ -289,14 +310,16 @@ public class MenuPanel extends JPanel {
 					merge.removeAll();
 					List<EegFile> files = GuiManager.EDITOR.getOpenedFiles();
 			
+					Out<String> memoryError = new Out<String>("merge_no_mergeables");
+					
 					for (EegFile file : files) {
-						if (FilesIO.isMergeable(vhdrFile, file)) {
+						if (FilesIO.isMergeable(vhdrFile, file, memoryError)) {
 							merge.add(MergeItem.from(vhdrFile, file));
 						}
 					}
 					
 					if (merge.getItemCount() == 0) {
-						merge.add(MergeItem.voidItem());
+						merge.add(MergeItem.voidItem(memoryError.value()));
 					}
 			    }
 

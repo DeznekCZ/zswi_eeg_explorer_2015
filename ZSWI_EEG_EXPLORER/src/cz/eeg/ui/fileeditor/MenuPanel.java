@@ -31,6 +31,10 @@ import cz.eeg.ui.dialog.DialogManagement;
 import cz.eeg.ui.dialog.DialogType;
 import cz.eeg.ui.explorer.FileBrowserPanel;
 import cz.eeg.ui.explorer.Scenario;
+import cz.eeg.ui.listeners.CopyFileListener;
+import cz.eeg.ui.listeners.DeleteFileListener;
+import cz.eeg.ui.listeners.OpenFileListener;
+import cz.eeg.ui.listeners.SelectExplorerTabListner;
 
 /**
  * Internal class representing a menu panel
@@ -160,36 +164,33 @@ public class MenuPanel extends JPanel {
 
 	private JMenu explorerMenu() {
 
+		// open files
+		
 		final JMenu file = new JMenu(LANG("file"));
 		
-		final JMenuItem editor = new JMenuItem(LANG("explorer_open"));
+		final JMenuItem editor = new JMenuItem(LANG("explorer_button_open"));
 
-		editor.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent event) {
-				GuiManager.EDITOR.open( (File[]) // if is the list null
-						FileBrowserPanel.PANEL.getSelectedFiles());
-			}
-		});
-		
-		file.addMenuListener(new MenuListener() {
-			
-			@Override
-			public void menuSelected(MenuEvent e) {
-				editor.setEnabled(FileBrowserPanel.PANEL.getSelectedFile() != null);
-			}
-			
-			@Override
-			public void menuDeselected(MenuEvent e) {
-				
-			}
-			
-			@Override
-			public void menuCanceled(MenuEvent e) {
-				
-			}
-		});
+		editor.addActionListener(new OpenFileListener());
 		
 		file.add(editor);
+
+        file.addSeparator();
+        
+        // copy files
+        
+        final JMenuItem copy = new JMenuItem(LANG("explorer_button_copy"));
+		copy.repaint();
+
+		copy.addActionListener(new CopyFileListener());
+		file.add(copy);
+		
+		// delete files
+		
+		final JMenuItem delete = new JMenuItem(LANG("explorer_button_delete"));
+		delete.repaint();
+
+		delete.addActionListener(new DeleteFileListener());
+		file.add(delete);
         
         file.addSeparator();
         
@@ -205,6 +206,28 @@ public class MenuPanel extends JPanel {
 		});
 		file.add(exit);
 
+		// check enabling of menu items
+		
+		file.addMenuListener(new MenuListener() {
+			
+			@Override
+			public void menuSelected(MenuEvent e) {
+				editor.setEnabled(FileBrowserPanel.PANEL.getSelectedFile() != null);
+				copy.setEnabled(FileBrowserPanel.PANEL.getSelectedFile() != null);
+				delete.setEnabled(FileBrowserPanel.PANEL.getSelectedFile() != null);
+			}
+			
+			@Override
+			public void menuDeselected(MenuEvent e) {
+				
+			}
+			
+			@Override
+			public void menuCanceled(MenuEvent e) {
+				
+			}
+		});
+		
 		return file;
 	}
 
@@ -215,11 +238,8 @@ public class MenuPanel extends JPanel {
 
 			final JMenuItem s1 = new JMenuItem(LANG("file_open"));
 			
-			s1.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent event) {
-					FileEditor.TABS.setSelectedIndex(0);
-				}
-			}); file.add(s1);
+			s1.addActionListener(new SelectExplorerTabListner());
+			file.add(s1);
 
 			JMenuItem saveAs = new JMenuItem(LANG("file_save_as"));
 			

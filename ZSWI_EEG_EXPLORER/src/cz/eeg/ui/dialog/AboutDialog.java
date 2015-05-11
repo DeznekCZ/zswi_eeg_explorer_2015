@@ -29,29 +29,27 @@ public class AboutDialog {
 	public static void open()  {
 		String path = "resources/about_"+LANG("lang_short")+".html";
 		try {
-		FileInputStream fstream = new FileInputStream(path);
-		DataInputStream in = new DataInputStream(fstream);
-		BufferedReader br = new BufferedReader(new InputStreamReader(in));
-		String strLine;
-		String text="";
-		while ((strLine = br.readLine()) != null)   {
-			text=text+strLine+"\n";
-		}
-		
-		JEditorPane jep = new JEditorPane("text/html", text);
-		jep.setEditable(false);
-		
-		JFrame aboutPanel = new JFrame(LANG("credits_about"));
-		aboutPanel.add(new JScrollPane(jep));
-		aboutPanel.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		aboutPanel.setPreferredSize(new Dimension(400, 400));
-		
-		aboutPanel.pack();
-		aboutPanel.setLocationRelativeTo(null);
-		
-		aboutPanel.setVisible(true);
-		
-		br.close();
+			Scanner scanner = new Scanner(new File(path), "utf-8");
+			
+			String text="";
+			while (scanner.hasNext())   {
+				text=text+scanner.nextLine()+"\n";
+			}
+			
+			JEditorPane jep = new JEditorPane("text/html", text);
+			jep.setEditable(false);
+			
+			JFrame aboutPanel = new JFrame(LANG("credits_about"));
+			aboutPanel.add(new JScrollPane(jep));
+			aboutPanel.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+			aboutPanel.setPreferredSize(new Dimension(400, 400));
+			
+			aboutPanel.pack();
+			aboutPanel.setLocationRelativeTo(null);
+			
+			aboutPanel.setVisible(true);
+			
+			scanner.close();
 		} catch (IOException e) {
 			DialogManagement.open(DialogType.ERROR, LANG("credits_about_html_not_exists", path));
 		}

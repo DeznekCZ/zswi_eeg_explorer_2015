@@ -239,7 +239,10 @@ public class FilesIO {
 		}
 		return false;
 	}
-
+/**
+ * merging datafiles
+ * @param instance instance of eegfile
+ * @param fos output stream*/
 	public static void mergeData(EegFile instance,FileOutputStream fos)throws IOException{
 		File input = instance.getDataFile();
 	    
@@ -299,7 +302,7 @@ public class FilesIO {
 	 * @param outPath outputh path
 	 * @param newName new name for merged vhdr
 	 * @param vhdrInstances two instances of vhdr
-	 * @return true or false if it saved clearly*/
+	 * @return new instance of eegfile */
 	public static EegFile mergeVhdrs(File outPath,String newName,EegFile... vhdrInstances) throws VhdrMergeException, IOException, FileReadingException {
 		EegFile merged;
 		if(vhdrInstances[0].getNumberOfChannels()!=vhdrInstances[1].getNumberOfChannels())
@@ -331,6 +334,10 @@ public class FilesIO {
 		return merged;
 		
 	}
+	/**
+	 * Merge markers 
+	 * @param vhdrInstances instances of source eegfiles
+	 * @return new merged list of markers*/
 	public static List<Marker> mergeVmrks(EegFile... vhdrInstances){
 		int lastMarkerNumber=vhdrInstances[0].getMarkerList().get(vhdrInstances[0].getMarkerList().size()-1).getMarkerNumber();
 		String lastPosition=vhdrInstances[0].getMarkerList().get(vhdrInstances[0].getMarkerList().size()-1).getPositionInDataPoints();
@@ -354,7 +361,12 @@ public class FilesIO {
 	}
 	
 	/**
-	 * Merguje tak ze dostane upravenou instanci EEGFILE a zapise do slozky temp soubor tmp (datovy)*/
+	 * merge datafiles to folder temp 
+	 * @param target target eegfile
+	 * @param source source eegfile
+	 * @throws exceptions 
+	 * @return new instance of eegfile
+	 **/
 	public static EegFile mergeTMP(EegFile target, EegFile source) throws IOException, VhdrMergeException, FileReadingException {
 		File tmp=TEMP_DIRRECTORY;
 		int j = isFreespace();
@@ -404,7 +416,8 @@ public class FilesIO {
 		pw.close();
 	}
 	//konec casti ktera je navic
-	
+	/**check if it's free space to create temporary file
+	 * @return position which is free*/
 	public static int isFreespace(){
 		for(int i=0;i<positionTmp.length;i++){
 			if(positionTmp[i]){
@@ -413,14 +426,20 @@ public class FilesIO {
 		}
 		return -1;
 	}
-	
+	/**free temporary folder and free space for temporary eegfile
+	 * @param fileName instance of eegfile*/
 	public static void freeTemporary(EegFile fileName) {
 		int index = fileName.getDataFile().getName().charAt(3) - '0';
 		positionTmp[index] = true;
 		fileName.getDataFile().delete();
 	}
 	
-	// TODO
+	/**
+	 * Check if the files is mergeable
+	 * @param target target eegfile
+	 * @param source source eegfile
+	 * @param error error
+	 * @return true/false if you can merge this two files*/
 	public static boolean isMergeable(EegFile target, EegFile source, Out<String> error) {
 		if (   !source.equals(target)
 			&&  source.getNumberOfChannels()==target.getNumberOfChannels() 

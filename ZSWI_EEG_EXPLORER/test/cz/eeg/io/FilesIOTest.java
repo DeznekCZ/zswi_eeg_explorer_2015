@@ -44,19 +44,19 @@ public class FilesIOTest {
 	public void testisMergeable() throws IOException, FileReadingException {
 		EegFile i1 = FilesIO.read(new File("input/Masaryko002_20141124-1.vhdr"));
 		EegFile i2 = FilesIO.read(new File("input/Masaryko002_20141124-2.vhdr"));
-		assertTrue(fi.isMergeable(i1, i2));
+		assertTrue(fi.isMergeable(i1, i2,null));
 	}
 	@Test
 	public void testisMergeable2() throws IOException, FileReadingException {
 		EegFile i1 = FilesIO.read(new File("input/Masaryko002_20141124-1.vhdr"));
-		assertFalse(fi.isMergeable(i1, i1));
+		assertFalse(fi.isMergeable(i1, i1,null));
 	}
 	@Test
 	public void testisMergeable3() throws IOException, FileReadingException {
 		EegFile i1 = FilesIO.read(new File("input/Masaryko002_20141124-1.vhdr"));
 		EegFile i2 = FilesIO.read(new File("input/Masaryko002_20141124-2.vhdr"));
 		i2.setNumberOfChannels(10);
-		assertFalse(fi.isMergeable(i1, i2));
+		assertFalse(fi.isMergeable(i1, i2,null));
 	}
 
 	@Test
@@ -64,7 +64,7 @@ public class FilesIOTest {
 		EegFile i1 = FilesIO.read(new File("input/Masaryko002_20141124-1.vhdr"));
 		EegFile i2 = FilesIO.read(new File("input/Masaryko002_20141124-2.vhdr"));
 		i2.setSamplingInterval(1);
-		assertFalse(fi.isMergeable(i1, i2));
+		assertFalse(fi.isMergeable(i1, i2,null));
 	}
 	@Test
 	public void testisMergeable5() throws IOException, FileReadingException {
@@ -73,7 +73,7 @@ public class FilesIOTest {
 		f.setPositionTmp(positionTmp);
 		EegFile i1 = FilesIO.read(new File("input/Masaryko002_20141124-1.vhdr"));
 		EegFile i2 = FilesIO.read(new File("input/Masaryko002_20141124-2.vhdr"));
-		assertFalse(fi.isMergeable(i1, i2));
+		assertFalse(fi.isMergeable(i1, i2,null));
 	}
 
 	@Test

@@ -24,7 +24,13 @@ public class SaveDialog {
 	public static final Dimension DIMENSION = new Dimension(200, 20);
 	private static boolean customNames = false;
 
-	static void open(EegFile file, Out<Boolean> saved) {
+	/**
+	 * Opens a dialog menu for saving files with custom name
+	 * or name specified in documentation
+	 * @param file instance of opened {@link EegFile}
+	 * @param saved return able parameter, returns a new name
+	 */
+	public static void open(EegFile file, Out<Boolean> saved) {
 		
 		JPanel body = new JPanel();
 		body.setLayout(new BoxLayout(body, BoxLayout.Y_AXIS));
@@ -49,8 +55,10 @@ public class SaveDialog {
 					0, JOptionPane.QUESTION_MESSAGE,
 					null, options, null);
 			if (option == 0) {
-				if (!Result.valid() && !customNames) {
-					Result.setWarning(LANG("dialog_save_incomplete"));
+				if (Result.get().length() <= 0) {
+					; // continues if is name with null length
+				} else if (!Result.valid() && !customNames) {
+					; // is set in validation
 				} else if (Result.exists()) {
 					int overwrite = JOptionPane.showConfirmDialog(null, 
 							LANG("dialog_save_overwrite_name", Result.get()),
@@ -74,7 +82,7 @@ public class SaveDialog {
 			}
 		}
 	}
-
+	
 	public static boolean isCustomNamesAbled() {
 		return customNames;
 	}

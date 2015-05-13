@@ -112,6 +112,7 @@ public class Subject {
 
 	public static void setLocked(boolean locked) {
 		boolean lock = !locked;
+		genderSelect.getParent().setEnabled(lock);
 		genderSelect.setEnabled(lock);
 		counterInput.setEnabled(lock);
 		ageInput.setEnabled(lock);

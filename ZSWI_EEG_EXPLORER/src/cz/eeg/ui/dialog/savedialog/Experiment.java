@@ -157,6 +157,8 @@ public class Experiment {
 
 	public static void setLocked(boolean locked) {
 		boolean lock = !locked;
+		yearSelect.getParent().setEnabled(lock);
+		yearSelect.setEnabled(lock);
 		yearSelect.setEnabled(lock);
 		monthSelect.setEnabled(lock);
 		daySelect.setEnabled(lock);

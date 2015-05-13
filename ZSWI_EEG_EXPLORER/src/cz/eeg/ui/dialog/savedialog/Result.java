@@ -36,6 +36,11 @@ public class Result {
 		output.setEditable(false);
 		output.setPreferredSize(SaveDialog.DIMENSION);
 		output.setHorizontalAlignment(JTextField.CENTER);
+		
+		if (SaveDialog.isCustomNamesAbled()) {
+			output.setText(SaveDialog.getLastName());
+		}
+		
 		output.getDocument()
 			.addDocumentListener(oiCIL);
 		warning = new JTextField();

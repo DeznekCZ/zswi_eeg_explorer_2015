@@ -23,12 +23,13 @@ public class SaveDialog {
 
 	public static final Dimension DIMENSION = new Dimension(200, 20);
 	private static boolean customNames = false;
+	private static String lastName = "";
 
 	/**
 	 * Opens a dialog menu for saving files with custom name
 	 * or name specified in documentation
 	 * @param file instance of opened {@link EegFile}
-	 * @param saved return able parameter, returns a new name
+	 * @param saved returns true if is file successfully saved 
 	 */
 	public static void open(EegFile file, Out<Boolean> saved) {
 		
@@ -81,6 +82,8 @@ public class SaveDialog {
 				fail = false;
 			}
 		}
+		
+		lastName = Result.get();
 	}
 	
 	public static boolean isCustomNamesAbled() {
@@ -89,5 +92,13 @@ public class SaveDialog {
 
 	public static void ableCustomNames(boolean available) {
 		SaveDialog.customNames = available;
+	}
+
+	public static String getLastName() {
+		return lastName;
+	}
+
+	public static void setLastName(String lastName) {
+		SaveDialog.lastName = lastName;
 	}
 }

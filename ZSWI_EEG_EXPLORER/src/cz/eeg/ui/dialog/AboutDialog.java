@@ -2,6 +2,7 @@ package cz.eeg.ui.dialog;
 
 import static cz.deznekcz.tool.Lang.LANG;
 
+import java.awt.Desktop;
 import java.awt.Dimension;
 import java.io.BufferedReader;
 import java.io.DataInputStream;
@@ -10,6 +11,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Scanner;
 
@@ -18,6 +20,8 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.event.HyperlinkEvent;
+import javax.swing.event.HyperlinkListener;
 import javax.swing.text.html.HTMLEditorKit;
 
 import org.w3c.dom.Document;
@@ -38,6 +42,24 @@ public class AboutDialog {
 			
 			JEditorPane jep = new JEditorPane("text/html", text);
 			jep.setEditable(false);
+			
+			jep.addHyperlinkListener(new HyperlinkListener() {
+			    public void hyperlinkUpdate(HyperlinkEvent e) {
+			        if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
+			            if (Desktop.isDesktopSupported()) {
+			                try {
+			                    Desktop.getDesktop().browse(e.getURL().toURI());
+			                } catch (IOException e1) {
+			                    // TODO Auto-generated catch block
+			                    e1.printStackTrace();
+			                } catch (URISyntaxException e1) {
+			                    // TODO Auto-generated catch block
+			                    e1.printStackTrace();
+			                }
+			            }
+			        }
+			    }
+			});
 			
 			JFrame aboutPanel = new JFrame(LANG("credits_about"));
 			aboutPanel.add(new JScrollPane(jep));

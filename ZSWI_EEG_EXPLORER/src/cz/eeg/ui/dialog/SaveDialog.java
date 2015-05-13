@@ -8,6 +8,8 @@ import java.nio.file.FileAlreadyExistsException;
 import javax.swing.BoxLayout;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 import cz.deznekcz.reflect.Out;
 import cz.eeg.data.EegFile;
@@ -19,7 +21,8 @@ import cz.eeg.ui.dialog.savedialog.Subject;
 
 public class SaveDialog {
 
-	public static final Dimension DIMENSION = new Dimension(200, 20);;
+	public static final Dimension DIMENSION = new Dimension(200, 20);
+	private static boolean customNames = false;
 
 	static void open(EegFile file, Out<Boolean> saved) {
 		
@@ -46,7 +49,7 @@ public class SaveDialog {
 					0, JOptionPane.QUESTION_MESSAGE,
 					null, options, null);
 			if (option == 0) {
-				if (!Result.valid()) {
+				if (!Result.valid() && !customNames) {
 					Result.setWarning(LANG("dialog_save_incomplete"));
 				} else if (Result.exists()) {
 					int overwrite = JOptionPane.showConfirmDialog(null, 
@@ -70,5 +73,13 @@ public class SaveDialog {
 				fail = false;
 			}
 		}
+	}
+
+	public static boolean isCustomNamesAbled() {
+		return customNames;
+	}
+
+	public static void ableCustomNames(boolean available) {
+		SaveDialog.customNames = available;
 	}
 }

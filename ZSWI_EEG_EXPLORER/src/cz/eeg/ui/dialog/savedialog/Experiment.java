@@ -147,6 +147,20 @@ public class Experiment {
 	}
 
 	public static boolean valid() {
-		return !Scenario.DEFAULT.equals(scenarioSelect.getSelectedItem());
+		if (Scenario.DEFAULT.equals(scenarioSelect.getSelectedItem())) {
+			Result.setWarning(LANG("dialog_save_select_scenario"));
+			return false;
+		} else {
+			return true;
+		}
+	}
+
+	public static void setLocked(boolean locked) {
+		boolean lock = !locked;
+		yearSelect.setEnabled(lock);
+		monthSelect.setEnabled(lock);
+		daySelect.setEnabled(lock);
+		scenarioSelect.setEnabled(lock);
+		scenarioButton.setEnabled(lock);
 	}
 }

@@ -272,6 +272,7 @@ public class FileEditor extends JFrame {
 		}
 		
 		pack();
+		setLocationRelativeTo(null);
 	}
 	
 	/**

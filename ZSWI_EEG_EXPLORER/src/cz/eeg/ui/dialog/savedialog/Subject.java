@@ -11,14 +11,22 @@ import java.awt.event.ItemListener;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.event.DocumentListener;
+
+import cz.eeg.ui.listeners.InputChangeListener;
 
 public class Subject {
 
 	private static JComboBox<Gender> genderSelect;
 	private static JTextField ageInput;
 	private static JTextField counterInput;
+	private static InputChangeListener aiCIL;
+	private static InputChangeListener ciCIL;
 
 	public static JPanel panel() {
+
+		aiCIL = new InputChangeListener();
+		ciCIL = new InputChangeListener();
 		
 		genderSelect = new JComboBox<Gender>();
 		genderSelect.setPreferredSize(new Dimension(300, 20));
@@ -37,23 +45,13 @@ public class Subject {
 
 		ageInput = new JTextField("0");
 		ageInput.setPreferredSize(new Dimension(300, 20));
-		ageInput.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				System.out.println(e.getActionCommand());
-				System.out.println(e.getSource());
-			}
-		});
+		ageInput.getDocument()
+			.addDocumentListener(aiCIL);
 		
 		counterInput = new JTextField("001");
 		counterInput.setPreferredSize(new Dimension(300, 20));
-		counterInput.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				System.out.println(e.getActionCommand());
-				System.out.println(e.getSource());
-			}
-		});
+		counterInput.getDocument()
+			.addDocumentListener(ciCIL);
 		
 		return Segment.panel(LANG("dialog_save_subject"),
 				genderSelect, ageInput, counterInput);
@@ -67,7 +65,6 @@ public class Subject {
 		try {
 			return Integer.parseInt(ageInput.getText());
 		} catch (Exception e) {
-			ageInput.setText("0");
 			return 0;
 		}
 	}
@@ -76,15 +73,48 @@ public class Subject {
 		try {
 			return Integer.parseInt(counterInput.getText());
 		} catch (Exception e) {
-			counterInput.setText("01");
 			return 1;
 		}
 	}
 
 	public static boolean valid() {
-		return !Gender.NONE.equals(genderSelect.getSelectedItem())
-				&& getAge() > 0
-				&& getCounter() > 0;
+		return 	   validGender()
+				&& validAge()
+				&& validCounter();
+	}
+
+	private static boolean validAge() {
+		if (getAge() <= 0) {
+			Result.setWarning(LANG("dialog_save_wrong_age_number"));
+			return false;
+		} else {
+			return true;
+		}
+	}
+
+	private static boolean validCounter() {
+		if (getCounter() <= 0) {
+			Result.setWarning(LANG("dialog_save_wrong_counter_number"));
+			return false;
+		} else {
+			return true;
+		}
+	}
+
+	private static boolean validGender() {
+		if (Gender.NONE.equals(genderSelect.getSelectedItem())) {
+			Result.setWarning(LANG("dialog_save_select_gender"));
+			return false;
+		} else {
+			return true;
+		}
+	}
+
+	public static void setLocked(boolean locked) {
+		boolean lock = !locked;
+		genderSelect.setEnabled(lock);
+		counterInput.setEnabled(lock);
+		ageInput.setEnabled(lock);
 	}
 
 }

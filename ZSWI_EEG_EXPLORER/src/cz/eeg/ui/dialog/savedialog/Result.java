@@ -7,6 +7,7 @@ import java.awt.Font;
 import java.io.File;
 import java.io.IOException;
 
+import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
@@ -14,18 +15,29 @@ import cz.eeg.ui.dialog.DialogManagement;
 import cz.eeg.ui.dialog.SaveDialog;
 import cz.eeg.ui.explorer.DirectoryBrowserPanel;
 import cz.eeg.ui.explorer.FileBrowserPanel;
+import cz.eeg.ui.listeners.CustomNameHandleListener;
+import cz.eeg.ui.listeners.InputChangeListener;
 
 public class Result {
 
 	private static final String RESULT_FORMAT = "%s_%04d%02d%02d_%s_%02d_%03d";
+	private static JCheckBox custom;
 	private static JTextField output;
 	private static JTextField warning;
+	private static InputChangeListener oiCIL;
 
 	public static JPanel panel() {
+		
+		oiCIL = new InputChangeListener();
+		
+		custom = new JCheckBox(LANG("dialog_save_custom"));
+		custom.addActionListener(new CustomNameHandleListener());
 		output = new JTextField();
 		output.setEditable(false);
 		output.setPreferredSize(SaveDialog.DIMENSION);
 		output.setHorizontalAlignment(JTextField.CENTER);
+		output.getDocument()
+			.addDocumentListener(oiCIL);
 		warning = new JTextField();
 		warning.setEditable(false);
 		warning.setPreferredSize(SaveDialog.DIMENSION);
@@ -33,27 +45,59 @@ public class Result {
 		warning.setBackground(Color.RED);
 		warning.setForeground(Color.WHITE);
 		warning.setFont(warning.getFont().deriveFont(Font.BOLD));
+		
+		availableCustomNames (SaveDialog.isCustomNamesAbled());
+		
 		return Segment.panel(LANG("dialog_save_result_label"),
-				output, warning);
+				custom, output, warning);
+	}
+
+	private static void availableCustomNames(boolean customNamesAbled) {
+		Experiment.setLocked(customNamesAbled);
+		Subject.setLocked(customNamesAbled);
+		output.setEditable(customNamesAbled);
+		custom.setSelected(customNamesAbled);
 	}
 
 	public static void update() {
-		output.setText( String.format(RESULT_FORMAT,
-				Experiment.getScenario(),
-				Experiment.getYear(),
-				Experiment.getMonth(),
-				Experiment.getDay(),
-				Subject.getGender(),
-				Subject.getAge(),
-				Subject.getCounter()
-				));
+		if (custom.isSelected()) {
+			Experiment.setLocked(true);
+			Subject.setLocked(true);
+			output.setEditable(true);
+			SaveDialog.ableCustomNames(true);
+			
+			if (output.getText().length() <= 0)
+				Result.setWarning(LANG("dialog_save_no_name_set"));
+			else if(exists())
+				Result.setWarning(LANG("dialog_save_exists"));
+			else 
+				Result.setWarning();
+		} else {
+			Experiment.setLocked(false);
+			Subject.setLocked(false);
+			output.setEditable(false);
+			SaveDialog.ableCustomNames(false);
+			
+			oiCIL.setEnabled(false);
+			output.setText( String.format(RESULT_FORMAT,
+					Experiment.getScenario(),
+					Experiment.getYear(),
+					Experiment.getMonth(),
+					Experiment.getDay(),
+					Subject.getGender(),
+					Subject.getAge(),
+					Subject.getCounter()
+					));
+			oiCIL.setEnabled(true);
+			
+			if(!valid())
+				;// warning is set in validation function
+			else if(exists())
+				Result.setWarning(LANG("dialog_save_exists"));
+			else 
+				Result.setWarning();
+		}
 		
-		if(!valid())
-			Result.setWarning(LANG("dialog_save_incomplete"));
-		else if(exists())
-			Result.setWarning(LANG("dialog_save_exists"));
-		else 
-			Result.setWarning();
 	}
 
 	public static boolean valid() {

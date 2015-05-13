@@ -3,6 +3,7 @@ package cz.eeg.ui;
 import static cz.deznekcz.tool.Lang.LANG;
 
 import java.awt.BorderLayout;
+import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.io.File;
 
@@ -46,11 +47,12 @@ public class Explorer extends JPanel {
 		add(subPanel, BorderLayout.CENTER);
 		
 		JPanel buttonPanel = new JPanel();
-		buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
+		buttonPanel.setLayout(new FlowLayout());
 		buttonPanel.add( ExplorerButton.OPEN_SELECTED ); 
 		buttonPanel.add( ExplorerButton.COPY_SELECTED ); 
 		buttonPanel.add( ExplorerButton.DELETE_SELECTED ); 
 		buttonPanel.add( ExplorerButton.SET_OUTPUT ); 
+		buttonPanel.add( ExplorerButton.SET_INPUT ); 
 		add(buttonPanel, BorderLayout.SOUTH);
 		
 		setFocusable(true);

@@ -16,21 +16,34 @@ import cz.eeg.io.FilesIO;
 import cz.eeg.ui.GuiManager;
 import cz.eeg.ui.dialog.DialogManagement;
 import cz.eeg.ui.dialog.DialogType;
+import cz.eeg.ui.listeners.CopyFileListener;
+import cz.eeg.ui.listeners.DeleteFileListener;
+import cz.eeg.ui.listeners.OpenFileListener;
 
 public class ExplorerButton {
 	public final static JButton OPEN_SELECTED = initOpen();
 	public final static JButton DELETE_SELECTED = initDelete();
 	public final static JButton COPY_SELECTED = initCopy();
 	public final static JButton SET_OUTPUT = initOutput();
+	public final static JButton SET_INPUT = initInput();
 
 	private static JButton initOpen() {
 		return initButton(
 				"explorer_button_open",
 				false,
+				new OpenFileListener());
+	}
+
+	private static JButton initInput() {
+		return initButton(
+				"explorer_button_input",
+				true,
 				new ActionListener() {
 					@Override
 					public void actionPerformed(ActionEvent e) {
-						GuiManager.EDITOR.open(FileBrowserPanel.PANEL.getSelectedFiles());
+						FileBrowserPanel.PANEL.setCurrentDirectory(
+								DirectoryBrowserPanel.PANEL.getCurrentDirectory()
+							);
 					}
 				});
 	}
@@ -53,35 +66,14 @@ public class ExplorerButton {
 		return initButton(
 				"explorer_button_copy",
 				false,
-				new ActionListener() {
-					@Override
-					public void actionPerformed(ActionEvent e) {
-						File[] files = FileBrowserPanel.PANEL.getSelectedFiles();
-						for (File file : files) {
-							if (FilesIO.isReadable(file)) {
-								try {
-									EegFile eegFile = FilesIO.read(file);
-									DialogManagement.open(DialogType.FILE_SAVE, eegFile, new Out<Boolean>());
-								} catch (FileNotFoundException
-										| FileReadingException e1) {
-								}
-							}
-						}
-					}
-				});
+				new CopyFileListener());
 	}
 
 	private static JButton initDelete() {
 		return initButton(
 				"explorer_button_delete",
 				false,
-				new ActionListener() {
-					@Override
-					public void actionPerformed(ActionEvent e) {
-						DialogManagement.open(DialogType.FILE_DELETE, 
-						/* must be one parameter */ (Object) FileBrowserPanel.PANEL.getSelectedFiles());
-					}
-				});
+				new DeleteFileListener());
 	}
 
 	private static JButton initButton(String name,

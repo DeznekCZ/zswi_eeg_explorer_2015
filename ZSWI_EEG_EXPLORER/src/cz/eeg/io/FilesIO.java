@@ -42,7 +42,7 @@ public class FilesIO {
 	 * @return true or false if dataset is complete or not*/
 	public static boolean isReadable(File vhdrPath) {
 		try {
-			Scanner s = new Scanner(vhdrPath);
+			Scanner s = new Scanner(vhdrPath, "utf-8");
 			while(s.hasNext()) {
 				String line = s.nextLine();
 				String[] split = line.split("=");
@@ -77,7 +77,7 @@ public class FilesIO {
 		EegFile vh = new EegFile();
 		vh.setHeaderFile(vhdrPath);
 		try {
-			Scanner scanner = new Scanner(vhdrPath);
+			Scanner scanner = new Scanner(vhdrPath, "utf-8");
 			String line;
 			while (scanner.hasNextLine()){
 				line=scanner.nextLine();

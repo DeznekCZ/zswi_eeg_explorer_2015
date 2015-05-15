@@ -128,6 +128,8 @@ public class FilesIO {
 				}
 			}
 			vh.setList(list);
+			
+			scanner.close();
 
 		} catch (FileNotFoundException e) {
 			throw e;
@@ -179,11 +181,11 @@ public class FilesIO {
 			linkedVhdr.setHeaderFile(new File(pathH));
 			linkedVhdr.setMarkerFile(new File(pathM));
 			linkedVhdr.setDataFile(new File(pathD));
-			pw = new PrintWriter(pathH); //zapisuje header
+			pw = new PrintWriter(pathH, "utf-8"); //zapisuje header
 			pw.write(linkedVhdr.getVhdrData());
 			pw.close();
 
-			pw = new PrintWriter(pathM); // zapisuje marker
+			pw = new PrintWriter(pathM, "utf-8"); // zapisuje marker
 			pw.write(linkedVhdr.getVmrkData());
 			pw.close();
 			
@@ -206,10 +208,6 @@ public class FilesIO {
 	 * @param newName new name binary file
 	 * @param vhdr instance of eegfile*/
 	public static boolean saveDataFile(int choose,String newName,EegFile vhdr) throws IOException{
-		
-		
-		
-		
 		
 		FileOutputStream fos= new FileOutputStream(newName);
 		switch(choose){

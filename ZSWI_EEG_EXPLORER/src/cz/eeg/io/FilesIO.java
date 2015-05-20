@@ -23,15 +23,15 @@ import cz.eeg.data.Marker;
 public class FilesIO {
 
 	public static final File TEMP_DIRRECTORY = new File("temp");
-	
+
 	static {
 		if (!TEMP_DIRRECTORY.exists()) {
 			TEMP_DIRRECTORY.mkdir();
 		}
 	}
-	
+
 	private static boolean[] positionTmp={true,true,true,true,true,true,true,true,true,true};
-	
+
 	public static void setPositionTmp(boolean[] positionTmp) {
 		FilesIO.positionTmp = positionTmp;
 	}
@@ -128,7 +128,7 @@ public class FilesIO {
 				}
 			}
 			vh.setList(list);
-			
+
 			scanner.close();
 
 		} catch (FileNotFoundException e) {
@@ -188,7 +188,7 @@ public class FilesIO {
 			pw = new PrintWriter(pathM, "utf-8"); // zapisuje marker
 			pw.write(linkedVhdr.getVmrkData());
 			pw.close();
-			
+
 			linkedVhdr.saved();
 			return true;
 		} catch (IOException e) {
@@ -201,28 +201,42 @@ public class FilesIO {
 	public static File backupDataFile(File dataFile) {
 		return dataFile;
 	}
-	
+
 	/**
 	 * saving only datafile with new name
 	 * @param choose type of binary file avg/eeg
 	 * @param newName new name binary file
 	 * @param vhdr instance of eegfile*/
 	public static boolean saveDataFile(int choose,String newName,EegFile vhdr) throws IOException{
-		
-		FileOutputStream fos= new FileOutputStream(newName);
-		switch(choose){
+
+
+
+
+
+		FileInputStream fis = new FileInputStream(vhdr.getDataFile());
+		FileOutputStream fos = new FileOutputStream(newName);
+		byte[] buffer = new byte[1024];
+		int noOfBytes = 0;
+
+		while ((noOfBytes = fis.read(buffer)) != -1) {
+
+			fos.write(buffer, 0, noOfBytes);
+
+		}
+		fos.close();
+		fis.close();
+		return true;
+
+		/*switch(choose){
 		case 1 :
-			BinaryData.read(vhdr.getHeaderFile(), vhdr.getNumberOfChannels());
-			for(int i = 0;i<BinaryData.getDat()[0].length;i++){
-				for (int k=0;k<vhdr.getNumberOfChannels();k++){
-					short d1=(short)(BinaryData.getDat()[k][i]);
-					byte [] zapis= toByteArrayEeg(d1);
-					fos.write(zapis);
-				}
-			}
+			{
+			        while(fis.available()>0){   
+			        	fos.write(fis.read());
+	          }
+
 			fos.close();
 			return true;
-			
+			}
 		case 2 :
 			BinaryData.read(vhdr.getHeaderFile(),vhdr.getNumberOfChannels());
 			for(int i = 0;i<BinaryData.getDat()[0].length;i++){
@@ -235,28 +249,28 @@ public class FilesIO {
 			fos.close();
 			return true; 
 		}
-		return false;
+		return false;*/
 	}
-/**
- * merging datafiles
- * @param instance instance of eegfile
- * @param fos output stream*/
+	/**
+	 * merging datafiles
+	 * @param instance instance of eegfile
+	 * @param fos output stream*/
 	public static void mergeData(EegFile instance,FileOutputStream fos)throws IOException{
 		File input = instance.getDataFile();
-	    
-        FileInputStream fis = new FileInputStream(input);
-        byte[] fileBytes = new byte[(int) input.length()];
-        int bytesRead = fis.read(fileBytes, 0,(int)  input.length());
-        assert(bytesRead == fileBytes.length);
-        assert(bytesRead == (int) input.length());
-        fos.write(fileBytes);
-        fos.flush();
-        fileBytes = null;
-        fis.close();
- 
+
+		FileInputStream fis = new FileInputStream(input);
+		byte[] fileBytes = new byte[(int) input.length()];
+		int bytesRead = fis.read(fileBytes, 0,(int)  input.length());
+		assert(bytesRead == fileBytes.length);
+		assert(bytesRead == (int) input.length());
+		fos.write(fileBytes);
+		fos.flush();
+		fileBytes = null;
+		fis.close();
+
 	}
-	
-	
+
+
 	/**
 	 * merging binary files
 	 * @param numberOfChannels number of chanels both datasets
@@ -268,8 +282,8 @@ public class FilesIO {
 		FileOutputStream fos = new FileOutputStream(newName,true);
 		mergeData(vhdrInstances[0],fos);
 		mergeData(vhdrInstances[1], fos);
-	     fos.close();
-		  fos = null;
+		fos.close();
+		fos = null;
 		return true;
 	}
 	/**
@@ -304,10 +318,10 @@ public class FilesIO {
 	public static EegFile mergeVhdrs(File outPath,String newName,EegFile... vhdrInstances) throws VhdrMergeException, IOException, FileReadingException {
 		EegFile merged;
 		if(vhdrInstances[0].getNumberOfChannels()!=vhdrInstances[1].getNumberOfChannels())
-				{
+		{
 			throw new VhdrMergeException("wrong_channels");
 		}else{
-			
+
 			//merged = read(vhdrInstances[0].getHeaderFile());
 			merged = vhdrInstances[0].clone();
 			if(merged.getDataFileName().endsWith("eeg")){
@@ -319,9 +333,9 @@ public class FilesIO {
 			}
 			//merged.setMarkerFile(new File(outPath.getAbsolutePath()+"/"+newName+".vmrk"));
 			//merged.setHeaderFile(new File(outPath.getAbsolutePath()+"/"+newName+".vhdr"));
-			
+
 			merged.setList(mergeVmrks(vhdrInstances));
-			
+
 			if (!mergeDataFiles(
 					merged.getNumberOfChannels(),
 					merged.getDataFile(),
@@ -330,7 +344,7 @@ public class FilesIO {
 		}
 		merged.setTemporary(true);
 		return merged;
-		
+
 	}
 	/**
 	 * Merge markers 
@@ -349,15 +363,15 @@ public class FilesIO {
 			if(marker.getMarkerNumber()>0){
 				long position=
 						Long.parseLong(marker.getPositionInDataPoints())
-					+   Long.parseLong(lastPosition);
+						+   Long.parseLong(lastPosition);
 				mkn.add(marker.copy(lastMarkerNumber, position));
 			}
-			
+
 		}
-		
+
 		return mkn;
 	}
-	
+
 	/**
 	 * merge datafiles to folder temp 
 	 * @param target target eegfile
@@ -377,7 +391,7 @@ public class FilesIO {
 			throw new VhdrMergeException("full_temp_space");
 		}
 	}
-	
+
 	//navic
 	@Deprecated
 	public static boolean saveMerged(File outPath,String newName,EegFile vhdr) throws FileNotFoundException{
@@ -395,18 +409,18 @@ public class FilesIO {
 		save(pathH, vhdr.getVhdrData());
 		File pathM= new File(outPath.getAbsolutePath()+"/"+newName+".vmrk");
 		save(pathM, vhdr.getVmrkData());
-		 
-		
-		
-	      File f1 = new File(outPath.getAbsolutePath()+"/"+newName+"."+suffix);
-	      boolean bool = false;
-	     
-	         bool = f.renameTo(f1);
-	         
-	     
+
+
+
+		File f1 = new File(outPath.getAbsolutePath()+"/"+newName+"."+suffix);
+		boolean bool = false;
+
+		bool = f.renameTo(f1);
+
+
 		return bool;
 	}
-	
+
 	@Deprecated
 	private static void save(File name,String message) throws FileNotFoundException{
 		PrintWriter pw = new PrintWriter(name);
@@ -431,7 +445,7 @@ public class FilesIO {
 		positionTmp[index] = true;
 		fileName.getDataFile().delete();
 	}
-	
+
 	/**
 	 * Check if the files is mergeable
 	 * @param target target eegfile
@@ -440,8 +454,8 @@ public class FilesIO {
 	 * @return true/false if you can merge this two files*/
 	public static boolean isMergeable(EegFile target, EegFile source, Out<String> error) {
 		if (   !source.equals(target)
-			&&  source.getNumberOfChannels()==target.getNumberOfChannels() 
-			&&  source.getSamplingInterval()==target.getSamplingInterval())	
+				&&  source.getNumberOfChannels()==target.getNumberOfChannels() 
+				&&  source.getSamplingInterval()==target.getSamplingInterval())	
 		{
 			if (isFreespace() == -1) {
 				error.lock("full_temp_space");

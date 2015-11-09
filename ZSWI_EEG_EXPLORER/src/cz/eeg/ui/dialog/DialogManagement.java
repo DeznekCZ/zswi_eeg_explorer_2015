@@ -46,6 +46,7 @@ public final class DialogManagement {
 		case MARKER_EDIT:
 			editMarker((Marker) params[0], (String) params[1], (String) params[2], (EegFile) params[3]);
 			break;
+                /* Volani tisku, poslan je argumentem metody open v DialogManagement */
 		case GRAPH_PLOT:
 			plot((EegFile) params[0]);
 			break;
@@ -140,7 +141,7 @@ public final class DialogManagement {
 			}
 		}
 	}
-
+        /* plotovaci dialog pro vyber kanalu */
 	private static void plot(EegFile eegFile) {
 		Channel[] channels = eegFile.getChannel();
 		
